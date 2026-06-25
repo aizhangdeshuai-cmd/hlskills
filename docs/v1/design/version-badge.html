@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>v13 状态徽章 - 设计稿</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; padding: 40px; max-width: 900px; }
+    .badge-row { display: flex; gap: 8px; margin: 16px 0; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 3px; color: white; font-size: 12px; font-weight: 600; text-decoration: none; }
+    .badge-version { background: #007ec6; }
+    .badge-mode { background: #97ca00; }
+    .badge-warning { background: #dfb317; }
+  </style>
+</head>
+<body>
+  <h1>SKILL.md 顶部徽章 - 设计稿(中保真,中保真档位)</h1>
+  <p>保真度档位: <strong>中保真</strong>(默认,实际只是 1 行 markdown)</p>
+
+  <h2>状态 1: 默认显示(亮色主题)</h2>
+  <pre><code>![version](https://img.shields.io/badge/hlpm--product-v13-blue)
+![review](https://img.shields.io/badge/review-3%20in%201-green)
+![weight](https://img.shields.io/badge/评审模式-可选择-yellow)</code></pre>
+
+  <div class="badge-row">
+    <span class="badge badge-version">hlpm-product · v13</span>
+    <span class="badge badge-mode">review · 3 in 1</span>
+    <span class="badge badge-warning">联合评审 / 3 合 1</span>
+  </div>
+
+  <h2>状态 2: 纯文字(离线 / 图片加载失败时)</h2>
+  <pre><code>[hlpm-product v13] [评审模式: 联合评审 / 3 合 1]</code></pre>
+  <p>[hlpm-product v13] [评审模式: 联合评审 / 3 合 1]</p>
+
+  <h2>位置</h2>
+  <p>SKILL.md 第 3 行(在 description 字段下,h1 标题上)</p>
+
+  <h2>5 态检查</h2>
+  <ul>
+    <li>✅ 默认:如状态 1</li>
+    <li>✅ 离线:如状态 2</li>
+    <li>✅ hover:鼠标悬停显示版本说明</li>
+    <li>✅ 错误:图片 404 自动降级为文字</li>
+    <li>✅ 加载:loading 中显示占位 [..]</li>
+  </ul>
+</body>
+</html>
