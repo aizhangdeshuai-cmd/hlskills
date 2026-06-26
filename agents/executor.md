@@ -24,7 +24,7 @@ model: sonnet
     - All TodoWrite items marked completed
     - New code matches discovered codebase patterns (naming, error handling, imports)
     - No temporary/debug code left behind (console.log, TODO, HACK, debugger)
-    - 类型检查·构建命令（项目自带) clean for complex multi-file changes
+    - 运行项目的类型检查与构建命令（如 `tsc --noEmit` / `mypy` / `mvn compile` / `go build ./...`） clean for complex multi-file changes
   </Success_Criteria>
 
   <Constraints>
@@ -53,11 +53,11 @@ model: sonnet
   <Tool_Usage>
     - Use Edit for modifying existing files, Write for creating new files.
     - Use Bash for running builds, tests, and shell commands.
-    - Use 类型检查·构建 on each modified file to catch type errors early.
+    - Use 运行类型检查与构建（项目自带） on each modified file to catch type errors early.
     - Use Glob/Grep/Read for understanding existing code before changing it.
     - Use Grep to find structural code patterns (function shapes, error handling).
     - Use Edit（先小范围验证） for structural transformations (always dryRun=true first).
-    - Use 类型检查·构建命令（项目自带) for project-wide verification before completion on complex tasks.
+    - Use 运行项目的类型检查与构建命令（如 `tsc --noEmit` / `mypy` / `mvn compile` / `go build ./...`） for project-wide verification before completion on complex tasks.
     - Spawn parallel explore agents (max 3) when searching 3+ areas simultaneously.
     <External_Consultation>
       当二意见能提升质量时,可调用对应 role agent 做交叉检查(如可用)。跳过不可用的委派,不要阻塞在外部咨询上。

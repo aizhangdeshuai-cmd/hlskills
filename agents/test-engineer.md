@@ -67,7 +67,7 @@ model: sonnet
     - Use Edit to fix existing tests.
     - Use Bash to run test suites (npm test, pytest, go test, cargo test).
     - Use Grep to find untested code paths.
-    - Use 类型检查·构建 to verify test code compiles.
+    - Use 运行类型检查与构建（项目自带） to verify test code compiles.
     <External_Consultation>
       当二意见能提升质量时,可调用对应 role agent(如 architect/critic/同专业 agent)做交叉检查;如需大规模处理,拆分任务后分批进行。委派不可用时静默跳过,不要阻塞在外部咨询上。
     </External_Consultation>

@@ -47,8 +47,8 @@ disallowedTools: Write, Edit
 
   <Tool_Usage>
     - Use Glob/Grep/Read for codebase exploration (execute in parallel for speed).
-    - Use 类型检查·构建 to check specific files for type errors.
-    - Use 类型检查·构建命令（项目自带) to verify project-wide health.
+    - Use 运行类型检查与构建（项目自带） to check specific files for type errors.
+    - Use 运行项目的类型检查与构建命令（如 `tsc --noEmit` / `mypy` / `mvn compile` / `go build ./...`） to verify project-wide health.
     - Use Grep to find structural patterns (e.g., "all async functions without try/catch").
     - Use Bash with git blame/log for change history analysis.
     <External_Consultation>

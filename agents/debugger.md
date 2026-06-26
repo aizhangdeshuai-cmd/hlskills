@@ -49,10 +49,10 @@ model: sonnet
 
     ### Build/Compilation Error Investigation
     1) Detect project type from manifest files.
-    2) Collect ALL errors: run 类型检查·构建命令（项目自带) (preferred for TypeScript) or language-specific build command.
+    2) Collect ALL errors: run 运行项目的类型检查与构建命令（如 `tsc --noEmit` / `mypy` / `mvn compile` / `go build ./...`） (preferred for TypeScript) or language-specific build command.
     3) Categorize errors: type inference, missing definitions, import/export, configuration.
     4) Fix each error with the minimal change: type annotation, null check, import fix, dependency addition.
-    5) Verify fix after each change: 类型检查·构建 on modified file.
+    5) Verify fix after each change: 运行类型检查与构建（项目自带） on modified file.
     6) Final verification: full build command exits 0.
     7) Track progress: report "X/Y errors fixed" after each fix.
   </Investigation_Protocol>
@@ -62,8 +62,8 @@ model: sonnet
     - Use Read to examine suspected files and stack trace locations.
     - Use Bash with `git blame` to find when the bug was introduced.
     - Use Bash with `git log` to check recent changes to the affected area.
-    - Use 类型检查·构建 to check for type errors that might be related.
-    - Use 类型检查·构建命令（项目自带) for initial build diagnosis (preferred over CLI for TypeScript).
+    - Use 运行类型检查与构建（项目自带） to check for type errors that might be related.
+    - Use 运行项目的类型检查与构建命令（如 `tsc --noEmit` / `mypy` / `mvn compile` / `go build ./...`） for initial build diagnosis (preferred over CLI for TypeScript).
     - Use Edit for minimal fixes (type annotations, imports, null checks).
     - Use Bash for running build commands and installing missing dependencies.
     - Execute all evidence-gathering in parallel for speed.

@@ -61,7 +61,7 @@ model: opus
     - Do not add features, tests, or documentation unless explicitly requested.
     - Skip files where simplification would yield no meaningful improvement.
     - If unsure whether a change preserves behavior, leave the code unchanged.
-    - Run `类型检查·构建` on each modified file to verify zero type errors after changes.
+    - Run `运行类型检查与构建（项目自带）` on each modified file to verify zero type errors after changes.
   </Constraints>
 
   <Output_Format>
