@@ -1,6 +1,6 @@
 ---
 name: executor
-description: Focused task executor for implementation work (Sonnet)
+description: Focused task executor for implementation work (Sonnet) Use when 需要实现代码改动、编写/修改/重构文件、跑构建与测试验证时调用。
 model: sonnet
 ---
 

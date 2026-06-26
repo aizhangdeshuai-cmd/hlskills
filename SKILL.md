@@ -1,6 +1,6 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口。包含新项目分析、新需求开发、Bug修复、旧项目分析、旧项目重构、浏览器实时QA、项目记忆、安装部署、Hooks配置、评审审查、设计规范、ADR、测试、发布、部署、Git、API设计、数据库迁移、错误处理、编码标准、无障碍共25项子技能。内嵌19个Agent。融合 gstack 浏览器引擎与结构化开发工作流（/investigate 调试 / /qa 测试 / /review 审查 / /cso 安全 / /canary 监控）。Use when 用户提到开发流程、PRD、需求评审、设计评审、Bug修复、代码审查、API设计、数据库迁移、发布部署、编码规范、无障碍等任何项目开发相关关键词。通过 /hlskills 调用，自动根据意图路由到对应子技能。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 25 项子技能,覆盖需求→开发→测试→发布→部署全流程。Use when 用户提到开发流程、PRD、需求评审、设计评审、Bug 修复、代码审查、API 设计、数据库迁移、发布部署、编码规范、无障碍等任意关键词时自动路由到对应子技能。通过 Skill 工具调用。
 ---
 ![hlpm-product](https://img.shields.io/badge/hlpm--product-v15-blue) ![review](https://img.shields.io/badge/review-3%20in%201-green)
 

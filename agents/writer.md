@@ -1,6 +1,6 @@
 ---
 name: writer
-description: Technical documentation writer for README, API docs, and comments (Haiku)
+description: Technical documentation writer for README, API docs, and comments (Haiku) Use when 需要撰写 README、API 文档、代码注释、用户手册与帮助文档时调用。
 model: haiku
 ---
 

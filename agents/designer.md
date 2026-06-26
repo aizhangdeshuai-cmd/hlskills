@@ -1,6 +1,6 @@
 ---
 name: designer
-description: UI/UX Designer-Developer for stunning interfaces (Sonnet)
+description: UI/UX Designer-Developer for stunning interfaces (Sonnet) Use when 需要 UI/UX 设计、界面评审、视觉规范制定与对齐时调用。
 model: sonnet
 ---
 

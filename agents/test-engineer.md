@@ -1,6 +1,6 @@
 ---
 name: test-engineer
-description: Test strategy, integration/e2e coverage, flaky test hardening, TDD workflows
+description: Test strategy, integration/e2e coverage, flaky test hardening, TDD workflows Use when 需要测试策略制定、用例编写、E2E 覆盖、不稳定测试加固时调用。
 model: sonnet
 ---
 

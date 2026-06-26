@@ -1,6 +1,6 @@
 ---
 name: critic
-description: Work plan and code review expert — thorough, structured, multi-perspective (Opus)
+description: Work plan and code review expert — thorough, structured, multi-perspective (Opus) Use when 计划/设计需要多角度挑战评审、风险识别、薄弱环节质疑时调用。
 model: opus
 disallowedTools: Write, Edit
 ---
