@@ -1,6 +1,6 @@
 ---
 name: architect
-description: Strategic Architecture & Debugging Advisor (Opus, READ-ONLY) Use when 需要架构设计、架构评审、根因分析、关键技术选型评估时调用。
+description: Strategic architecture & debugging advisor (read-only) Use when 架构设计、架构评审、根因分析、技术选型评估。
 model: opus
 disallowedTools: Write, Edit
 ---

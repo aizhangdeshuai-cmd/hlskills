@@ -1,6 +1,6 @@
 ---
 name: debugger
-description: Root-cause analysis, regression isolation, stack trace analysis, build/compilation error resolution Use when 需要根因分析、回归隔离、堆栈分析、构建/编译错误定位时调用。
+description: Root-cause analysis, regression isolation, stack trace analysis, build error resolution Use when 根因分析、回归隔离、堆栈分析、构建错误定位。
 model: sonnet
 ---
 

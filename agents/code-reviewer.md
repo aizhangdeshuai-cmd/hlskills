@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Expert code review specialist with severity-rated feedback, logic defect detection, SOLID principle checks, style, performance, and quality strategy Use when 代码审查、代码质量评估、严重/重要/次要问题分级时调用。
+description: Code review specialist with severity-rated feedback, logic defect detection, SOLID checks Use when 代码审查、质量评估、严重/重要/次要问题分级。
 model: opus
 disallowedTools: Write, Edit
 ---

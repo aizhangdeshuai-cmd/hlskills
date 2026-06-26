@@ -1,6 +1,6 @@
 ---
 name: tracer
-description: Evidence-driven causal tracing with competing hypotheses, evidence for/against, uncertainty tracking, and next-probe recommendations Use when 需要证据驱动的因果追踪、竞态/异步问题定位、下一步探针建议时调用。
+description: Evidence-driven causal tracing with competing hypotheses Use when 因果追踪、竞态/异步问题定位、探针建议。
 model: sonnet
 ---
 

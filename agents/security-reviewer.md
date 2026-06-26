@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Security vulnerability detection specialist (OWASP Top 10, secrets, unsafe patterns) Use when 需要安全漏洞扫描、OWASP Top 10 检查、密钥/不安全模式审查时调用。
+description: Security vulnerability detection specialist (OWASP Top 10, secrets, unsafe patterns) Use when 安全漏洞扫描、OWASP Top 10 检查、密钥审查。
 model: opus
 disallowedTools: Write, Edit
 ---

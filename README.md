@@ -25,7 +25,7 @@
 | 设计/审查/无障碍 | `hldesign` / `hlreview` / `hla11y` | — |
 | 测试/发布/部署 | `hltest` / `hlrelease` / `hldeploy` | — |
 | Git/API/DB/错误/编码 | `hlgit` / `hlapi` / `hldb` / `hlerror` / `hlcode` | — |
-| 基础设施 | `hlsetup` / `hlhooks` / `hlPermission` / `hlmemory` | — |
+| 基础设施 | `hlsetup` / `hlhooks` / `hl-permission` / `hlmemory` | — |
 | 浏览器实时 QA | `hlbrowse` | `/hlbrowse` (70+ 命令) |
 | 架构决策记录 | `hladr` | — |
 
@@ -52,7 +52,7 @@
 
 ### Claude Code(完整支持)
 
-支持全部能力：25 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、`effort` 等原生 frontmatter 字段) + slash 命令(`/hlpm` 等通过 `Skill` 工具或路由触发) + 可选外部技能(`videodb` / `market-research`)调用。
+支持全部能力：25 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、role-only 行为约束写入 agent 正文) + Skill 工具调用(如 `Skill hlpm`) + 可选外部技能(`videodb` / `market-research`)调用。
 
 ### Codex CLI(降级支持)
 
@@ -79,6 +79,21 @@ cp -r hlskills ~/.claude/skills/
 ```
 
 安装后通过 `Skill hlskills` 调用主入口,或在对话中提"开发流程 / PRD / Bug 修复"等关键词自动路由到对应子技能。各 role agent 位于 `hlskills/agents/`,Claude Code 会按 `disallowedTools` / `model` frontmatter 强制执行工具隔离与模型分级。
+
+**调用语法示例**:
+
+```text
+# 加载主入口(SKILL.md 的 description 触发自动路由)
+Skill hlskills
+
+# 直接调用某个子技能(Skill 工具传 args)
+Skill hlpm "为登录功能启动 28 步流程"
+
+# 子技能内部按 frontmatter 描述自动派发 role agent(无需你手动调)
+# 例如 analyst (Opus, 只读) / executor (Sonnet, 可改) / verifier (Sonnet) 等
+```
+
+> 注意:本文档表格中的 `/hlpm` / `/hlpm-product` 等写法是**子技能名称简写**,实际调用使用 Claude Code 的 `Skill` 工具(如 `Skill hlpm`)而非终端 `/` 斜杠命令。Codex CLI / Cursor 无此入口,改用各自平台的常规方式触发(详见各平台章节)。
 
 ### Codex CLI
 

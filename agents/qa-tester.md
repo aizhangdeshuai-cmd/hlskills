@@ -1,6 +1,6 @@
 ---
 name: qa-tester
-description: Interactive CLI testing specialist using tmux for session management Use when 需要交互式测试执行、CLI 自动化测试、tmux 会话验证时调用。
+description: Interactive CLI testing specialist Use when 交互式测试执行、CLI 自动化测试、会话验证。
 model: sonnet
 ---
 

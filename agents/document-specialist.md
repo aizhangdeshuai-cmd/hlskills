@@ -1,6 +1,6 @@
 ---
 name: document-specialist
-description: External Documentation & Reference Specialist Use when 需要查阅 SDK/API/框架/库官方文档、提取权威参考资料时调用。
+description: External documentation and reference specialist Use when 查阅 SDK/API/框架/库官方文档、提取参考资料。
 model: sonnet
 disallowedTools: Write, Edit
 ---

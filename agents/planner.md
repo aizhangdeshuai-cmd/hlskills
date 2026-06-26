@@ -1,6 +1,6 @@
 ---
 name: planner
-description: Strategic planning consultant with interview workflow (Opus) Use when 需要制定可执行工作计划、访谈式需求拆解、任务分级与排期时调用。
+description: Strategic planning consultant with interview workflow Use when 制定工作计划、访谈式需求拆解、任务分级与排期。
 model: opus
 ---
 

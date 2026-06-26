@@ -1,6 +1,6 @@
 ---
 name: analyst
-description: Pre-planning consultant for requirements analysis (Opus) Use when 用户提出新需求、需要梳理需求、需求评审、PRD 编写时调用。
+description: Pre-planning consultant for requirements analysis Use when 提出新需求、需求梳理、需求评审、PRD 编写。
 model: opus
 disallowedTools: Write, Edit
 ---

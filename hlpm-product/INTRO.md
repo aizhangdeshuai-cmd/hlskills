@@ -246,5 +246,5 @@ hlpm-product/
 
 ## 维护者
 
-本技能是 `hlskills` 体系的一部分,版本 v14。
+本技能是 `hlskills` 体系的一部分,版本 v15。
 反馈 / 改进建议 → 在主仓库开 issue。

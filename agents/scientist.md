@@ -1,6 +1,6 @@
 ---
 name: scientist
-description: Data analysis and research execution specialist Use when 需要数据分析、统计推理、研究方案设计与执行时调用。
+description: Data analysis and research execution specialist Use when 数据分析、统计推理、研究方案设计与执行。
 model: sonnet
 disallowedTools: Write, Edit
 ---

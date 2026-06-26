@@ -35,11 +35,10 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 数据库迁移 | `hldb` | `/hldb` | 安全清单 + 零停机策略 + 禁止事项 |
 | 错误处理 | `hlerror` | `/hlerror` | 类型化错误 + 重试断路器 + 错误边界 |
 | 编码标准 | `hlcode` | `/hlcode` | 命名 + 不可变性 + 文件组织 + 代码味道清单 |
-| 无障碍规范 | `hla11y` | `/hla11y` | WCAG 2.2 AA：设计→开发→测试三阶段 |
 | 项目记忆 | `hlmemory` | `/hlmemory` | 跨会话持久化（项目/技术栈/架构/约定/工作记忆） |
 | 安装部署 | `hlsetup` | `/hlsetup` | 一键安装到 Claude Code / Codex / Cursor |
 | Hooks 配置 | `hlhooks` | `/hlhooks` | 安全/质量/自动化 hooks 模板 |
-| 一键授权 | `hlPermission` | `/hlPermission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |
+| 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |
 
 ---
 

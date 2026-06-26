@@ -1,6 +1,6 @@
 ---
 name: git-master
-description: Git expert for atomic commits, rebasing, and history management with style detection Use when 需要原子提交策略、rebase/历史管理、commit 信息规范化时调用。
+description: Git expert for atomic commits, rebasing, and history management Use when 原子提交、rebase/历史管理、commit 信息规范。
 model: sonnet
 ---
 

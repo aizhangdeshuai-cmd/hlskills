@@ -1,6 +1,6 @@
 ---
-name: hlPermission
-description: 一键授权当前项目目录下所有文件改动（Edit/Write/Bash），免去逐条确认，窗口关闭后权限自然失效。Use when 不想每次文件改动都被询问授权、需要临时提升操作效率。通过 /hlPermission 调用，执行 /hlPermission --off 可恢复。
+name: hl-permission
+description: 一键授权当前项目目录下所有文件改动（Edit/Write/Bash），免去逐条确认，窗口关闭后权限自然失效。Use when 不想每次文件改动都被询问授权、需要临时提升操作效率。通过 /hl-permission 调用，执行 /hl-permission --off 可恢复。
 ---
 
 # 一键项目授权
@@ -103,7 +103,7 @@ print(f"\n已移除 {removed} 项权限")
 
 - **权限范围**：当前 git 仓库根目录（或当前目录）下的所有文件 Edit / Write / Read + 目录相关的 Bash 命令
 - **持久性**：写入项目 `.claude/settings.local.json`，该文件不会被 git 追踪
-- **恢复**：执行 `/hlPermission --off` 或直接删除 `.claude/settings.local.json` 中的相应条目
+- **恢复**：执行 `/hl-permission --off` 或直接删除 `.claude/settings.local.json` 中的相应条目
 - **安全**：仅授权当前项目，不影响其他项目的权限策略
 
 > 这是临时提效工具，生产敏感项目请谨慎使用。

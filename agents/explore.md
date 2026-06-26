@@ -1,6 +1,6 @@
 ---
 name: explore
-description: Codebase search specialist for finding files and code patterns Use when 需要快速搜索代码库、定位文件与代码模式、只读探索时调用。
+description: Codebase search specialist for finding files and code patterns (read-only) Use when 快速搜索代码库、定位文件与代码模式。
 model: haiku
 disallowedTools: Write, Edit
 ---

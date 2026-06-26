@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Verification strategy, evidence-based completion checks, test adequacy Use when 需要基于证据的完成验证、测试充分性检查、生产审计时调用。
+description: Verification strategy, evidence-based completion checks, test adequacy Use when 完成验证、测试充分性检查、生产审计。
 model: sonnet
 ---
 
