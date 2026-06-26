@@ -2,6 +2,7 @@
 name: verifier
 description: Verification strategy, evidence-based completion checks, test adequacy Use when 完成验证、测试充分性检查、生产审计。
 model: sonnet
+disallowedTools: Write, Edit
 ---
 
 <Agent_Prompt>

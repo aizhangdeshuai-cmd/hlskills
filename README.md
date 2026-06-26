@@ -2,6 +2,22 @@
 
 > HL 项目开发技能合集 — 25 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
 
+## ⚠️ 能力边界声明(请先读)
+
+`hlskills` **本质是一份写得扎实的开发工作流 SOP 手册(以 Markdown 文本形式存在),而不是一套带 hook / runtime / 编排器的运行时**。了解这一点对正确使用本库至关重要:
+
+- ✅ **流程纪律是文本**:28/23/15/14 步流程、"硬性关卡"、"三项强同步"、"角色边界铁律"——这些都是 Markdown 文档,**Claude Code 不会机械地强制执行**。它们靠 Agent 加载后**自觉遵守**。
+- ✅ **角色工具隔离靠 frontmatter 字段**:只读 agent 的 `disallowedTools: Write, Edit` 字段是 Claude Code 原生支持的,会被 harness 强制执行——这是仓库**真实生效**的工具隔离。
+- ❌ **"会签""门禁""阶段门禁"等是文档语言**:仓库没有 hook / 状态机 / 编排器强制 Agent 走完某一步才能进入下一步。"5 角色会签"是 5 个 Agent 角色**在同一个 LLM 会话里被 prompt 提示**(你看到的"5 方评审意见"实际是同一个 LLM 在扮演)。
+- ❌ **代码覆盖率审计靠一致性矩阵**:靠人工对照 `docs/consistency-matrix.md` 第 5 矩阵逐行核对实现状态(已在前次 v15 修复 grep 正则审计方案)。
+- ⚠️ **hooks 模板需自测**:`hlhooks/SKILL.md` 提供的 hook 模板已对齐 Claude Code 真实协议,但启用后请按模板"验证"段实测一次,确认真的生效。
+
+**对你的实际影响**:
+- 你能让 Agent **照着文档一步步做**,但 Agent 不会因为漏一步就"无法进入下一步"
+- 你能用 `hl-permission` **真实放宽**项目目录权限,这是唯一操作 Claude Code 真实 API 的子技能
+- 你的"角色隔离"在只读类 agent(analyst/architect 等)是**真生效**,在写类 agent(executor/designer 等)**靠自觉**
+- 多角色协作(`hlpm-product` + `hlpm-dev`)适合流程引导,**不适合把多 Agent 协作当流水线调度器**
+
 ## 简介
 
 `hlskills` 是面向 AI 编码 Agent(如 Claude Code / Codex / Cursor)的**结构化开发工作流技能库**,把"从需求到上线"的完整流程拆解为可执行的子技能。每个子技能都按"阶段 + 评审 + 产出物"的方式组织,适合单人小团队或多角色协作场景。

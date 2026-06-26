@@ -50,7 +50,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 #### 情况 C: 有"未开发"的历史版本（阻塞点）
 - 历史版本目录中**没有** `docs/vN/.dev-completed` 标记文件
 - 即"产品已交付但开发段未接手"
-- **必须用 `request_user_input` 询问用户**：
+- **必须用 `AskUserQuestion` 询问用户**：
 
   ```
   问题：检测到以下未开发版本，请选择处理方式：

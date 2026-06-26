@@ -35,3 +35,9 @@ venv/
 
 # OMC 运行时状态(不应入库)
 .omc/
+
+# hlpm-product 流程标记文件(空文件)
+# .dev-completed 可入库(标志版本已交付,演示包 docs/v1/.dev-completed 即此例)
+# .dev-rejected / .product-archived 是拒收/归档状态,新建时不应入库
+docs/*/.dev-rejected
+docs/*/.product-archived
