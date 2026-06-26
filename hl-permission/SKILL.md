@@ -7,6 +7,25 @@ description: 一键授权当前项目目录下所有文件改动（Edit/Write/Ba
 
 > 属于 `hlskills` 技能系统。向当前项目目录添加权限白名单，免去逐条操作确认。
 
+> ## ⚠️ 安全警告
+>
+> **`hl-permission` 等效于 Claude Code 项目级的 `--dangerously-skip-permissions`**。启用后,Agent 在你整个项目里**任意操作不再询问**:
+> - 可删除任意文件(包括 `git rm`/`rm`/`rm -rf`)
+> - 可改写任意文件(包括 `.env` / 凭据 / 配置文件)
+> - 可推送任意 commit / tag(包括 force push 到 main)
+> - 可执行任意 Bash 命令(包括 `curl | bash`、`sudo`、`dd` 等)
+>
+> **风险场景**:
+> - Agent 被 prompt injection(用户上传的截图/PDF 含恶意指令):此时 Agent 可能破坏仓库或泄露数据
+> - 多人协作项目:同事 push 的代码若引入恶意逻辑,后续 Agent 行为不可控
+> - CI / 生产环境脚本:Agent 可能改写部署配置导致线上事故
+>
+> **强烈建议**:
+> 1. **配合 `hlhooks/SKILL.md` 的 hook 模板一起启用**(危险命令拦截 + 敏感文件保护 + force push 拦截)
+> 2. **仅在临时任务中使用**,完成即 `--off`
+> 3. **生产敏感项目**(凭据 / 客户数据 / 公开仓库)请**不要使用**
+> 4. **多人协作项目**请改为**单步手动确认**,不要一键放开
+
 ---
 
 ## 执行
