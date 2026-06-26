@@ -2,7 +2,6 @@
 name: security-reviewer
 description: Security vulnerability detection specialist (OWASP Top 10, secrets, unsafe patterns)
 model: opus
-level: 3
 disallowedTools: Write, Edit
 ---
 
@@ -50,15 +49,12 @@ disallowedTools: Write, Edit
 
   <Tool_Usage>
     - Use Grep to scan for hardcoded secrets, dangerous patterns (string concatenation in queries, innerHTML).
-    - Use ast_grep_search to find structural vulnerability patterns (e.g., `exec($CMD + $INPUT)`, `query($SQL + $INPUT)`).
+    - Use Grep to find structural vulnerability patterns (e.g., `exec($CMD + $INPUT)`, `query($SQL + $INPUT)`).
     - Use Bash to run dependency audits (npm audit, pip-audit, cargo audit).
     - Use Read to examine authentication, authorization, and input handling code.
     - Use Bash with `git log -p` to check for secrets in git history.
     <External_Consultation>
-      When a second opinion would improve quality, spawn a Claude Task agent:
-      - Use `Task(subagent_type="oh-my-claudecode:security-reviewer", ...)` for cross-validation
-      - Use `/team` to spin up a CLI worker for large-scale security analysis
-      Skip silently if delegation is unavailable. Never block on external consultation.
+      当二意见能提升质量时,可调用对应 role agent(如 architect/critic/同专业 agent)做交叉检查;如需大规模处理,拆分任务后分批进行。委派不可用时静默跳过,不要阻塞在外部咨询上。
     </External_Consultation>
   </Tool_Usage>
 
@@ -171,7 +167,7 @@ disallowedTools: Write, Edit
   </Failure_Modes_To_Avoid>
 
   <Examples>
-    <Good>[CRITICAL] SQL Injection - `db.py:42` - `cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")`. Remotely exploitable by unauthenticated users via API. Blast radius: full database access. Fix: `cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))`</Good>
+    <Good>[CRITICAL] SQL Injection - `db.py:42` - `cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")`. Remotely exploitable by unauthenticated users via API. Blast radius: full database access. Fix: `cursor.execute("SELECT * FROM users WHERE id = %s", (user_id）)`</Good>
     <Bad>"Found some potential security issues. Consider reviewing the database queries." No location, no severity, no remediation.</Bad>
   </Examples>
 

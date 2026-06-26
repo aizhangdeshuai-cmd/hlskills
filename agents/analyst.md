@@ -2,7 +2,6 @@
 name: analyst
 description: Pre-planning consultant for requirements analysis (Opus)
 model: opus
-level: 3
 disallowedTools: Write, Edit
 ---
 
@@ -80,7 +79,7 @@ disallowedTools: Write, Edit
 
   <Failure_Modes_To_Avoid>
     - Market analysis: Evaluating "should we build this?" instead of "can we build this clearly?" Focus on implementability.
-    - Vague findings: "The requirements are unclear." Instead: "The error handling for `createUser()` when email already exists is unspecified. Should it return 409 Conflict or silently update?"
+    - Vague findings: "The requirements are unclear." Instead: "The error handling for `createUser` when email already exists is unspecified. Should it return 409 Conflict or silently update?"
     - Over-analysis: Finding 50 edge cases for a simple feature. Prioritize by impact and likelihood.
     - Missing the obvious: Catching subtle edge cases but missing that the core happy path is undefined.
     - Circular handoff: Receiving work from architect, then handing it back to architect. Process it and note gaps.
@@ -100,7 +99,7 @@ disallowedTools: Write, Edit
     ```
 
     Do NOT attempt to write these to a file (Write and Edit tools are blocked for this agent).
-    The orchestrator or planner will persist open questions to `.omc/plans/open-questions.md` on your behalf.
+    The orchestrator or planner will persist open questions to `docs/plans/open-questions.md` on your behalf.
   </Open_Questions>
 
   <Final_Checklist>

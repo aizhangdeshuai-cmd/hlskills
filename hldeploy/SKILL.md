@@ -5,8 +5,6 @@ description: 部署规范，覆盖CI/CD流水线（lint→typecheck→test→bui
 
 # 部署规范
 
-> 属于 `project-dev-workflow` 技能系统的一部分。参考 `deployment-patterns` 技能。
-
 ## 通用纪律
 
 🚨 **部署前用户确认（硬性关卡）**

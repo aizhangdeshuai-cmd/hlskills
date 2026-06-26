@@ -1,6 +1,6 @@
 ---
 name: hlbrowse
-description: 浏览器实时交互QA技能，完整集成 gstack v1.44 浏览器引擎提供70+浏览器命令（导航/交互/快照/截图/视觉对比/Cookie导入）。支持交互式QA和仅报告QA两种模式。Use when 需要在浏览器中实时探索页面、做交互式QA测试、截图对比、Cookie导入。通过 /hlbrowse 调用。
+description: 浏览器实时交互QA技能，完整集成 gstack 浏览器引擎提供70+浏览器命令（导航/交互/快照/截图/视觉对比/Cookie导入）。支持交互式QA和仅报告QA两种模式。Use when 需要在浏览器中实时探索页面、做交互式QA测试、截图对比、Cookie导入。通过 /hlbrowse 调用。
 ---
 
 # 浏览器实时交互 QA

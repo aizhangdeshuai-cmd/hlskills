@@ -5,8 +5,6 @@ description: Git规范，覆盖Conventional Commits格式（feat/fix/docs/refact
 
 # Git 规范
 
-> 属于 `project-dev-workflow` 技能系统的一部分。完整规范见 `git-workflow` 技能。
-
 ---
 
 ## 提交信息格式（Conventional Commits）

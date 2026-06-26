@@ -1,11 +1,11 @@
 ---
 name: hlpm-product-path-conventions
-description: 交付文档目录规范中央文档（v12 新增版本管理）。定义 15 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出 8 项交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。被 SKILL.md / hlpm-product / hlpm-dev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
+description: 交付文档目录规范中央文档（版本管理）。定义 15 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出 8 项交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。被 SKILL.md / hlpm-product / hlpm-dev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
 ---
 
 # 交付文档完整目录规范
 
-> 属于 `hlskills` 技能系统的**中央规范文档**（v8 新增）。
+> 属于 `hlskills` 技能系统的**中央规范文档**。
 > 被以下 3 个文件共同引用：
 > - 主入口 `SKILL.md`（通用规则：文件输出路径）
 > - `hlpm-product/SKILL.md`（产品段 8 项交付物）
@@ -15,7 +15,7 @@ description: 交付文档目录规范中央文档（v12 新增版本管理）。
 
 ---
 
-## 零、版本目录管理（v12 新增，核心）
+## 零、版本目录管理(核心）
 
 ### 0.1 核心规则
 
@@ -82,7 +82,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 ```
 {项目根目录}/
 ├── docs/
-│   ├── v1/                                 # 版本 1（v12 新增）
+│   ├── v1/                                 # 版本 1
 │   │   ├── prd.md
 │   │   ├── test-cases.md
 │   │   ├── acceptance-criteria.md
@@ -93,9 +93,9 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │   │   │   └── *.html
 │   │   ├── analysis/
 │   │   │   └── competitive-analysis.md
-│   │   ├── .dev-completed                  # 标记文件（v12 新增,空文件）
-│   │   ├── .dev-rejected                   # 标记文件（v12 新增,空文件）
-│   │   └── .product-archived               # 标记文件（v12 新增,空文件）
+│   │   ├── .dev-completed                  # 标记文件(空文件）
+│   │   ├── .dev-rejected                   # 标记文件(空文件）
+│   │   └── .product-archived               # 标记文件(空文件）
 │   ├── v2/                                 # 版本 2（独立）
 │   │   └── ... （同 v1 结构）
 │   ├── design/                             # 全局设计规范（与版本无关）

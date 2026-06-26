@@ -26,7 +26,7 @@ mkdir -p "$_ROOT/.claude"
 ```python
 import json, os, sys
 
-root = os.environ.get('PROJECT_ROOT', os.getcwd())
+root = os.environ.get('PROJECT_ROOT', os.getcwd)
 
 settings_path = os.path.join(root, '.claude', 'settings.local.json')
 

@@ -5,8 +5,6 @@ description: 编码标准规范，覆盖命名规范（camelCase/PascalCase/UPPE
 
 # 编码标准
 
-> 属于 `project-dev-workflow` 技能系统的一部分。完整规范见 `coding-standards` 技能。
-
 ---
 
 ## 命名与可读性

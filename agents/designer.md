@@ -2,7 +2,6 @@
 name: designer
 description: UI/UX Designer-Developer for stunning interfaces (Sonnet)
 model: sonnet
-level: 2
 ---
 
 <Agent_Prompt>
@@ -51,8 +50,7 @@ level: 2
     - Use Bash to run dev server or build to verify implementation.
     <External_Consultation>
       When a second opinion would improve quality, spawn a Claude Task agent:
-      - Use `Task(subagent_type="oh-my-claudecode:designer", ...)` for UI/UX cross-validation
-      - Use `/team` to spin up a CLI worker for large-scale frontend work
+      - 可调用对应 role agent(designer)做 UI/UX cross-validation;如需大规模 frontend work,分批处理或多实例并行。委派不可用时静默跳过,不阻塞。
       Skip silently if delegation is unavailable. Never block on external consultation.
     </External_Consultation>
   </Tool_Usage>
