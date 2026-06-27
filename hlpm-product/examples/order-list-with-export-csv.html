@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<!--
+  hlpm-product 设计稿示例: 订单列表页 + 导出 CSV 按钮
+  演示 "5 区块扩展" 输出结构 (6a.2 选 "高保真 + 逻辑说明 demo" 档):
+    区块 1: 原页面代码 (diff 基线)
+    区块 2: diff 标注 (改动清单)
+    区块 3: 修改后完整页面 (高保真 + diff 标记)
+    区块 4: 逻辑说明交互层 (右侧抽屉 + 🔗 小图标)
+    区块 5: 逻辑说明数据 (data-prd / data-tc / data-state / data-matrix 原文片段)
+
+  本文件可双击在浏览器打开, 无需 build server.
+-->
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>订单列表 - 设计稿 v15 (含逻辑说明 demo)</title>
+
+  <!-- ========== 区块 5: 逻辑说明数据 (JSON 字面量) ========== -->
+  <script type="application/json" id="logic-data">
+{
+  "BR-015": {
+    "prd": "业务规则 #15: 列表页支持按当前筛选条件导出 CSV, 文件名格式 orders-{筛选}-{日期}.csv。空结果时也允许导出 (仅表头)。",
+    "tc": [
+      "TC-045: 验证当筛选条件为 '已支付' 时, 导出文件名包含 'orders-paid' 前缀 + 当天日期",
+      "TC-046: 验证当列表为空 (无订单) 时, 点击导出仍能下载 CSV, 文件仅含表头无数据行",
+      "TC-047: 验证导出列与列表列一致 (订单号/买家/金额/状态/时间), 顺序与列表列一致"
+    ],
+    "state": "订单状态机: 待支付 → 已支付 → 已完成 / 待支付 → 已取消。导出按钮在所有状态都可见, 但 '已取消' 状态时弹出确认 '已取消订单将不导出'",
+    "matrix": "业务规则覆盖矩阵 #15 / 状态机覆盖矩阵 #3 (待支付→已支付转换) / 测试用例矩阵 #045-047"
+  },
+  "BR-008": {
+    "prd": "业务规则 #8: 列表筛选条件包括订单状态(全部/待支付/已支付/已完成/已取消)、时间范围(近7天/近30天/全部)、金额区间。多个筛选条件 AND 组合。",
+    "tc": [
+      "TC-008-1: 选择状态='已支付' + 时间='近7天' 时, 列表只显示对应订单",
+      "TC-008-2: 同时选择三个筛选条件时, 按 AND 组合生效"
+    ],
+    "state": "筛选条件是查询参数, 与订单状态机本身无直接耦合",
+    "matrix": "业务规则覆盖矩阵 #8 / 权限覆盖矩阵无 (筛选功能对所有登录用户开放)"
+  },
+  "BR-022": {
+    "prd": "业务规则 #22: 订单详情页入口, 点击订单号跳转 /order/{id}。订单号显示为 16 位数字+字母组合, 单击复制到剪贴板。",
+    "tc": [
+      "TC-022-1: 点击订单号跳转正确 URL",
+      "TC-022-2: 单击订单号后剪贴板内容等于订单号文本"
+    ],
+    "state": "任何状态的订单号都可点击 (即使是已取消)",
+    "matrix": "业务规则覆盖矩阵 #22"
+  },
+  "BR-031": {
+    "prd": "业务规则 #31: 列表分页, 每页 20 条, 支持跳页/上下页/输入页码。URL 带 ?page=N 参数。",
+    "tc": [
+      "TC-031-1: 跳到第 3 页时 URL 变为 ?page=3",
+      "TC-031-2: 最后一页只有 1 条时, 下一页按钮 disabled"
+    ],
+    "state": "与状态机无关, 是查询参数",
+    "matrix": "业务规则覆盖矩阵 #31"
+  },
+  "BR-002": {
+    "prd": "业务规则 #2: 订单状态用 5 种颜色徽章展示 - 待支付(灰)/ 已支付(蓝)/ 已完成(绿)/ 已取消(红)/ 退款中(橙)。颜色与项目设计规范 §3.4 一致。",
+    "tc": [
+      "TC-002-1: 5 种状态分别显示对应颜色徽章",
+      "TC-002-2: 状态变更后徽章颜色实时更新"
+    ],
+    "state": "本元素不涉及状态机, 是状态的可视化呈现",
+    "matrix": "业务规则覆盖矩阵 #2 / 一致性矩阵第 4 节 (非功能 UI 实现策略)"
+  }
+}
+  </script>
+
+  <style>
+    /* ========== 设计稿基础样式 (高保真) ========== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f5f7fa;
+      color: #1f2329;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .page { max-width: 1200px; margin: 24px auto; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+    /* 区块 1 / 区块 3 共用样式 */
+    .page-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e6eb;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .page-header h1 { font-size: 18px; font-weight: 600; }
+    .page-toolbar { padding: 16px 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .page-table { width: 100%; border-collapse: collapse; }
+    .page-table th, .page-table td {
+      padding: 12px 16px; text-align: left; border-bottom: 1px solid #f0f1f3;
+    }
+    .page-table th { background: #fafbfc; font-weight: 500; color: #4e5969; font-size: 13px; }
+    .page-table td { color: #1f2329; }
+    .page-pagination {
+      padding: 16px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid #e5e6eb;
+    }
+    .page-pagination .page-info { color: #86909c; font-size: 13px; }
+
+    /* diff 标记样式 (区块 3 用) */
+    .diff-add { background: #e8f5e9; border-left: 3px solid #00b42a; padding-left: 13px; }
+    .diff-mod { background: #fff7e8; border-left: 3px solid #ff7d00; padding-left: 13px; }
+    .diff-del { background: #ffece8; border-left: 3px solid #f53f3f; padding-left: 13px; text-decoration: line-through; }
+    [data-diff-mode="baseline"] { padding: 24px; background: #fafbfc; }
+
+    /* 按钮 */
+    .btn {
+      padding: 6px 16px; border: 1px solid #dcdfe6; border-radius: 4px;
+      background: #fff; cursor: pointer; font-size: 14px; transition: all 0.2s;
+    }
+    .btn:hover { border-color: #165dff; color: #165dff; }
+    .btn-primary { background: #165dff; color: #fff; border-color: #165dff; }
+    .btn-primary:hover { background: #0e42d2; }
+
+    /* 筛选下拉 */
+    .filter-select {
+      padding: 6px 12px; border: 1px solid #dcdfe6; border-radius: 4px;
+      background: #fff; font-size: 14px; min-width: 120px;
+    }
+
+    /* 状态徽章 (5 种颜色, 与设计规范 §3.4 一致) */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+    .badge-gray { background: #f0f1f3; color: #4e5969; }
+    .badge-blue { background: #e8f3ff; color: #165dff; }
+    .badge-green { background: #e8f5e9; color: #00b42a; }
+    .badge-red { background: #ffece8; color: #f53f3f; }
+    .badge-orange { background: #fff4e8; color: #ff7d00; }
+
+    /* 订单号 - 可点击 */
+    .order-id { color: #165dff; cursor: pointer; font-family: ui-monospace, "SF Mono", monospace; }
+    .order-id:hover { text-decoration: underline; }
+
+    /* ========== 区块 4: 逻辑说明交互层 ========== */
+    .logic-badge {
+      display: inline-block;
+      width: 16px; height: 16px;
+      background: #165dff; color: #fff;
+      border-radius: 50%;
+      font-size: 11px; font-weight: 600;
+      text-align: center; line-height: 16px;
+      cursor: help;
+      margin-left: 4px;
+      vertical-align: super;
+      user-select: none;
+    }
+    .logic-badge:hover { background: #0e42d2; transform: scale(1.1); }
+
+    .logic-panel {
+      position: fixed; top: 0; right: 0;
+      width: 420px; height: 100vh;
+      background: #fff;
+      box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .logic-panel.open { transform: translateX(0); }
+    .logic-panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 16px; border-bottom: 1px solid #e5e6eb; margin-bottom: 16px;
+    }
+    .logic-panel-header h2 { font-size: 16px; font-weight: 600; }
+    .logic-panel-close {
+      background: none; border: none; font-size: 20px; cursor: pointer; color: #86909c;
+    }
+    .logic-panel h3 {
+      font-size: 13px; color: #4e5969;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-top: 20px; margin-bottom: 8px;
+    }
+    .logic-panel h3:first-of-type { margin-top: 0; }
+    .logic-panel .prd-block {
+      background: #f5f7fa; padding: 12px; border-radius: 4px;
+      font-size: 13px; line-height: 1.6;
+    }
+    .logic-panel .tc-list { list-style: none; }
+    .logic-panel .tc-list li {
+      padding: 8px 12px; background: #f5f7fa; border-radius: 4px;
+      margin-bottom: 6px; font-size: 13px;
+    }
+    .logic-panel .state-block, .logic-panel .matrix-block {
+      padding: 8px 12px; background: #f5f7fa; border-radius: 4px;
+      font-size: 13px;
+    }
+    .logic-panel-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 999;
+      display: none;
+    }
+    .logic-panel-overlay.open { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- 区块 1: 原页面代码 (diff 基线, 标注为 baseline)              -->
+<!-- ============================================================ -->
+<section data-section="block-1" style="padding: 24px; background: #fafbfc; border-bottom: 2px dashed #c9cdd4;">
+  <h2 style="color: #86909c; font-size: 14px; margin-bottom: 12px;">
+    区块 1 · 原页面代码 (diff 基线)
+  </h2>
+  <div class="page" data-diff-mode="baseline">
+    <div class="page-header">
+      <h1>订单列表</h1>
+      <div>
+        <!-- 原页面没有"导出 CSV"按钮 -->
+      </div>
+    </div>
+    <div class="page-toolbar">
+      <select class="filter-select">
+        <option>全部状态</option>
+        <option>待支付</option>
+        <option>已支付</option>
+        <option>已完成</option>
+        <option>已取消</option>
+      </select>
+      <select class="filter-select">
+        <option>全部时间</option>
+        <option>近 7 天</option>
+        <option>近 30 天</option>
+      </select>
+    </div>
+    <table class="page-table">
+      <thead>
+        <tr>
+          <th>订单号</th>
+          <th>买家</th>
+          <th>金额</th>
+          <th>状态</th>
+          <th>下单时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="order-id">ORD20250627001</span></td>
+          <td>张三</td>
+          <td>¥ 1,288.00</td>
+          <td><span class="badge badge-blue">已支付</span></td>
+          <td>2026-06-27 14:23</td>
+        </tr>
+        <!-- 其他 19 行类似, 原页面无任何额外元素 -->
+      </tbody>
+    </table>
+    <div class="page-pagination">
+      <span class="page-info">共 156 条, 第 1/8 页</span>
+      <div>
+        <button class="btn">上一页</button>
+        <button class="btn">下一页</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 区块 2: diff 标注 (本次改动清单)                             -->
+<!-- ============================================================ -->
+<section data-section="block-2" style="padding: 24px; background: #fff7e8; border-bottom: 2px dashed #c9cdd4;">
+  <h2 style="color: #86909c; font-size: 14px; margin-bottom: 12px;">
+    区块 2 · diff 标注 (改动清单)
+  </h2>
+  <ul style="padding-left: 20px; line-height: 1.8;">
+    <li>
+      🟢 <strong>新增</strong>:
+      <code>.page-header</code> 右上角
+      <strong>"导出 CSV"</strong> 按钮
+      <ul>
+        <li>原因: 业务方要求按当前筛选条件导出订单</li>
+        <li>规范引用: 现有按钮 4 态 (项目设计规范 §4.1)</li>
+        <li>逻辑关联: BR-015 (导出 CSV 业务规则) / TC-045~047 (3 个测试用例)</li>
+      </ul>
+    </li>
+    <li>
+      🟡 <strong>修改</strong>:
+      <code>.page-toolbar .filter-select</code> 文案 "全部状态" → "所有状态"
+      <ul>
+        <li>原因: 产品文案统一</li>
+        <li>规范引用: 无 (纯文案)</li>
+        <li>逻辑关联: BR-008 (筛选条件)</li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<!-- ============================================================ -->
+<!-- 区块 3: 修改后的完整页面 (高保真 + diff 标记)                 -->
+<!-- ============================================================ -->
+<section data-section="block-3" style="padding: 24px; background: #fff;">
+  <h2 style="color: #86909c; font-size: 14px; margin-bottom: 12px;">
+    区块 3 · 修改后完整页面 (高保真 + diff 标记)
+  </h2>
+
+  <div class="page" data-diff-mode="modified">
+    <div class="page-header">
+      <h1>订单列表</h1>
+      <div>
+        <!-- 🟢 新增: 导出 CSV 按钮 (区块 3 标记 diff-add, 区块 4 加 🔗) -->
+        <button class="btn btn-primary"
+                data-prd="BR-015"
+                data-state="待支付|已支付|已取消|已完成"
+                data-tc="TC-045,TC-046,TC-047"
+                data-matrix="业务规则#15|状态机#3|测试用例#045-047"
+                onclick="exportCSV()">
+          导出 CSV
+          <sup class="logic-badge" title="点击查看逻辑说明">?</sup>
+        </button>
+      </div>
+    </div>
+    <div class="page-toolbar">
+      <!-- 🟡 修改: "全部状态" → "所有状态" -->
+      <select class="filter-select"
+              data-prd="BR-008"
+              data-tc="TC-008-1,TC-008-2"
+              data-matrix="业务规则#8"
+              onchange="filterOrders()">
+        <option>所有状态</option>
+        <option>待支付</option>
+        <option>已支付</option>
+        <option>已完成</option>
+        <option>已取消</option>
+      </select>
+      <select class="filter-select">
+        <option>全部时间</option>
+        <option>近 7 天</option>
+        <option>近 30 天</option>
+      </select>
+    </div>
+    <table class="page-table">
+      <thead>
+        <tr>
+          <th>订单号</th>
+          <th>买家</th>
+          <th>金额</th>
+          <th>状态</th>
+          <th>下单时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="order-id"
+                  data-prd="BR-022"
+                  data-tc="TC-022-1,TC-022-2"
+                  data-matrix="业务规则#22"
+                  onclick="viewOrder('ORD20250627001')">
+              ORD20250627001
+              <sup class="logic-badge" title="点击查看逻辑说明">?</sup>
+            </span>
+          </td>
+          <td>张三</td>
+          <td>¥ 1,288.00</td>
+          <td>
+            <span class="badge badge-blue"
+                  data-prd="BR-002"
+                  data-matrix="业务规则#2|一致性矩阵第4节"
+                  onclick="filterByStatus('已支付')">
+              已支付
+              <sup class="logic-badge" title="点击查看逻辑说明">?</sup>
+            </span>
+          </td>
+          <td>2026-06-27 14:23</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="order-id"
+                  data-prd="BR-022"
+                  onclick="viewOrder('ORD20250627002')">
+              ORD20250627002
+            </span>
+          </td>
+          <td>李四</td>
+          <td>¥ 568.00</td>
+          <td><span class="badge badge-gray">待支付</span></td>
+          <td>2026-06-27 13:11</td>
+        </tr>
+        <tr>
+          <td>
+            <span class="order-id" onclick="viewOrder('ORD20250627003')">
+              ORD20250627003
+            </span>
+          </td>
+          <td>王五</td>
+          <td>¥ 2,899.00</td>
+          <td><span class="badge badge-green">已完成</span></td>
+          <td>2026-06-26 22:47</td>
+        </tr>
+      </table>
+    </table>
+    <div class="page-pagination"
+         data-prd="BR-031"
+         data-tc="TC-031-1,TC-031-2"
+         data-matrix="业务规则#31">
+      <span class="page-info">共 156 条, 第 1/8 页
+        <sup class="logic-badge" title="点击查看逻辑说明">?</sup>
+      </span>
+      <div>
+        <button class="btn">上一页</button>
+        <button class="btn">下一页</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 区块 4 + 5 联合: 逻辑说明交互层 + 抽屉 HTML 结构              -->
+<!-- ============================================================ -->
+<div class="logic-panel-overlay" id="logicOverlay" onclick="closeLogicPanel()"></div>
+<aside class="logic-panel" id="logicPanel" aria-label="逻辑说明抽屉">
+  <div class="logic-panel-header">
+    <h2>📋 逻辑说明</h2>
+    <button class="logic-panel-close" onclick="closeLogicPanel()" aria-label="关闭">×</button>
+  </div>
+  <div id="logicContent">
+    <p style="color: #86909c; text-align: center; padding: 40px 0;">
+      点击页面任意 <span class="logic-badge" style="position: static; vertical-align: middle;">?</span> 图标查看该元素的逻辑说明
+    </p>
+  </div>
+</aside>
+
+<!-- ============================================================ -->
+<!-- 区块 4: 逻辑说明交互层 (内嵌 JS, 无外部依赖)                 -->
+<!-- ============================================================ -->
+<script>
+(function() {
+  const data = JSON.parse(document.getElementById('logic-data').textContent);
+  const badges = document.querySelectorAll('.logic-badge');
+
+  badges.forEach(badge => {
+    badge.addEventListener('click', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      // 找挂载 data-* 属性的最近祖先 (可能是 button/span/div)
+      const host = this.closest('[data-prd],[data-tc],[data-state],[data-matrix]') || this.parentElement;
+      const prdId = host.dataset.prd;
+      const tcIds = (host.dataset.tc || '').split(',').filter(Boolean);
+      const state = host.dataset.state;
+      const matrix = host.dataset.matrix;
+
+      // 取主 PRD 数据 (可能有多个, 取第一个)
+      const mainEntry = prdId ? data[prdId.split(',')[0]] : null;
+
+      // 渲染抽屉内容
+      const content = document.getElementById('logicContent');
+      let html = '';
+
+      if (prdId) {
+        html += '<h3>📄 PRD 业务规则</h3>';
+        prdId.split(',').forEach(id => {
+          const entry = data[id.trim()];
+          if (entry) {
+            html += `<div class="prd-block"><strong>${id.trim()}</strong>: ${entry.prd}</div>`;
+          }
+        });
+      }
+
+      if (tcIds.length) {
+        html += '<h3>🧪 测试用例</h3><ul class="tc-list">';
+        tcIds.forEach(tcId => {
+          const tcIdClean = tcId.trim();
+          // 尝试从任何 entry.tc 里找匹配前缀
+          let found = null;
+          Object.values(data).forEach(entry => {
+            if (entry.tc) {
+              const match = entry.tc.find(t => t.startsWith(tcIdClean));
+              if (match) found = match;
+            }
+          });
+          if (found) {
+            html += `<li>${found}</li>`;
+          } else {
+            html += `<li>${tcIdClean} (用例原文未在设计稿中嵌入, 详见 docs/v1/test-cases.md)</li>`;
+          }
+        });
+        html += '</ul>';
+      }
+
+      if (state) {
+        html += `<h3>🔄 状态机</h3><div class="state-block">${state}</div>`;
+      }
+
+      if (matrix) {
+        html += `<h3>📊 一致性矩阵</h3><div class="matrix-block">${matrix}</div>`;
+      }
+
+      if (!html) {
+        html = '<p style="color: #86909c;">该元素未挂载任何逻辑说明属性</p>';
+      }
+
+      content.innerHTML = html;
+      openLogicPanel();
+    });
+  });
+
+  // 暴露给 onclick 用的全局函数
+  window.openLogicPanel = function() {
+    document.getElementById('logicPanel').classList.add('open');
+    document.getElementById('logicOverlay').classList.add('open');
+  };
+  window.closeLogicPanel = function() {
+    document.getElementById('logicPanel').classList.remove('open');
+    document.getElementById('logicOverlay').classList.remove('open');
+  };
+
+  // demo 用: 模拟业务行为 (实际项目里换成真实逻辑)
+  window.exportCSV = function() { alert('演示: 实际项目触发导出请求'); };
+  window.filterOrders = function() { alert('演示: 实际项目触发列表刷新'); };
+  window.viewOrder = function(id) { alert('演示: 跳转到 /order/' + id); };
+  window.filterByStatus = function(s) { alert('演示: 切换状态筛选为 ' + s); };
+})();
+</script>
+
+</body>
+</html>
