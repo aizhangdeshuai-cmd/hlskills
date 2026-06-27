@@ -1,6 +1,6 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 25 项子技能,覆盖需求→开发→测试→发布→部署全流程。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。通过 Skill 工具调用。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 26 项子技能(含 hlquickstart 快速上手),覆盖需求→开发→测试→发布→部署全流程。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart`。通过 Skill 工具调用。
 ---
 ![hlpm-product](https://img.shields.io/badge/hlpm--product-v15-blue) ![review](https://img.shields.io/badge/review-3%20in%201-green)
 
@@ -39,6 +39,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 安装部署 | `hlsetup` | `/hlsetup` | 一键安装到 Claude Code / Codex / Cursor |
 | Hooks 配置 | `hlhooks` | `/hlhooks` | 安全/质量/自动化 hooks 模板 |
 | 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |
+| **快速上手** | **`hlquickstart`** | **`/hlquickstart`** | **5 分钟演示 hlskills:看一眼 → mock bug 走 hlbug → mock 需求走 hlpm 前 7 步。第一次用必跑** |
 
 ---
 
