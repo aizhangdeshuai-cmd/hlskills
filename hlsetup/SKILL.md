@@ -138,7 +138,7 @@ echo "✅ hlskills 已卸载"
 ls ~/.claude/skills/hlskills/SKILL.md && echo "✅ 总入口就绪"
 
 # 确保至少核心技能可用
-for skill in hlpm hlbug hlnew hllegacy hlrefactor hltest; do
+for skill in hlpm hlbug hlpm hllegacy hlrefactor hltest; do
   [ -L ~/.claude/skills/$skill ] && echo "✅ $skill" || echo "❌ $skill"
 done
 
@@ -148,4 +148,4 @@ ls ~/.agents/skills/hlskills/agents/ | wc -l | xargs echo "Agent 数量:"
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm-product/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

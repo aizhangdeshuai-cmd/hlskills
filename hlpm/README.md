@@ -1,9 +1,9 @@
 ---
-name: hlpm-product-readme
-description: hlpm-product 技能使用说明(README)。面向"第一次使用本技能的产品经理"和"想了解流程的项目方"。聚焦"怎么用、用在哪、产出什么、怎么对接开发",不重复 SKILL.md 硬性规则。Use when 用户问"hlpm-product 怎么用"/"产品段流程是什么"/"交付什么给开发"。
+name: hlpm-readme
+description: hlpm 技能使用说明(README)。面向"第一次使用本技能的产品经理"和"想了解流程的项目方"。聚焦"怎么用、用在哪、产出什么、怎么对接开发",不重复 SKILL.md 硬性规则。Use when 用户问"hlpm 怎么用"/"产品段流程是什么"/"交付什么给开发"。
 ---
 
-# hlpm-product 使用说明
+# hlpm 使用说明
 
 > **多角色协作的产品段(从需求到交付物)**
 > 完整规范见 [`SKILL.md`](./SKILL.md),本 README 聚焦"怎么用"
@@ -12,24 +12,24 @@ description: hlpm-product 技能使用说明(README)。面向"第一次使用本
 
 ## 这是什么
 
-`hlpm-product` 是 hlskills 体系中**多角色协作(产品+开发)流程的"产品段"**。
+`hlpm` 是 hlskills 体系中**多角色协作(产品+开发)流程的"产品段"**。
 当你的团队是"产品经理 + 开发"两个角色分工时,用这个技能。
 
-**它做什么**:接收你的需求 → 输出 8 类交付物 → 交给 `hlpm-dev` 开发
-**它不做什么**:不改任何代码(改代码请用 `hlpm-dev`)
+**它做什么**:接收你的需求 → 输出 8 类交付物 → 交给 `hldev` 开发
+**它不做什么**:不改任何代码(改代码请用 `hldev`)
 
 ---
 
 ## 什么时候用
 
-✅ **适合用 hlpm-product**:
+✅ **适合用 hlpm**:
 - 你负责产品,开发同事负责代码
 - 需求从你这里发起,需要先评审再交接
 - 团队有"评审会签"机制
 
 ❌ **不适合**(改用其他技能):
-- 你一个人跑全流程 → 用 `hlpm` / `hlpmnew`
-- 你要直接改代码 → 用 `hlpm-dev`
+- 你一个人跑全流程 → 用 `hl-flow`
+- 你要直接改代码 → 用 `hldev`
 - 你要复盘/重构已有项目 → 用 `hllegacy` / `hlrefactor`
 
 ---
@@ -39,7 +39,7 @@ description: hlpm-product 技能使用说明(README)。面向"第一次使用本
 ### 第 1 步:启动技能
 
 ```
-/hlpm-product
+/hlpm
 ```
 
 或自然语言:`我有个新需求,启动产品段流程`
@@ -101,14 +101,14 @@ docs/v1/
 
 ### 第 5 步:通知开发接手
 
-把 `docs/v{ver}/` 整个目录路径告诉开发同事(或直接说"启动 hlpm-dev")。
+把 `docs/v{ver}/` 整个目录路径告诉开发同事(或直接说"启动 hldev")。
 
 **开发接手会做**:
 - 验证 14 项交付物齐全 (8 项产品段 + 6 项开发段补充)
 - 验证版本号一致(PRD v1 = 设计 v1 = 用例 v1)
 - 验证一致性矩阵全部 ✅
 - 验证自检报告签字方完整
-- **任一不合规 → 拒收 + 给你拒收原因**(详见 `hlpm-dev/handoff-rejection.md`)
+- **任一不合规 → 拒收 + 给你拒收原因**(详见 `hldev/handoff-rejection.md`)
 
 ---
 
@@ -128,7 +128,7 @@ docs/v1/
                               通知开发 ─┘
                                        │
                                        ↓
-                                  [hlpm-dev]
+                                  [hldev]
                                        │
                                        ↓
                                   代码实现
@@ -202,12 +202,12 @@ docs/v1/
 
 ### Q1:为什么我不能直接改代码?
 
-**A**:本技能是"产品段",职责是"定义做什么",不负责"怎么实现"。改代码是 `hlpm-dev` 的职责。这样分工的好处:
+**A**:本技能是"产品段",职责是"定义做什么",不负责"怎么实现"。改代码是 `hldev` 的职责。这样分工的好处:
 - 产品专注于业务规则
 - 开发专注于实现质量
 - 角色边界清晰,可拒收可追溯
 
-即使只是"改一行字段名",也建议走 `hlpm-dev`,因为:
+即使只是"改一行字段名",也建议走 `hldev`,因为:
 - dev 会跑测试,确保改动不破坏现有功能
 - dev 会做代码审查
 - dev 会在版本控制里留完整记录
@@ -238,7 +238,7 @@ docs/v1/
 3. 重走对应评审
 4. 重新打包交付
 
-**完整拒收流程**见 [`hlpm-dev/handoff-rejection.md`](../hlpm-dev/handoff-rejection.md)。
+**完整拒收流程**见 [`hldev/handoff-rejection.md`](../hldev/handoff-rejection.md)。
 
 ### Q5:可以同时跑多个需求吗?
 
@@ -258,16 +258,16 @@ docs/v1/
 
 如果没有规范,**先调用 `hllegacy` 第 11 步整理规范**,再启动产品段。
 
-### Q7:我应该用 hlpm-product 还是 hlpm?
+### Q7:我应该用 hlpm 还是 hlpm?
 
 | 场景 | 用哪个 |
 |------|-------|
-| 团队只有你一个人(产品+开发都你做) | `hlpm` / `hlpmnew` |
-| 团队有产品+开发分工 | `hlpm-product` + `hlpm-dev` |
-| 已有项目,要做小改动 | `hlpm-product` + `hlpm-dev`(轻量 + 集中评审) |
-| 全新项目 0→1 | `hlpm-product` + `hlpm-dev` 或 `hlpmnew` |
+| 团队只有你一个人(产品+开发都你做) | `hl-flow` |
+| 团队有产品+开发分工 | `hlpm` + `hldev` |
+| 已有项目,要做小改动 | `hlpm` + `hldev`(轻量 + 集中评审) |
+| 全新项目 0→1 | `hlpm` + `hldev` (产品段产 PRD/用例,再 hldev 接手) |
 
-**原 `hlpm` / `hlpmnew` 一字不改,新技能作为变体并存,按需选用**。
+**`hl-flow` (单人跑全流程) / `hlpm` (产品段多角色) / `hldev` (开发段多角色) 三件套, 按需选用**。
 
 ---
 
@@ -277,7 +277,7 @@ docs/v1/
 
 ```
 你: "我有个新需求:订单列表页加个'导出 CSV'按钮,触发下载当前筛选结果"
-AI: [启动 hlpm-product]
+AI: [启动 hlpm]
     Q1 规模: A 轻量
     Q2 设计: A 涉及(加按钮是 UI 变化)
     Q3 评审: B 集中评审
@@ -293,7 +293,7 @@ AI: [写测试用例: TC-001 验证按钮存在 + 触发下载]
 AI: [9a 集中评审:3 角色自审全通过]
 AI: [9.5 一致性终检:2 矩阵 ✅]
 AI: [输出 8 类文档到 docs/v1/]
-你: "启动 hlpm-dev"
+你: "启动 hldev"
 开发: [接手,加按钮,跑测试,创 .dev-completed 标记]
 ```
 
@@ -301,7 +301,7 @@ AI: [输出 8 类文档到 docs/v1/]
 
 ```
 你: "我们要重构整个订单系统,涉及订单/支付/物流 3 个模块,跨 5 个团队"
-AI: [启动 hlpm-product]
+AI: [启动 hlpm]
     Q1 规模: C 复杂
     Q2 设计: A 涉及
     Q3 评审: A 分阶段评审(强制,不可改)
@@ -327,8 +327,8 @@ AI: [输出 8 类文档到 docs/v1/(预计 1000+ 行)]
 | [`path-conventions.md`](./path-conventions.md) | 交付物路径中央规范 | 想了解"输出到哪" |
 | [`consistency-rules.md`](./consistency-rules.md) | 一致性矩阵模板 | 9.5 步骤生成矩阵时 |
 | [`handoff-package.md`](./handoff-package.md) | 交付物自检清单 | 11 步骤自检时 |
-| [`../hlpm-dev/SKILL.md`](../hlpm-dev/SKILL.md) | 开发段流程 | 交接后给开发看 |
-| [`../hlpm-dev/handoff-rejection.md`](../hlpm-dev/handoff-rejection.md) | 拒收模板 | 收到拒收时 |
+| [`../hldev/SKILL.md`](../hldev/SKILL.md) | 开发段流程 | 交接后给开发看 |
+| [`../hldev/handoff-rejection.md`](../hldev/handoff-rejection.md) | 拒收模板 | 收到拒收时 |
 
 ---
 

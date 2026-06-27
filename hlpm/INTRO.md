@@ -1,9 +1,9 @@
 ---
-name: hlpm-product-intro
-description: hlpm-product 技能说明(概览版)。给"第一次看这个技能"的人,5 分钟了解"它是什么、解决什么、核心机制、和其他技能的关系"。Use when 用户问"hlpm-product 是什么"/"介绍下这个技能"/"为什么需要这个技能"。
+name: hlpm-intro
+description: hlpm 技能说明(概览版)。给"第一次看这个技能"的人,5 分钟了解"它是什么、解决什么、核心机制、和其他技能的关系"。Use when 用户问"hlpm 是什么"/"介绍下这个技能"/"为什么需要这个技能"。
 ---
 
-# hlpm-product 技能说明(概览)
+# hlpm 技能说明(概览)
 
 > **5 分钟读懂这个技能**
 > 完整规范见 [`SKILL.md`](./SKILL.md),日常使用见 [`README.md`](./README.md),快速试用见 [`TRIAL.md`](./TRIAL.md)
@@ -12,7 +12,7 @@ description: hlpm-product 技能说明(概览版)。给"第一次看这个技能
 
 ## 一句话定义
 
-**hlpm-product** 是 hlskills 体系中的"产品段",负责把需求变成**可交接的开发物**,让 `hlpm-dev` 直接接手写代码。
+**hlpm** 是 hlskills 体系中的"产品段",负责把需求变成**可交接的开发物**,让 `hldev` 直接接手写代码。
 
 ---
 
@@ -46,7 +46,7 @@ description: hlpm-product 技能说明(概览版)。给"第一次看这个技能
 ### 用了这个技能后
 
 ```
-产品经理 (hlpm-product)                开发 (hlpm-dev)
+产品经理 (hlpm)                开发 (hldev)
    │                                   │
    │  启动产品段                        │
    │  3 步生成 8 类文档                 │
@@ -78,14 +78,14 @@ description: hlpm-product 技能说明(概览版)。给"第一次看这个技能
 ### 1. 角色边界铁律(防止越界)
 
 ```
-产品段 (hlpm-product)              开发段 (hlpm-dev)
+产品段 (hlpm)              开发段 (hldev)
 ─────────────────                 ─────────────────
 只产出文档                          只改代码
 PRD / 用例 / 设计稿 / 验收          src/ / 配置文件 / 部署
 不改任何源代码                     不产出业务文档
 ```
 
-**铁律**:产品段绝不修改 `.ts/.js/.py/.java/...` 等源代码。改代码是 `hlpm-dev` 的事。
+**铁律**:产品段绝不修改 `.ts/.js/.py/.java/...` 等源代码。改代码是 `hldev` 的事。
 
 ### 2. 23 步主流程(可裁剪)
 
@@ -132,14 +132,14 @@ PRD 业务规则 ──┐
 
 | 技能 | 关系 | 何时用 |
 |------|------|--------|
-| **`hlpm-dev`** | 配套(强) | 产品段交付后,开发段接手 |
-| `hlpm` / `hlpmnew` | 替代(弱) | 一个人跑全流程时用 |
+| **`hldev`** | 配套(强) | 产品段交付后,开发段接手 |
+| `hl-flow` | 替代(强) | 一个人跑全流程时用 |
 | `hllegacy` | 前置(弱) | 整理项目记忆 / 设计规范 |
 | `hldesign` | 引用 | 详细 UI/UX 设计规范参考 |
 | `hltest` | 后置(弱) | 详细测试规范参考 |
 | `hlreview` | 后置(弱) | 详细评审规范参考 |
 
-**核心配套**:`hlpm-product` + `hlpm-dev` = 完整产品+开发协作流程
+**核心配套**:`hlpm` + `hldev` = 完整产品+开发协作流程
 
 ---
 
@@ -155,10 +155,10 @@ PRD 业务规则 ──┐
 
 ### ❌ 不适用
 
-- **单人小团队**:只有你一个人,产品+开发都是你 → 用 `hlpm` / `hlpmnew`
-- **无评审机制**:团队不想要会签流程 → 用 `hlpm` 更轻
+- **单人小团队**:只有你一个人,产品+开发都是你 → 用 `hl-flow`
+- **无评审机制**:团队不想要会签流程 → 用 `hl-flow` 更轻
 - **临时小修复**:1 行 bug 修复 → 直接改代码即可,不需要产品段
-- **新项目 0→1**:要看具体情况,可能 `hlpmnew` 更合适
+- **新项目 0→1**:看需求复杂度,可能 `hl-flow` 28 步足够,也可能 `hlpm` + `hldev` 更合适
 
 ---
 
@@ -208,10 +208,10 @@ PRD 业务规则 ──┐
 
 ## 5 分钟看代码
 
-`hlpm-product` 的核心代码结构:
+`hlpm` 的核心代码结构:
 
 ```
-hlpm-product/
+hlpm/
 ├── SKILL.md                    # 完整规范(585 行,23 步详细规则)
 ├── README.md                   # 正式使用说明(351 行,日常 reference)
 ├── INTRO.md                    # 本文件(技能概览,5 分钟阅读)
@@ -228,10 +228,9 @@ hlpm-product/
 
 ## 相关技能
 
-- [`../hlpm-dev/SKILL.md`](../hlpm-dev/SKILL.md) — 开发段流程(产品段的"下游")
-- [`../hlpm-dev/handoff-rejection.md`](../hlpm-dev/handoff-rejection.md) — 拒收单模板
-- [`../hlpm/SKILL.md`](../hlpm/SKILL.md) — 单人全流程(产品段的"替代品")
-- [`../hlpmnew/SKILL.md`](../hlpmnew/SKILL.md) — 0→1 全流程(产品段的"互补品")
+- [`../hldev/SKILL.md`](../hldev/SKILL.md) — 开发段流程(产品段的"下游")
+- [`../hldev/handoff-rejection.md`](../hldev/handoff-rejection.md) — 拒收单模板
+- [`../hl-flow/SKILL.md`](../hl-flow/SKILL.md) — 单人全流程(28 步,如果你想自己跑全流程)
 - [`../SKILL.md`](../SKILL.md) — hlskills 主入口
 
 ---

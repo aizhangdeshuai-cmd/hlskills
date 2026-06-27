@@ -36,7 +36,7 @@ ls ~/.claude/skills/ | grep hl
 # /hlsetup
 ```
 
-**预期输出**: 你应该看到 `hlpm/` `hlpm-product/` `hlbug/` `hlquickstart/` 等 25+ 个目录。
+**预期输出**: 你应该看到 `hl-flow/` `hlpm/` `hldev/` `hlbug/` `hlquickstart/` 等 24 个目录(v16 后)。
 
 如果数量不对或完全没有,先跑 `/hlsetup` 一键安装。
 
@@ -93,7 +93,7 @@ ls ~/.claude/skills/ | grep hl
 - 第 5 步 PRD 评审会**真的产出 5 段不同意见**(不是泛泛"PRD 看起来不错")
 - 第 7 步会**真的停下来等你确认**(不直接进入开发阶段)
 
-**演示到这里就停**——**不会**自动进入第 8-28 步(开发/测试/部署)。剩下 21 步你读完 SKILL.md 自己决定要不要走完整。
+**演示到这里就停**——**不会**自动进入第 8-23 步(开发/测试/部署)。剩下 16 步你读完 SKILL.md 自己决定要不要走完整。
 
 ---
 
@@ -103,8 +103,8 @@ ls ~/.claude/skills/ | grep hl
 
 | 感受 | 含义 | 下一步 |
 |------|------|-------|
-| "AI 真按文档走了,虽然 5 方会签像 5 种语气说话" | 你体验到了 hlskills 的核心 | 可以继续用 hlpm-product 跑真实需求(但不期望真·多 agent 进程级对抗) |
-| "AI 没按文档走,跳过了第 5 步评审" | Agent 没自觉遵守纪律 | 手动打断让它重读 SKILL.md 第 5 步(详见 hlpm-product/SKILL.md 顶部警告) |
+| "AI 真按文档走了,虽然 5 方会签像 5 种语气说话" | 你体验到了 hlskills 的核心 | 可以继续用 hlpm 跑真实需求(但不期望真·多 agent 进程级对抗) |
+| "AI 没按文档走,跳过了第 5 步评审" | Agent 没自觉遵守纪律 | 手动打断让它重读 SKILL.md 第 5 步(详见 hlpm/SKILL.md 顶部警告) |
 | "AI 跑得太死板,问太多问题" | 你不适合 23 步严格流程 | 用 `hlsetup` 装完后,试试只跑 `hlbug` 这种轻量流程(14 步) |
 | "我想用 Codex / Cursor,这个演示跑不通" | hlskills 在其他平台是降级支持 | 详见 README.md 「平台支持分级」段 |
 

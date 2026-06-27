@@ -160,7 +160,7 @@ Client → Nginx → API Gateway → Service → DB/Cache
 | `hlpm` | 会话启动加载项目记忆，决策写入 architecture.md |
 | `hlbug` | 修复中发现的技术债写入 working.md |
 | `hlrefactor` | 重构决策写入 architecture.md |
-| `hlnew` | 分析结论写入 project.md + techstack.md |
+| `hlpm` | 分析结论写入 project.md + techstack.md |
 | `hllegacy` | 分析结果写入 memory 全部文件 |
 
 ---
@@ -177,4 +177,4 @@ mkdir -p .hl/memory
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm-product/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

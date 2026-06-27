@@ -1,6 +1,6 @@
 ---
-name: hlpm-product-path-conventions
-description: 交付文档目录规范中央文档（版本管理）。定义 14 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出 8 项交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。被 SKILL.md / hlpm-product / hlpm-dev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
+name: hlpm-path-conventions
+description: 交付文档目录规范中央文档（版本管理）。定义 14 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出 8 项交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。被 SKILL.md / hlpm / hldev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
 ---
 
 # 交付文档完整目录规范
@@ -8,8 +8,8 @@ description: 交付文档目录规范中央文档（版本管理）。定义 14 
 > 属于 `hlskills` 技能系统的**中央规范文档**。
 > 被以下 3 个文件共同引用：
 > - 主入口 `SKILL.md`（通用规则：文件输出路径）
-> - `hlpm-product/SKILL.md`（产品段 8 项交付物）
-> - `hlpm-dev/SKILL.md`（开发段 6 项补充交付物）
+> - `hlpm/SKILL.md`（产品段 8 项交付物）
+> - `hldev/SKILL.md`（开发段 6 项补充交付物）
 >
 > **目的**：解决"路径规范散落 3 个文件 + 不完整（5 个问题）"的现状，作为单一可信源（single source of truth）。
 
@@ -71,8 +71,8 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 
 | 文件 | 位置 | 含义 | 何时创建 |
 |------|------|------|---------|
-| `.dev-completed` | `docs/vN/.dev-completed` | 该版本已交付 + 开发段已接手/发布 | `hlpm-dev` 步骤 13 "交付验证"通过时由 `verifier` 创建 |
-| `.dev-rejected` | `docs/vN/.dev-rejected` | 该版本已被开发段拒收 | `hlpm-dev` 步骤 0 拒收时由 `executor` 创建（"未开发"状态保留,产品段需补齐后重发） |
+| `.dev-completed` | `docs/vN/.dev-completed` | 该版本已交付 + 开发段已接手/发布 | `hldev` 步骤 13 "交付验证"通过时由 `verifier` 创建 |
+| `.dev-rejected` | `docs/vN/.dev-rejected` | 该版本已被开发段拒收 | `hldev` 步骤 0 拒收时由 `executor` 创建（"未开发"状态保留,产品段需补齐后重发） |
 | `.product-archived` | `docs/vN/.product-archived` | 产品段已主动归档该版本（不再开发） | 产品经理 `analyst` 主动创建 |
 
 **重要**：标记文件是空文件（0 字节），仅作存在性检查。
@@ -214,7 +214,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 > **`{ver}` = 当前版本号**（如 `v1` / `v2` / `v3`），由 0.5 步骤的版本扫描决定
 > 例：当前产品段流程在 v2，则 PRD 写到 `docs/v2/prd.md`
 
-### 3.2 开发段交付物（6 项，hlpm-dev 步骤 13 输出）
+### 3.2 开发段交付物（6 项，hldev 步骤 13 输出）
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
@@ -287,11 +287,11 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 
 | 引用方 | 引用内容 | 引用位置 |
 |--------|---------|---------|
-| `SKILL.md`（主入口） | "所有产出文件路径详见 `hlpm-product/path-conventions.md`" | 第 112-127 行"通用规则：文件输出路径" |
-| `hlpm-product/SKILL.md` | 8 项交付物路径表 | 第 277-285 行"交付文档清单" |
-| `hlpm-product/handoff-package.md` | 7 项交付清单 + 交付包总览 | 第 9-16 行 + 第 117-118 行 |
-| `hlpm-product/consistency-rules.md` | 设计稿 HTML 路径示例 | 第 48-67 行 |
-| `hlpm-dev/SKILL.md` | 6 项补充交付物路径 | 第 204-211 行 |
+| `SKILL.md`（主入口） | "所有产出文件路径详见 `hlpm/path-conventions.md`" | 第 112-127 行"通用规则：文件输出路径" |
+| `hlpm/SKILL.md` | 8 项交付物路径表 | 第 277-285 行"交付文档清单" |
+| `hlpm/handoff-package.md` | 7 项交付清单 + 交付包总览 | 第 9-16 行 + 第 117-118 行 |
+| `hlpm/consistency-rules.md` | 设计稿 HTML 路径示例 | 第 48-67 行 |
+| `hldev/SKILL.md` | 6 项补充交付物路径 | 第 204-211 行 |
 
 **维护原则**：本规范是**单一可信源**。如其他文件的路径与本规范冲突，**以本规范为准**；其他文件应在评审时同步更新。
 
@@ -301,8 +301,8 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 
 修改本规范需同步更新：
 1. `SKILL.md`（如修改根级规则）
-2. `hlpm-product/SKILL.md`（如修改产品段路径）
-3. `hlpm-dev/SKILL.md`（如修改开发段路径）
+2. `hlpm/SKILL.md`（如修改产品段路径）
+3. `hldev/SKILL.md`（如修改开发段路径）
 4. `handoff-package.md`（如修改产品段交付清单）
 5. `consistency-rules.md`（如修改设计稿命名）
 
