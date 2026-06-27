@@ -1,3 +1,5 @@
+<!-- ⚠️ 演示包 / NOT CURRENT VERSION: 此文件是 hlpm-product 流程的演示样例(演示需求:"为 SKILL.md 加 v13 状态徽章"),业务规则/测试用例/矩阵均为演示虚构,不得引用为真实规则。本仓库当前版本 v15。详情见 ../README.md -->
+
 # 非功能需求 - v1(v13 状态徽章)
 
 > 路径: `docs/v1/non-functional-requirements.md`

@@ -38,7 +38,18 @@ gstack browse 未安装时，通过以下任一方式安装：
 
 1. **Skill 安装（推荐）**：运行 `/hlsetup`
 2. **gstack 技能**：在终端执行 `Skill gstack` 加载 gstack 技能体系
-3. **手动安装**：如以上方式不可用，手动克隆 `git clone https://github.com/garrytan/gstack ~/.gstack-repo && cd ~/.gstack-repo && ./setup`
+3. **手动安装（**仅当方式 1/2 不可用时**）**:克隆并固定到已知 commit,避免供应链攻击面。
+   ```bash
+   # 1. 克隆
+   git clone https://github.com/garrytan/gstack ~/.gstack-repo
+   cd ~/.gstack-repo
+   # 2. 固定到已知稳定 commit(查 https://github.com/garrytan/gstack/releases 取最新稳定 SHA)
+   git checkout <known-stable-commit-sha>
+   # 3. (可选但推荐)验证 SHA256
+   sha256sum setup | grep <expected-hash-from-release-notes>
+   # 4. 执行 setup
+   ./setup
+   ```
 
 ---
 

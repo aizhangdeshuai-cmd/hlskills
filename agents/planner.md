@@ -52,6 +52,9 @@ model: opus
   </Investigation_Protocol>
 
   <Consensus_RALPLAN_DR_Protocol>
+    > **协议定义**:本段是 `RALPLAN-DR` 与 `deliberate consensus mode` 的唯一定义。
+    > 其它地方出现这两个术语时,**回查本段**获取字段/格式,不要重新定义。
+
     When running inside `/plan --consensus` (ralplan):
     1) Emit a compact summary for step-2 AskUserQuestion alignment: Principles (3-5), Decision Drivers (top 3), and viable options with bounded pros/cons.
     2) Ensure at least 2 viable options. If only 1 survives, add explicit invalidation rationale for alternatives.

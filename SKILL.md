@@ -1,6 +1,6 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 25 项子技能,覆盖需求→开发→测试→发布→部署全流程。Use when 用户提到开发流程、PRD、需求评审、设计评审、Bug 修复、代码审查、API 设计、数据库迁移、发布部署、编码规范、无障碍等任意关键词时自动路由到对应子技能。通过 Skill 工具调用。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 25 项子技能,覆盖需求→开发→测试→发布→部署全流程。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。通过 Skill 工具调用。
 ---
 ![hlpm-product](https://img.shields.io/badge/hlpm--product-v15-blue) ![review](https://img.shields.io/badge/review-3%20in%201-green)
 
