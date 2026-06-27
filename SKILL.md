@@ -2,9 +2,9 @@
 name: hlskills
 description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 26 项子技能(含 hlquickstart 快速上手),覆盖需求→开发→测试→发布→部署全流程。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart`。通过 Skill 工具调用。
 ---
-![hlpm-product](https://img.shields.io/badge/hlpm--product-v15-blue) ![review](https://img.shields.io/badge/review-3%20in%201-green)
+![hlpm-product](https://img.shields.io/badge/hlpm--product-v15-blue) ![review](https://img.shields.io/badge/review-集中评审-green)
 
-> 当前版本: **v15** | 评审模式: **3 合 1(可选择)** | 原版 hlpm / hlpmnew 一字不改
+> 当前版本: **v15** | 评审模式: **集中评审（可选择）** | 原版 hlpm / hlpmnew 一字不改
 > ⚠️ 多平台能力不对等:Claude Code 完整支持;Codex / Cursor 降级支持(详见 README「平台支持分级」)
 # HL 项目开发技能合集
 
