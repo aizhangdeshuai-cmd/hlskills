@@ -1,10 +1,10 @@
 # hlskills
 
-> HL 项目开发技能合集 — 24 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
+> HL 项目开发技能合集 — 25 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
 
 ## 5 分钟快速上手
 
-**第一次用?** 先跑 `Skill hlquickstart` —— 5 分钟内用 2 个 mock 场景让你**实际看到** AI 按文档一步步做事是什么体验,而不是读 24 项 SKILL.md 想象。详见 [`hlquickstart/SKILL.md`](./hlquickstart/SKILL.md)。
+**第一次用?** 先跑 `Skill hlquickstart` —— 5 分钟内用 2 个 mock 场景让你**实际看到** AI 按文档一步步做事是什么体验,而不是读 25 项 SKILL.md 想象。详见 [`hlquickstart/SKILL.md`](./hlquickstart/SKILL.md)。
 
 ## 🚨 v16 子技能改名迁移说明
 
@@ -33,6 +33,9 @@ Skill hl-flow "为登录功能加短信验证码"
 Skill hlpm "为订单列表加导出 CSV"
 # 评审通过后,产品段产物交接给开发段:
 Skill hldev "开始开发 docs/v1/ 里的 8 项交付物"
+
+# 一次跑完全链路 (自动按顺序加载 hlpm→hldev→hlrelease→hldeploy, 中间可调 hlbug/hltest)
+Skill hlchain "为订单列表加导出 CSV"
 ```
 
 **如果有团队已有引用旧名的脚本/AGENTS.md**:把 `/hlpm` → `/hl-flow`、`/hlpm-product` → `/hlpm`、`/hlpm-dev` → `/hldev` 即可。`/hlpmnew` 和 `/hlnew` 没有对应新名,删掉。
@@ -59,15 +62,17 @@ Skill hldev "开始开发 docs/v1/ 里的 8 项交付物"
 
 ## 核心特性
 
-- **24 项子技能**(含 `hlquickstart` 快速上手):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
+- **25 项子技能**(含 `hlquickstart` 快速上手 + `hlchain` 全流程编排):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
 - **19 个 Agent**:analyst / executor / code-reviewer / security-reviewer / verifier / designer / test-engineer 等专业角色
 - **多角色协作**:`hlpm` (产品段 23 步) + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
+- **全流程编排**:`hlchain` 一次跑完 hlpm → hldev → hlrelease → hldeploy 全链路(中间可调 hlbug/hltest), 不必手动一次次调各技能
 - **一体化保障**:8 项产品交付物 + 7 个一致性矩阵(业务规则 / 状态机 / 权限 / 非功能 / 代码实现追踪),确保 PRD 100% 实现
 
 ## 子技能速览
 
 | 场景 | 技能 | 命令 |
 |------|------|------|
+| 一次跑完全链路（自动按顺序加载 6 阶段） | `hlchain` | `/hlchain` (编排 hlpm→hldev→hlrelease→hldeploy + hlbug/hltest) |
 | 新功能/新项目开发（单人跑） | `hl-flow` | `/hl-flow` (28 步) |
 | 多角色协作-产品段 | `hlpm` | `/hlpm` (23 步,含 5 角色评审) |
 | 多角色协作-开发段 | `hldev` | `/hldev` (15 步,含 4 维防御) |
@@ -103,7 +108,7 @@ Skill hldev "开始开发 docs/v1/ 里的 8 项交付物"
 
 ### Claude Code(完整支持)
 
-支持全部能力：24 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、role-only 行为约束写入 agent 正文) + Skill 工具调用(如 `Skill hlpm`) + 可选外部技能(`videodb` / `market-research`)调用。
+支持全部能力：25 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、role-only 行为约束写入 agent 正文) + Skill 工具调用(如 `Skill hlpm`) + 可选外部技能(`videodb` / `market-research`)调用。
 
 ### Codex CLI(降级支持)
 

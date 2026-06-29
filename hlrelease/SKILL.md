@@ -69,4 +69,18 @@ git push origin vX.Y.Z
 
 ---
 
+## 交接段
+
+> 本技能被 `hlchain` 编排为"全流程第 3 阶段 (可选)"。完成本技能后, Agent 应:
+>
+> 1. 验证 `CHANGELOG.md` 已更新 + git tag 已推送
+> 2. 询问用户: "发布完成, 是否部署到生产 (hldeploy)?"
+> 3. 用户确认后, 调 `Skill hldeploy "..."` 进入下一阶段
+>
+> **hldev 步骤 14 已内置 tag 推送**, 所以单独调用 hlrelease 仅在需要补 changelog 时有必要。hldev + hlrelease 二选一即可。
+>
+> 如果用户是**单独调用本技能**, 此交接段不触发, 由用户决定下一步。
+
+---
+
 > **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

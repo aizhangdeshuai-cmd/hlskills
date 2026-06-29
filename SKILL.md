@@ -1,6 +1,6 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 24 项子技能(含 hlquickstart 快速上手),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 23 步) / hldev(开发段 15 步) 三件套。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart`。通过 Skill 工具调用。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 25 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 23 步) / hldev(开发段 15 步) 三件套,hlchain 编排三者按需串起跑全链路。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `Skill hlchain` 全链路或单点调 `Skill hl-flow` / `Skill hlpm` / `Skill hldev`。通过 Skill 工具调用。
 ---
 ![hlpm](https://img.shields.io/badge/hlpm-v15-blue) ![review](https://img.shields.io/badge/review-集中评审-green)
 
@@ -37,6 +37,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 安装部署 | `hlsetup` | `/hlsetup` | 一键安装到 Claude Code / Codex / Cursor |
 | Hooks 配置 | `hlhooks` | `/hlhooks` | 安全/质量/自动化 hooks 模板 |
 | 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |
+| **全流程编排** | **`hlchain`** | **`/hlchain`** | **一次跑完 6 阶段: hlpm(产品段) → hldev(开发段) → hlrelease(发布) → hldeploy(部署), 过程中调 hlbug/hltest 修复/补充测试。适合"一次跑完需求→开发→测试→发布"全链路, 而不是手动一次次调各技能** |
 | **快速上手** | **`hlquickstart`** | **`/hlquickstart`** | **5 分钟演示 hlskills:看一眼 → mock bug 走 hlbug → mock 需求走 hlpm 前 7 步。第一次用必跑** |
 
 ---
@@ -47,8 +48,9 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 |------|---------|------|
 | **单人或小团队**（一人跑完全流程） | `hl-flow` | 流程紧凑，28 步串行执行 |
 | **多角色协作**（产品 + 开发分工） | `hlpm` + `hldev` | 23 + 15 步分工,角色边界铁律(产品不写代码)+ 6 条件路径(按规模和设计需求)+ 重量评审会签、三项强同步、拒收机制 |
+| **想一次跑完全链路** | `hlchain` | 编排 6 阶段 (hlpm → hldev → hlrelease → hldeploy, 中间可调 hlbug/hltest), 不必手动一次次调各技能 |
 
-**原 `hl-flow` / `hlpm` / `hldev` 三者各自定位: `hl-flow` 单人跑, `hlpm` 产品段多角色, `hldev` 开发段多角色。按场景选用。**
+**`hl-flow` / `hlpm` / `hldev` 三者各自定位: `hl-flow` 单人跑, `hlpm` 产品段多角色, `hldev` 开发段多角色。按场景选用; 想一次跑完全链路用 `hlchain`。**
 
 ---
 
