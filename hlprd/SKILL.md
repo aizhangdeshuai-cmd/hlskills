@@ -138,17 +138,197 @@ AC-2: 列表默认仅显示 ACTIVE, 显示已移除开关开后显示全部
 
 ## 实施细节 (.docx 排版规范)
 
-### 页面设置
-- 纸张: A4 (210×297mm)
-- 边距: 上 2.5cm / 下 2.5cm / 左 2.5cm / 右 2.5cm (默认)
-- 页眉: 左 "项目名" + 右 "v{ver}" (字体 9pt, 宋体)
-- 页脚: 居中 "第 X 页 / 共 Y 页" (字体 9pt, 自动域)
+### ⚠️ 已知 4 类格式问题（必避）
 
-### 段落样式
-- 标题 1 (H1): 16pt 加粗, 黑体
-- 标题 2 (H2): 14pt 加粗
-- 标题 3 (H3): 12pt 加粗
-- 正文: 11pt, 宋体, 行距 1.5 倍
+按用户实际使用 hlprd 跑出的 `sign-off-package.docx` 反馈, 4 类问题必须避免:
+
+1. **页脚页码是空文本** ("第 页 / 共 页") — 必须用 Word 的 PAGE / NUMPAGES 域, 不要拼字符串
+2. **签字区横线无下划线** ("_____" 打印后看不出) — 必须用 `run.font.underline = True`, 不要用纯文本
+3. **设计稿截图段 0 张图** (核心内容缺失) — `add_picture()` 必须真实插入, 不能漏
+4. **正文字体/字号/行距全默认** (与规范不符) — `Normal` 段落必须显式设 字体=宋体, 字号=11pt, 行距=1.5 倍
+
+下面 4 段代码片段是修复参考. 完整实现见 "Python 实现骨架" 段.
+
+### ⚠️ 页脚页码域 (修复"第 页 / 共 页"空文本)
+
+```python
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
+def add_page_number_field(paragraph):
+    """插入 Word PAGE 域, 自动渲染为当前页码"""
+    run = paragraph.add_run()
+    fldChar1 = OxmlElement('w:fldChar')
+    fldChar1.set(qn('w:fldCharType'), 'begin')
+    run._r.append(fldChar1)
+
+    instrText = OxmlElement('w:instrText')
+    instrText.set(qn('xml:space'), 'preserve')
+    instrText.text = 'PAGE'
+    run._r.append(instrText)
+
+    fldChar2 = OxmlElement('w:fldChar')
+    fldChar2.set(qn('w:fldCharType'), 'end')
+    run._r.append(fldChar2)
+
+def add_total_pages_field(paragraph):
+    """插入 NUMPAGES 域, 自动渲染为总页数"""
+    run = paragraph.add_run()
+    fldChar1 = OxmlElement('w:fldChar')
+    fldChar1.set(qn('w:fldCharType'), 'begin')
+    run._r.append(fldChar1)
+    instrText = OxmlElement('w:instrText')
+    instrText.set(qn('xml:space'), 'preserve')
+    instrText.text = 'NUMPAGES'
+    run._r.append(instrText)
+    fldChar2 = OxmlElement('w:fldChar')
+    fldChar2.set(qn('w:fldCharType'), 'end')
+    run._r.append(fldChar2)
+
+# 完整页脚
+footer = doc.sections[0].footer
+p = footer.paragraphs[0]
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p.add_run("第 ")
+add_page_number_field(p)
+p.add_run(" 页 / 共 ")
+add_total_pages_field(p)
+p.add_run(" 页")
+```
+
+### ⚠️ 签字区下划线 (修复"_____"纯文本问题)
+
+```python
+def add_underline(paragraph, text):
+    """添加带下划线的文字 (替代纯文本横线)"""
+    run = paragraph.add_run(text)
+    run.font.underline = True  # WD_UNDERLINE.SINGLE
+    run.font.size = Pt(11)
+    return run
+
+# 完整签字区 (替代之前 6 段空白 + "_____"拼接)
+doc.add_heading("七、业务方签字", 1)
+
+p = doc.add_paragraph()
+p.add_run("项目名: ")
+add_underline(p, "____________________")
+doc.add_paragraph()
+
+p = doc.add_paragraph()
+p.add_run("版本号: ")
+p.add_run("v")
+add_underline(p, "____")
+doc.add_paragraph()
+
+p = doc.add_paragraph()
+p.add_run("业务方签字: ")
+add_underline(p, "________________________")
+p.add_run("    签字日期: ")
+add_underline(p, "____ 年 ____ 月 ____ 日")
+doc.add_paragraph()
+
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+p.add_run("(或)  ")
+add_underline(p, "____ - ____ - ____")
+doc.add_paragraph()
+
+p = doc.add_paragraph()
+p.add_run("业务方对以上需求交付包 (PRD / 测试用例 / 验收标准 / 设计原型) 已确认, 同意进入开发阶段.")
+```
+
+### ⚠️ 设计稿截图插入 (修复"总图片数 0"问题)
+
+```python
+from docx.oxml.ns import qn
+import os
+from PIL import Image  # pip install pillow (python-docx 依赖)
+
+def add_screenshot(doc, png_path, original_html_name):
+    """插入设计稿截图 + caption"""
+    # 检查截图文件大小 (< 1MB, 否则压缩)
+    if os.path.getsize(png_path) > 1 * 1024 * 1024:
+        img = Image.open(png_path)
+        # 等比缩放到宽度 1200 像素
+        if img.width > 1200:
+            ratio = 1200 / img.width
+            new_size = (1200, int(img.height * ratio))
+            img.thumbnail(new_size)
+            compressed_path = png_path.replace('.png', '-compressed.png')
+            img.save(compressed_path, optimize=True, quality=85)
+            png_path = compressed_path
+
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run()
+    run.add_picture(png_path, width=Inches(6))
+
+    # caption
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap_run = cap.add_run(f"图: {original_html_name}")
+    cap_run.font.size = Pt(9)
+    cap_run.font.color.rgb = RGBColor(0x80, 0x80, 0x80)
+
+# 批量插入 docs/vN/design/ 所有 screenshot*.png
+screenshot_dir = f"docs/{ver}/design"
+if os.path.isdir(screenshot_dir):
+    screenshots = sorted(glob.glob(f"{screenshot_dir}/screenshot*.png"))
+    for i, png in enumerate(screenshots, 1):
+        # 从 PNG 文件名映射回原 HTML 文件名
+        original_html = os.path.basename(png).replace('screenshot', '').replace('.png', '.html')
+        if original_html == '.html':  # 单个文件
+            original_html = 'page.html'
+        add_screenshot(doc, png, original_html)
+```
+
+### ⚠️ 段落样式统一 (修复"字体=None 字号=None"问题)
+
+```python
+from docx.shared import Pt
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
+def set_paragraph_style(p, font_name='宋体', font_size=11, bold=False, line_spacing=1.5):
+    """统一段落样式: 字体 + 字号 + 粗体 + 行距"""
+    p.style.font.name = font_name
+    p.style.font.size = Pt(font_size)
+    p.style.font.bold = bold
+    # 中文字体设置 (Word 需要 rFonts/eastAsia)
+    r = p.style.element.rPr if p.style.element.rPr is not None else OxmlElement('w:rPr')
+    rFonts = r.find(qn('w:rFonts')) if r.find(qn('w:rFonts')) is not None else OxmlElement('w:rFonts')
+    rFonts.set(qn('w:eastAsia'), font_name)
+    rFonts.set(qn('w:ascii'), 'Times New Roman')
+    rFonts.set(qn('w:hAnsi'), 'Times New Roman')
+    if r.find(qn('w:rFonts')) is None:
+        r.append(rFonts)
+    p.style.element.get_or_add_rPr()
+    # 行距
+    p.paragraph_format.line_spacing = line_spacing
+
+# 文档默认 Normal 样式
+from docx.styles.style import _ParagraphStyle
+normal = doc.styles['Normal']
+normal.font.name = '宋体'
+normal.font.size = Pt(11)
+normal.element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+normal.paragraph_format.line_spacing = 1.5
+
+# 标题样式
+for level, size in [(1, 16), (2, 14), (3, 12)]:
+    style = doc.styles[f'Heading {level}']
+    style.font.size = Pt(size)
+    style.font.bold = True
+    style.font.name = '宋体'
+    style.element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+```
+
+### 页面设置 (基础)
+- 纸张: A4 (210×297mm)
+- 边距: 上 2.5cm / 下 2.5cm / 左 2.5cm / 右 2.5cm
+
+### 页眉
+- 左 "项目名" + 右 "v{ver}" (字体 9pt, 宋体)
 
 ### 表格样式
 - 业务规则覆盖矩阵 / 状态机覆盖矩阵 / 权限覆盖矩阵 / 自检报告表
@@ -158,59 +338,327 @@ AC-2: 列表默认仅显示 ACTIVE, 显示已移除开关开后显示全部
 ### 图片
 - 设计稿截图: 6 英寸宽, 居中
 - 限制: 单张图最大 6 英寸, 总文档 < 10MB (避免 .docx 体积爆炸)
+- 压缩: 截图 > 1MB 时用 Pillow 等比缩放到 1200px 宽再插入
+
+### 标题层级
+- **不要硬写 "1." "2." "3."** — 用 Heading 1/2/3 样式, Word 自动编号
+- 实际: 一级用 H1, 二级用 H2, 三级用 H3, 4 级以下用普通加粗段 (别滥用 H4)
 
 ---
 
-## Python 实现骨架
+## Python 实现骨架 (完整可运行)
+
+下面代码是**完整可运行**的 Python 脚本, 集成上面 4 类问题修复. 直接 `python build_signoff.py v2 "项目名"` 可生成合规 .docx.
 
 ```python
-from docx import Document
-from docx.shared import Inches, Pt, RGBColor
-import os, sys
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+hlprd · 合成 v{N} 签字包
+修复: 4 类已知问题
+  1. 页脚页码用 Word PAGE / NUMPAGES 域
+  2. 签字区横线用下划线而非纯文本
+  3. 设计稿截图真实插入
+  4. 段落 Normal 字体/字号/行距显式设置
+"""
+import os, sys, glob
 from datetime import date
+from docx import Document
+from docx.shared import Inches, Pt, Cm, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
-ver = sys.argv[1] or "v1"
-project_name = sys.argv[2] or "项目"
-docs_dir = f"docs/{ver}"
-screenshots = sorted(glob(f"{docs_dir}/design/screenshot*.png"))
+# === 修复 1: 页脚页码用 Word 域 (避免空文本) ===
+def add_page_field(paragraph):
+    run = paragraph.add_run()
+    fldChar1 = OxmlElement('w:fldChar')
+    fldChar1.set(qn('w:fldCharType'), 'begin')
+    run._r.append(fldChar1)
+    instrText = OxmlElement('w:instrText')
+    instrText.set(qn('xml:space'), 'preserve')
+    instrText.text = 'PAGE'
+    run._r.append(instrText)
+    fldChar2 = OxmlElement('w:fldChar')
+    fldChar2.set(qn('w:fldCharType'), 'end')
+    run._r.append(fldChar2)
 
-doc = Document()
+def add_numpages_field(paragraph):
+    run = paragraph.add_run()
+    fldChar1 = OxmlElement('w:fldChar')
+    fldChar1.set(qn('w:fldCharType'), 'begin')
+    run._r.append(fldChar1)
+    instrText = OxmlElement('w:instrText')
+    instrText.set(qn('xml:space'), 'preserve')
+    instrText.text = 'NUMPAGES'
+    run._r.append(instrText)
+    fldChar2 = OxmlElement('w:fldChar')
+    fldChar2.set(qn('w:fldCharType'), 'end')
+    run._r.append(fldChar2)
 
-# 页眉页脚
-section = doc.sections[0]
-section.header.paragraphs[0].text = f"{project_name}    v{ver}"
-section.footer.paragraphs[0].text = "第 X 页 / 共 Y 页"
+# === 修复 2: 签字区下划线 (替代纯文本"_____") ===
+def add_underline(paragraph, text, font_size=11):
+    run = paragraph.add_run(text)
+    run.font.underline = True
+    run.font.size = Pt(font_size)
+    return run
 
-# 第 1 段: 封面
-doc.add_heading(f"{project_name} - 需求交付包 {ver}", 0)
-doc.add_paragraph(f"文档生成日期: {date.today().isoformat()}")
-doc.add_paragraph(f"文档类型: 业务方签字确认")
+# === 修复 4: 段落样式统一 ===
+def setup_default_styles(doc):
+    from docx.shared import Pt
+    # Normal 默认样式
+    normal = doc.styles['Normal']
+    normal.font.name = '宋体'
+    normal.font.size = Pt(11)
+    if normal.element.rPr is None:
+        rPr = OxmlElement('w:rPr')
+        normal.element.append(rPr)
+    rFonts = normal.element.rPr.find(qn('w:rFonts'))
+    if rFonts is None:
+        rFonts = OxmlElement('w:rFonts')
+        normal.element.rPr.append(rFonts)
+    rFonts.set(qn('w:eastAsia'), '宋体')
+    rFonts.set(qn('w:ascii'), 'Times New Roman')
+    rFonts.set(qn('w:hAnsi'), 'Times New Roman')
+    normal.paragraph_format.line_spacing = 1.5
 
-# 第 2 段: PRD 全文
-for line in open(f"{docs_dir}/prd.md", encoding="utf-8"):
-    if line.startswith("# "): doc.add_heading(line[2:].strip(), 1)
-    elif line.startswith("## "): doc.add_heading(line[3:].strip(), 2)
-    elif line.startswith("### "): doc.add_heading(line[4:].strip(), 3)
-    elif line.startswith("<!--"): continue   # strip dev-not-for-prod 注释
-    elif line.strip(): doc.add_paragraph(line.rstrip())
+    # 标题样式
+    for level, size in [(1, 16), (2, 14), (3, 12)]:
+        style = doc.styles[f'Heading {level}']
+        style.font.size = Pt(size)
+        style.font.bold = True
+        style.font.name = '宋体'
+        if style.element.rPr is None:
+            rPr = OxmlElement('w:rPr')
+            style.element.append(rPr)
+        rFonts = style.element.rPr.find(qn('w:rFonts'))
+        if rFonts is None:
+            rFonts = OxmlElement('w:rFonts')
+            style.element.rPr.append(rFonts)
+        rFonts.set(qn('w:eastAsia'), '黑体')
 
-# 第 3 段: 测试用例摘要 (top-20 by priority)
-# 第 4 段: 验收标准 (全文)
-# 第 5 段: 设计原型 (嵌入截图)
-for i, png in enumerate(screenshots, 1):
-    doc.add_picture(png, width=Inches(6))
-    doc.add_paragraph(f"图 {i}: {os.path.basename(png.replace('.png', '.html'))}")
-# 第 6 段: 一致性矩阵 (3 个表的过滤)
-# 第 7 段: 自检报告 (轻量版)
-# 第 8 段: 签字区
-doc.add_paragraph("项目名: ____________________")
-doc.add_paragraph("版本号: v____")
-doc.add_paragraph("业务方签字: ________________________   签字日期: ____ 年 ____ 月 ____ 日")
-doc.add_paragraph("                       (或)           签字日期: ____ - ____ - ____")
+# === 修复 3: 设计稿截图 (压缩 + 居中 + caption) ===
+def add_screenshot(doc, png_path, original_html_name):
+    if not os.path.exists(png_path):
+        return False
+    # 压缩: > 1MB 时用 Pillow 等比缩放到 1200px 宽
+    if os.path.getsize(png_path) > 1 * 1024 * 1024:
+        try:
+            from PIL import Image
+            img = Image.open(png_path)
+            if img.width > 1200:
+                ratio = 1200 / img.width
+                new_size = (1200, int(img.height * ratio))
+                img.thumbnail(new_size)
+                compressed = png_path.replace('.png', '-compressed.png')
+                img.save(compressed, optimize=True, quality=85)
+                png_path = compressed
+        except ImportError:
+            pass  # 无 Pillow 也能跑, 只不压缩
 
-doc.save(f"{docs_dir}/sign-off-package.docx")
-print(f"✅ 生成 {docs_dir}/sign-off-package.docx")
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run()
+    run.add_picture(png_path, width=Inches(6))
+
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap_run = cap.add_run(f"图: {original_html_name}")
+    cap_run.font.size = Pt(9)
+    cap_run.font.color.rgb = RGBColor(0x80, 0x80, 0x80)
+    return True
+
+# === 主流程 ===
+def extract_project_name(prd_path):
+    with open(prd_path, encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('# '):
+                import re
+                return re.sub(r"^PRD\s*[·•]\s*", "", line[2:].strip())
+    return "项目"
+
+def build_signoff(ver, project_name=None, signer=None):
+    docs_dir = f"docs/{ver}"
+    prd_path = f"{docs_dir}/prd.md"
+    if not os.path.exists(docs_dir):
+        print(f"❌ docs/{ver}/ 不存在, 请先跑 Skill hlpm 跑通 v{ver}")
+        return False
+    if not os.path.exists(prd_path):
+        print(f"❌ docs/{ver}/prd.md 缺失, 核心文件不全, 不生成 .docx")
+        return False
+
+    project_name = project_name or extract_project_name(prd_path) or "项目"
+    signer = signer or "________"
+
+    doc = Document()
+    setup_default_styles(doc)
+
+    # 页面设置 A4
+    section = doc.sections[0]
+    section.page_height = Cm(29.7)
+    section.page_width = Cm(21.0)
+    section.top_margin = Cm(2.5)
+    section.bottom_margin = Cm(2.5)
+    section.left_margin = Cm(2.5)
+    section.right_margin = Cm(2.5)
+
+    # 页眉: 项目名 + v{ver}
+    section.header.paragraphs[0].text = f"{project_name}    v{ver}"
+    section.header.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    # 页脚: 第 X 页 / 共 Y 页 (用域)
+    footer = section.footer
+    p = footer.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.add_run("第 ")
+    add_page_field(p)
+    p.add_run(" 页 / 共 ")
+    add_numpages_field(p)
+    p.add_run(" 页")
+
+    # 第 1 段: 封面
+    doc.add_heading(f"{project_name} - 需求交付包 {ver}", 0)
+    doc.add_paragraph(f"文档生成日期: {date.today().isoformat()}")
+    doc.add_paragraph(f"文档类型: 业务方签字确认")
+    doc.add_paragraph()
+    doc.add_paragraph(f"本文件包含: PRD 全文 / 测试用例摘要 / 验收标准 / 设计原型 / 一致性矩阵 / 自检报告 / 业务方签字区.")
+    doc.add_paragraph(f"请业务方重点关注: 测试用例主流程 + 验收标准 + 设计原型, 其他为辅助参考.")
+
+    # 第 2 段: PRD 全文 (strip dev-not-for-prod 注释 + dev-only HTML/JSON)
+    doc.add_heading("一、PRD 全文", 1)
+    in_code_block = False
+    with open(prd_path, encoding='utf-8') as f:
+        for line in f:
+            stripped = line.strip()
+            if stripped.startswith('```'):
+                in_code_block = not in_code_block
+                continue
+            if in_code_block:
+                continue
+            if stripped.startswith('<!--'):
+                continue
+            if stripped.startswith('# '):
+                doc.add_heading(line[2:].strip(), 2)
+            elif stripped.startswith('## '):
+                doc.add_heading(line[3:].strip(), 3)
+            elif stripped.startswith('### '):
+                doc.add_heading(line[4:].strip(), 4)
+            elif stripped.startswith('#### '):
+                doc.add_paragraph(line[5:].strip()).runs[0].font.bold = True
+            elif stripped:
+                doc.add_paragraph(line.rstrip())
+
+    # 第 3 段: 测试用例摘要 (top-20)
+    doc.add_heading("二、测试用例摘要", 1)
+    tc_path = f"{docs_dir}/test-cases.md"
+    if os.path.exists(tc_path):
+        # 简化: 全文嵌入 + 优先标记
+        with open(tc_path, encoding='utf-8') as f:
+            content = f.read()
+        for line in content.split('\n')[:100]:
+            doc.add_paragraph(line)
+    else:
+        doc.add_paragraph("⚠️ 此段文档未生成 — docs/{ver}/test-cases.md 缺失")
+
+    # 第 4 段: 验收标准 (全文)
+    doc.add_heading("三、验收标准", 1)
+    ac_path = f"{docs_dir}/acceptance-criteria.md"
+    if os.path.exists(ac_path):
+        with open(ac_path, encoding='utf-8') as f:
+            for line in f:
+                doc.add_paragraph(line.rstrip())
+    else:
+        doc.add_paragraph("⚠️ 此段文档未生成 — docs/{ver}/acceptance-criteria.md 缺失")
+
+    # 第 5 段: 设计原型 (嵌入截图, 修复"0 张图"问题)
+    doc.add_heading("四、设计原型", 1)
+    screenshot_dir = f"{docs_dir}/design"
+    if os.path.isdir(screenshot_dir):
+        screenshots = sorted(glob.glob(f"{screenshot_dir}/screenshot*.png"))
+        if screenshots:
+            for png in screenshots:
+                # 从 PNG 文件名映射回原 HTML 文件名
+                base = os.path.basename(png)
+                # screenshot.png / screenshot-1.png / screenshot-page.html.png
+                original_html = base.replace('screenshot', '').replace('.png', '.html')
+                if original_html == '.html':
+                    original_html = 'page.html'
+                elif original_html.startswith('-'):
+                    original_html = original_html[1:]
+                add_screenshot(doc, png, original_html)
+        else:
+            doc.add_paragraph("⚠️ 暂无截图 — 请确保 hlpm 步骤 6b.5 已生成 design/screenshot*.png")
+    else:
+        doc.add_paragraph("⚠️ 暂无设计稿目录 — 请确保 hlpm 已生成 docs/{ver}/design/")
+
+    # 第 6 段: 一致性矩阵摘要
+    doc.add_heading("五、一致性矩阵摘要", 1)
+    cm_path = f"{docs_dir}/consistency-matrix.md"
+    if os.path.exists(cm_path):
+        with open(cm_path, encoding='utf-8') as f:
+            content = f.read()
+        for line in content.split('\n')[:80]:
+            doc.add_paragraph(line)
+    else:
+        doc.add_paragraph("⚠️ 此段文档未生成 — docs/{ver}/consistency-matrix.md 缺失")
+
+    # 第 7 段: 自检报告
+    doc.add_heading("六、自检报告", 1)
+    hs_path = f"{docs_dir}/handoff-self-check.md"
+    if os.path.exists(hs_path):
+        with open(hs_path, encoding='utf-8') as f:
+            content = f.read()
+        for line in content.split('\n')[:30]:
+            doc.add_paragraph(line)
+    else:
+        doc.add_paragraph("⚠️ 此段文档未生成 — docs/{ver}/handoff-self-check.md 缺失")
+
+    # 第 8 段: 签字区 (修复"_____"无下划线问题)
+    doc.add_heading("七、业务方签字", 1)
+
+    p = doc.add_paragraph()
+    p.add_run("项目名: ")
+    add_underline(p, "____________________")
+    doc.add_paragraph()
+
+    p = doc.add_paragraph()
+    p.add_run("版本号: ")
+    p.add_run("v")
+    add_underline(p, "____")
+    doc.add_paragraph()
+
+    p = doc.add_paragraph()
+    p.add_run("业务方签字: ")
+    add_underline(p, "________________________")
+    p.add_run("    签字日期: ")
+    add_underline(p, "____ 年 ____ 月 ____ 日")
+    doc.add_paragraph()
+
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    p.add_run("(或)  ")
+    add_underline(p, "____ - ____ - ____")
+    doc.add_paragraph()
+
+    p = doc.add_paragraph()
+    p.add_run("业务方对以上需求交付包 (PRD / 测试用例 / 验收标准 / 设计原型) 已确认, 同意进入开发阶段.")
+    doc.add_paragraph()
+    p = doc.add_paragraph()
+    p.add_run(f"如有疑问, 请联系: 产品经理 (见 docs/{ver}/handoff-self-check.md 评审结论).")
+
+    # 保存
+    out_path = f"{docs_dir}/sign-off-package.docx"
+    doc.save(out_path)
+    print(f"✅ 生成 {out_path}")
+    return True
+
+if __name__ == "__main__":
+    ver = sys.argv[1] if len(sys.argv) > 1 else "v1"
+    project_name = sys.argv[2] if len(sys.argv) > 2 else None
+    build_signoff(ver, project_name)
 ```
+
+**注意**: 这段代码集成上面 4 类修复. 拷贝到 `docs/{ver}/build_signoff.py` 即可跑.
 
 ---
 
