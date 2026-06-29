@@ -216,13 +216,83 @@ print(f"✅ 生成 {docs_dir}/sign-off-package.docx")
 
 ## 失败处理
 
+### 文档获取失败的分级处理
+
+**核心文件** (3 项, 缺一不可): `prd.md` / `acceptance-criteria.md` / `design/` (含 `screenshot*.png`)
+**非核心文件** (5 项, 可缺): `test-cases.md` / `consistency-matrix.md` / `handoff-self-check.md` / `non-functional-requirements.md` / 一致性矩阵 第 5 矩阵 (代码实现追踪)
+
+| 情况 | 严重度 | 处理 |
+|------|--------|------|
+| 整目录缺失 (`docs/vN/` 不存在) | 🔴 致命 | 仅对话警示, **不生成** docx |
+| 版本 ver 不存在 (如 `docs/v5/` 不存在) | 🔴 致命 | 仅对话警示, **不生成** docx |
+| 核心文件缺失 (PRD/验收/设计稿 任一缺失) | 🟡 核心不全 | 仅对话警示 + 列具体缺哪些文件, **不生成** docx |
+| 非核心文件缺失 (5 项任一缺失) | 🟢 非核心不全 | 仍生成 docx, **缺失段用 "⚠️ 此段未生成" 占位**, docx **顶部加黄色警示框** |
+| 文件存在但内容为空 (0 字节或仅标题) | 🟡 视为缺失 | 按"核心/非核心"分级 |
+| 全部齐全 | ✅ 正常 | 生成完整 docx |
+
+### 对话提示统一格式
+
+Agent 加载本 skill 后, **第一步**用 Read 工具读所有 8 项交付物, 检测完整性. 如有缺失, 立即向用户报告:
+
+```
+⚠️ hlprd 文档获取不完整
+
+版本: vN
+状态: [致命/核心不全/非核心不全]
+
+缺失的核心文件 (3 项):
+  ❌ docs/vN/prd.md
+  ❌ docs/vN/acceptance-criteria.md
+  ❌ docs/vN/design/
+
+缺失的非核心文件 (5 项):
+  - docs/vN/test-cases.md
+  - docs/vN/consistency-matrix.md
+  ...
+
+建议: 回到 Skill hlpm "为 <项目名> 跑 vN 完整流程" 补齐后再合成.
+```
+
+### docx 顶部黄色警示框 (仅"非核心不全"时生成)
+
+当 Agent 决定仍生成 docx, 在文档第 1 页顶部插入 1 个黄色警告框 (1pt 黄色边框, 浅黄底色 FFFFB0):
+
+```
+⚠️ 文档不完整 — 本交付包基于 docs/vN/ 当前内容生成, 缺失以下非核心文件:
+  - test-cases.md
+  - consistency-matrix.md
+  ...
+
+缺失的章节显示为"⚠️ 此段文档未生成"占位, 请补走 hlpm 步骤 X 再重新合成.
+版本: vN
+生成时间: YYYY-MM-DD
+```
+
+> 警示框用 python-docx 的 `add_paragraph` + 自定义 RGB 颜色实现, 不依赖 docxtpl 模板.
+
+### 缺失段占位格式 (各非核心章节)
+
+当某非核心章节对应的文件缺失, Agent 不跳过该章节, 而是在 .docx 章节标题下插入占位提示:
+
+```
+## 测试用例摘要 (缺源文件)
+
+⚠️ 此段文档未生成 — docs/vN/test-cases.md 缺失或为空.
+请补走 hlpm 步骤 8 (测试用例编写) 后, 重新运行 Skill hlprd 合成.
+```
+
+### 致命情况不生成 docx (避免误发)
+
+**核心文件缺失时不生成任何 docx**, 原因: 业务方拿到一份"PRD / 验收标准 / 设计稿"全空的 docx 会产生严重误解. Agent 引导用户先回 hlpm 补齐再合成, 避免产生不可用的签字包.
+
+### 其他异常
+
 | 失败情形 | 处理 |
 |---------|------|
-| `docs/{ver}` 目录不存在 | 告知用户: 「该版本还没跑过 hlpm, 无交付物可合成」 |
 | python-docx 未装 | 告知用户: 「请先 `pip install python-docx`」 |
-| 无 `screenshot*.png` | 第 5 段显示 "暂无截图" 占位, 仍生成 .docx |
-| PRD / 一致性矩阵 缺失 | 跳过该段, 在 .docx 末尾加 "⚠️ 缺失文档: X.md" |
+| `screenshot*.png` 缺失 (但 design/ 存在) | 第 5 段显示 "暂无截图" 占位, 仍生成 .docx |
 | .docx 体积 > 10MB | 提示用户: 「考虑压缩截图, 或拆成多页 .docx」 |
+| 读取某 .md 抛异常 (编码错误等) | 该段用"⚠️ 文档读取失败"占位, 继续生成其他段 |
 
 ---
 
