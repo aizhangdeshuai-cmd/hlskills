@@ -775,6 +775,50 @@ git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段
 
    **真实案例参考**:`ehr/docs/v2/design/blacklist.html` —— 已按本规范修复,详见该文件 `new Vue({ mounted() { ... } })` 段。
 
+   #### 🚨 悬浮框标题栏滚出视口(高频 UI bug)
+
+   **问题现象**: 弹框打开后点击角标 → 自动滚到 tab 7 → **标题栏(设计稿元信息 + 副标题 + × 关闭按钮)被滚出视口**。评审人看不到自己在看什么、不知道怎么关。
+
+   **根因** (双 bug 叠加):
+   1. `.floating-meta-panel-header` 设了 `position: sticky; top: 0;` 但 panel 自身有 `padding: 24px;`——sticky 实际粘在 panel **padding 内边**顶端,视觉上跟"panel 顶端"差 24px
+   2. JS 用 `target.scrollIntoView({ block: 'start' })` 把 tab 7 推到 panel 顶部,**sticky header 被推出视口**——`scrollIntoView` 不考虑 sticky 元素
+
+   **修复**(必须 2 处都改):
+
+   **CSS**(panel 加 `scroll-padding-top`):
+
+   ```css
+   .floating-meta-panel {
+     /* ...原有... */
+     padding: 24px;
+     /* 🚨 关键: scroll-padding-top 让 scrollIntoView 跳过 sticky header */
+     /* 数值 = header 高度(约 70px) + 顶部 padding(24px) */
+     scroll-padding-top: 96px;
+   }
+   ```
+
+   **JS**(`scrollIntoView` 保持 `block: 'start'`,靠 CSS 的 `scroll-padding-top` 自动让位):
+
+   ```js
+   // ✅ 正确: 配合 scroll-padding-top, 目标跳到 header 下方,header 始终可见
+   tab7.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+   // ❌ 仅用 block: 'center' 也可,但 tab 7 会到视口中段,
+   //    评审人看不到 tab 1-6 的位置,上下文不足
+   // tab7.scrollIntoView({ block: 'center' });
+   ```
+
+   **真实案例**: `ehr/docs/v2/design/blacklist.html` 第 103-115 行 panel CSS + 第 920 行 `scrollIntoView({ block: 'center' })`。
+
+   **`verifier` 必查项**: 步骤 7 设计评审时,`verifier` 点击角标后**必须截图**,**截图里能看到标题栏 + × 按钮**才算通过。看不到 → 评审不通过。
+
+   **自检 grep** (1 条):
+   ```bash
+   # 7. 🚨 panel 必须有 scroll-padding-top (跳过 sticky header)
+   grep -c "scroll-padding-top" docs/{ver}/design/*.html
+   # 命中 ≥ 1 → 通过;= 0 → 标 🔴
+   ```
+
    #### 顶部注释模板(强制)
 
    ```html
