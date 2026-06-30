@@ -686,6 +686,95 @@ git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段
 
    **`verifier` 二次验证**: 步骤 7 设计评审时,`verifier` 用 `hlbrowse` 打开设计稿,**实际点击 1 个角标**(选最大块的 PR-XXX),**必须看到悬浮框展开 + 切到 tab 7 + 对应 logic-item 高亮**。否则评审不通过。
 
+   #### 🚨 框架场景: 脚本必须在 mounted 回调内执行(高频坑)
+
+   **问题根因** (真实案例 `ehr/docs/v2/design/blacklist.html`): 设计稿引入了 Vue 2 (`new Vue({el: '.page', ...})`)。Vue 在挂载期间**重排 `.page` 子树**,导致 `<script>(function(){ querySelectorAll('.logic-badge').forEach(badge => badge.addEventListener('click', ...)) })()</script>` 在 script 顶层阶段绑的 listener **被 Vue 重排 DOM 时丢掉**。控制台零报错,看似正常,但点击角标**毫无反应**(panel 不开,无高亮)。
+
+   **`examples/order-list-with-export-csv.html` 没引入任何框架,所以示例能跑 ≠ v16 设计稿能跑**。
+
+   **触发条件**(命中任一 → 必须按框架/UI 库场景处理):
+
+   ```bash
+   grep -cE "new Vue|new app|createApp|createElement|useEffect|new ReactDOM|\\\$\\(.+?\\)\\.ready|\\\$\\(.+?\\)\\.on\\(|el-form|el-table|el-button|ant-table|ant-form|antd|element-plus|naive-ui|ELEMENT\\.|ElementUI" docs/{ver}/design/*.html
+   # 期望: 命中即进入框架/UI 库场景
+   ```
+
+   | 命中 | 场景 | 修复方式 |
+   | --- | --- | --- |
+   | `new Vue\|createApp` | Vue 2/3 | `new Vue({ mounted() { /* 在此绑事件 */ } })` 或 `Vue.createApp(...).mount(...)` 后**追加**事件绑定脚本 |
+   | `useEffect\|createElement\|ReactDOM` | React | `useEffect(() => { /* 在此绑事件 */ }, [])` |
+   | `$(...).ready\|$(...).on` | jQuery | `$(function() { /* 在此绑事件 */ })` 或 `$(document).ready(...)` |
+   | **`el-form\|el-table\|el-button\|ant-form\|antd`** | **ElementUI / Element Plus / Ant Design Vue / Naive UI 等** | **即使没显式 `new Vue`,UI 库内部用 Vue/React 接管 el-form 子树 → 必须用 `mounted` / `useEffect` / `setTimeout(fn, 0)` 延迟绑定** |
+
+   **修复模板** (Vue 2,以 blacklist.html 为例):
+
+   ```html
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
+   <script>
+   // ⚠️ DEV-NOT-FOR-PROD: 框架 + 元信息, 整体不进生产代码
+
+   // 业务 Vue 实例先挂载
+   new Vue({
+     el: '.page',
+     data: () => ({ /* ... */ }),
+     methods: { /* ... */ },
+     mounted() {
+       // ===== 🔗 角标事件必须在 mounted 内绑 =====
+       // 原因: Vue 挂载期间重排 .page 子树,顶层 script 绑的 listener 会丢失
+       document.querySelectorAll('.logic-badge').forEach(badge => {
+         badge.addEventListener('click', (e) => {
+           e.stopPropagation();
+           e.preventDefault();
+           const host = badge.closest('[data-prd],[data-tc],[data-state],[data-matrix]') || badge.parentElement;
+           const prdIds = (host.dataset.prd || '').split(',').filter(Boolean);
+           if (prdIds.length === 0) return;
+           const firstPrdId = prdIds[0].trim();
+           document.querySelectorAll('.logic-item.highlight').forEach(el => el.classList.remove('highlight'));
+           const target = document.getElementById('logic-' + firstPrdId);
+           if (target) {
+             target.classList.add('highlight');
+             target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+           }
+           const panel = document.getElementById('floatingMetaPanel');
+           panel.classList.add('open');
+           const tab7 = document.getElementById('meta-tab-7');
+           if (tab7) {
+             setTimeout(() => tab7.scrollIntoView({ behavior: 'smooth', block: 'start' }), 250);
+           }
+         });
+       });
+
+       // ===== 悬浮框开关也要在 mounted 内绑 =====
+       const toggle = document.getElementById('floatingMetaToggle');
+       const panel = document.getElementById('floatingMetaPanel');
+       const closeBtn = document.getElementById('floatingMetaClose');
+       if (toggle) toggle.addEventListener('click', () => panel.classList.toggle('open'));
+       if (closeBtn) closeBtn.addEventListener('click', () => panel.classList.remove('open'));
+     }
+   });
+   </script>
+   ```
+
+   **自检 grep 加 1 条**(命中即警告必须用 mounted 回调):
+
+   ```bash
+   # 6. 🚨 框架检测 — 命中即必须用 mounted/useEffect/$(document).ready 回调
+   grep -cE "new Vue\(|createApp\(|useEffect\(|new ReactDOM|createElement\(|\\\$\(.+?\\)\\.ready" docs/{ver}/design/*.html
+   # 命中 ≥ 1 → 必须验证事件绑定脚本在回调内,不在 <script> 顶层
+   ```
+
+   **关联校验**: 框架场景下,主脚本内 `querySelectorAll('.logic-badge').forEach` **必须出现在 `mounted() {` / `useEffect(` / `$(function(` 等回调体内部**,而非顶层 IIFE。检查方式:
+
+   ```bash
+   # 找 mounted/useEffect 回调位置
+   awk '/mounted\(\)\s*{|useEffect\(|\\\$\(function/{found=NR; depth=0} found && NR>=found {if (/{/) depth++; if (/}/) depth--; if (depth>0 && /logic-badge/) {print "OK: 角标绑定在回调内 第"NR"行"; exit}}' docs/{ver}/design/*.html
+   # 期望: 输出 "OK: 角标绑定在回调内 第N行"
+   ```
+
+   **`verifier` 框架场景二次验证**: 步骤 7 设计评审时,`verifier` 不仅点击角标验证交互,**还必须在控制台跑 `document.querySelectorAll('.logic-badge')[0].onclick !== null || getEventListeners`** 的等价检查(用 `dispatchEvent` 看是否触发)。Vue 场景下还需确认 listener 绑在 `mounted` 后,而不是 Vue 挂载前的同一 DOM 节点。
+
+   **真实案例参考**:`ehr/docs/v2/design/blacklist.html` —— 已按本规范修复,详见该文件 `new Vue({ mounted() { ... } })` 段。
+
    #### 顶部注释模板(强制)
 
    ```html
