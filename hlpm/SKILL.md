@@ -577,6 +577,115 @@ git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段
    - `data-prd` / `data-state` / `data-tc` / `data-matrix` 属性仍挂在区块 3 真实元素上(这些属性是元信息载体,生产代码搬时要删,但设计稿生成时不省)
    - **缺失某属性 = 该元素无该维度逻辑**
 
+   #### 🚨 角标 → 悬浮框联动脚本(必出物,非可选)
+
+   **问题**: agent 按上面规范生成设计稿时,通常会**漏抄** `examples/order-list-with-export-csv.html` 第 630-658 行那段 click handler JS。结果就是页面上 `?` 角标看起来存在,但点击**完全没反应**(没有打开悬浮框、没有切到 tab 7、没有高亮)。**这是个高频 bug**。
+
+   **修复后的必出清单**(agent 生成 5 区块扩展设计稿时,**以下 4 个产物全部必须存在,缺一即视为设计稿不合格**):
+
+   | # | 产物 | 关键标识 | 不存在的后果 |
+   | --- | --- | --- | --- |
+   | 1 | 角标 HTML | `<sup class="logic-badge" data-prd="...">?</sup>` | 评审看不到逻辑说明入口 |
+   | 2 | data-* 属性 | 角标所在元素挂 `data-prd` / `data-tc` / `data-state` / `data-matrix` | 找不到 PRD 关联,无法定位 logic-data |
+   | 3 | logic-data JSON | `<script type="application/json" id="logic-data">` | 悬浮框 tab 7 没内容 |
+   | 4 | **联动脚本(JS)** | `<script>` 内含 `querySelectorAll('.logic-badge').forEach(badge => { badge.addEventListener('click', ... })` | **角标点了没反应——本 bug 的根因** |
+
+   **参考脚本模板(必须照搬结构,只改 BR-/TC- 等数据)**:
+
+   ```html
+   <script>
+   (function () {
+     'use strict';
+     // ⚠️ DEV-NOT-FOR-PROD: 整个 <script> 块不进生产代码
+
+     // ================== 悬浮框开关 ==================
+     const toggle = document.getElementById('floatingMetaToggle');
+     const panel = document.getElementById('floatingMetaPanel');
+     const closeBtn = document.getElementById('floatingMetaClose');
+
+     function openPanel(targetTabId) {
+       panel.classList.add('open');
+       if (targetTabId) {
+         const target = document.getElementById(targetTabId);
+         if (target) {
+           setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 250);
+         }
+       }
+     }
+     function closePanel() { panel.classList.remove('open'); }
+
+     toggle.addEventListener('click', () => {
+       if (panel.classList.contains('open')) closePanel();
+       else openPanel();
+     });
+     closeBtn.addEventListener('click', closePanel);
+     document.addEventListener('keydown', (e) => {
+       if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+     });
+
+     // ================== 🔗 角标 → 悬浮框切到 tab 7 高亮 ==================
+     const logicData = JSON.parse(document.getElementById('logic-data').textContent);
+
+     document.querySelectorAll('.logic-badge').forEach(badge => {
+       badge.addEventListener('click', (e) => {
+         e.stopPropagation();
+         e.preventDefault();
+
+         // 找挂载 data-* 的最近祖先
+         const host = badge.closest('[data-prd],[data-tc],[data-state],[data-matrix]') || badge.parentElement;
+         const prdIds = (host.dataset.prd || '').split(',').filter(Boolean);
+         if (prdIds.length === 0) return;
+
+         const firstPrdId = prdIds[0].trim();
+
+         // 高亮目标 logic-item
+         document.querySelectorAll('.logic-item.highlight').forEach(el => el.classList.remove('highlight'));
+         const target = document.getElementById('logic-' + firstPrdId);
+         if (target) target.classList.add('highlight');
+
+         // 角标自身也高亮 0.5s
+         badge.classList.add('highlight');
+         setTimeout(() => badge.classList.remove('highlight'), 500);
+
+         // 打开面板并滚动到 tab 7
+         openPanel('meta-tab-7');
+       });
+     });
+   })();
+   </script>
+   ```
+
+   #### 设计稿自检(防漏抄脚本)
+
+   **触发时机**: 步骤 6b 设计稿生成后 + 6b.5 截图前,**主 agent 必须执行以下自检**:
+
+   ```bash
+   # 1. 角标 HTML 存在
+   grep -c 'class="logic-badge"' docs/{ver}/design/*.html
+   # 期望: ≥ 1
+
+   # 2. data-* 属性存在
+   grep -cE 'data-(prd|tc|state|matrix)=' docs/{ver}/design/*.html
+   # 期望: ≥ 1
+
+   # 3. logic-data JSON 存在
+   grep -c 'id="logic-data"' docs/{ver}/design/*.html
+   # 期望: = 1
+
+   # 4. 🚨 联动脚本存在(关键检查)
+   grep -c "addEventListener('click'" docs/{ver}/design/*.html
+   grep -c "querySelectorAll('.logic-badge')" docs/{ver}/design/*.html
+   # 期望: 各 ≥ 1
+
+   # 5. 联动脚本能引用到 logic-data
+   grep -c "getElementById('logic-data')" docs/{ver}/design/*.html
+   # 期望: ≥ 1
+   ```
+
+   **任一检查失败** → 标 🔴 + 阻塞 6b.5 截图 + 必须补齐,**不得"先截图后补脚本"**(脚本未生效时截图无法反映交互能力)。
+
+   **`verifier` 二次验证**: 步骤 7 设计评审时,`verifier` 用 `hlbrowse` 打开设计稿,**实际点击 1 个角标**(选最大块的 PR-XXX),**必须看到悬浮框展开 + 切到 tab 7 + 对应 logic-item 高亮**。否则评审不通过。
+
    #### 顶部注释模板(强制)
 
    ```html
