@@ -41,7 +41,7 @@ Q2 可省略 — 省略时 Agent 从 `prd.md` 标题自动提取.
 
 ---
 
-## 文档结构 (6 段传统 PRD)
+## 文档结构 (7 段传统 PRD)
 
 > **总体原则**: 这是**业务方 + 开发团队都看的传统产品需求文档**, 不是签字包. **不嵌入** `<!-- dev-not-for-prod -->` 注释或 `data-prd` 属性, 一律 strip.
 
@@ -52,10 +52,11 @@ Q2 可省略 — 省略时 Agent 从 `prd.md` 标题自动提取.
 | 2 | 本次要做的 (In-Scope) | `prd.md` §4 (范围) + §1 (业务逻辑) 摘要 | 核心, 缺失不生成 |
 | 3 | 本次不做的 (Out-of-Scope) | `prd.md` §4 (范围外) + §8 (不在范围) 摘要 | 核心, 缺失不生成 |
 | 4 | 验收标准 | `acceptance-criteria.md` 全文 + AC 编号 | 核心, 缺失不生成 |
-| 5 | 参考资料 | 8 项交付物名称 + 路径 (1 页索引) | 非核心, 缺失占位 |
+| 5 | 数据埋点需求 | `prd.md` §9 (数据埋点) 摘要 — 业务方/运营关心 | 非核心, 缺失占位 |
+| 6 | 参考资料 | 8 项交付物名称 + 路径 (1 页索引) | 非核心, 缺失占位 |
 
 > **4 个核心段** (1/2/3/4) 缺失 → 不生成 docx, 提示用户回 hlpm 补齐.
-> **1 个非核心段** (5 参考资料) 缺失 → 占位提示, 仍生成 docx.
+> **2 个非核心段** (5 数据埋点 / 6 参考资料) 缺失 → 占位提示, 仍生成 docx.
 
 ---
 
@@ -413,12 +414,21 @@ def build_prd(ver, project_name=None):
         ac_text = f.read()
     render_markdown_to_docx(doc, ac_text, max_lines=200)
 
-    # === 段 5: 参考资料 ===
-    doc.add_heading("五、参考资料", 1)
+    # === 段 5: 数据埋点需求 ===
+    doc.add_heading("五、数据埋点需求", 1)
+    doc.add_paragraph("📌 本节来源: prd.md §9 (数据埋点) — 业务方/运营关心")
+    tracking = extract_section(prd_path, '数据埋点')
+    if tracking:
+        render_markdown_to_docx(doc, tracking, max_lines=80)
+    else:
+        doc.add_paragraph("⚠️ 此节内容缺失: prd.md 中未找到「数据埋点」章节 (hlpm 步骤 4 PRD 编写的第 7 大模块). 业务方/运营上线后将看不到用户行为数据, 请回到 Skill hlpm 补走 7 大模块流程")
+
+    # === 段 6: 参考资料 ===
+    doc.add_heading("六、参考资料", 1)
     doc.add_paragraph("📌 本节来源: docs/{ver}/ 目录下 8 项交付物索引. 供技术团队补充阅读, 业务方可跳过.")
     doc.add_paragraph()
 
-    ref_table = doc.add_table(rows=9, cols=3)
+    ref_table = doc.add_table(rows=10, cols=3)
     ref_table.style = 'Table Grid'
     # 表头
     ref_table.rows[0].cells[0].text = "#"
@@ -438,6 +448,7 @@ def build_prd(ver, project_name=None):
         ("6", "自检报告", "handoff-self-check.md"),
         ("7", "非功能需求", "non-functional-requirements.md"),
         ("8", "本 PRD 摘要文档 (本文件)", "prd-summary.docx"),
+        ("9", "埋点设计说明 (数据埋点详细规范, 嵌在 PRD §9)", "(见 PRD §9 全文)"),
     ]
     for i, (num, name, path) in enumerate(artifacts, 1):
         ref_table.rows[i].cells[0].text = num
