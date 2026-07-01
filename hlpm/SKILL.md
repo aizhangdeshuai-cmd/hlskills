@@ -812,6 +812,41 @@ git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段
 
    **`verifier` 必查项**: 步骤 7 设计评审时,`verifier` 点击角标后**必须截图**,**截图里能看到标题栏 + × 按钮**才算通过。看不到 → 评审不通过。
 
+   **🚨 JS 兜底**(环境兼容终极保险): 某些浏览器 + ElementUI/Antd 组合会让 `position: sticky` 失效,加 JS 监听强制把 header 钉在 panel 顶部:
+
+   ```js
+   const header = document.querySelector('.floating-meta-panel-header');
+   const panelEl = document.getElementById('floatingMetaPanel');
+   if (header && panelEl) {
+     const padTop = parseInt(getComputedStyle(panelEl).paddingTop, 10) || 24;
+     const stickHeader = () => {
+       const rect = header.getBoundingClientRect();
+       const panelRect = panelEl.getBoundingClientRect();
+       const expectedTop = panelRect.top + padTop;
+       if (Math.abs(rect.top - expectedTop) > 1) {
+         header.style.transform = `translateY(${expectedTop - rect.top}px)`;
+       } else {
+         header.style.transform = '';
+       }
+     };
+     panelEl.addEventListener('scroll', stickHeader, { passive: true });
+     window.addEventListener('resize', stickHeader);
+     new MutationObserver(stickHeader).observe(panelEl, { childList: true, subtree: false });
+   }
+   ```
+
+   **CSS 三重保险**:
+   ```css
+   .floating-meta-panel-header {
+     position: -webkit-sticky;  /* Safari */
+     position: sticky;          /* 现代浏览器 */
+     top: 0;
+     background: #fff;          /* 不透明,否则内容会透过来 */
+     z-index: 2;                /* 必须比 meta-section 高 */
+     flex-shrink: 0;            /* 不被 flex 压缩 */
+   }
+   ```
+
    **自检 grep** (1 条):
    ```bash
    # 7. 🚨 panel 必须有 scroll-padding-top (跳过 sticky header)
