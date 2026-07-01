@@ -1,12 +1,14 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 26 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排 + hlprd 业务方签字文档合成),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 23 步) / hldev(开发段 15 步) 三件套,hlchain 编排 6 阶段(产品段→开发段→发布→部署 + 测试/事故修复,Agent 按文档顺序自觉加载,无真编排器 runtime)。hlprd 在 hlpm 完成后合成 .docx 业务方签字文档。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `Skill hlchain` 全链路或单点调 `Skill hl-flow` / `Skill hlpm` / `Skill hldev`。通过 Skill 工具调用。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 27 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排 + hlprd 业务方签字文档合成),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 23 步) / hldev(开发段 15 步) 三件套,hlchain 编排 6 阶段(产品段→开发段→发布→部署 + 测试/事故修复,Agent 按文档顺序自觉加载,无真编排器 runtime)。hlprd 在 hlpm 完成后合成 .docx 业务方签字文档。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `Skill hlchain` 全链路或单点调 `Skill hl-flow` / `Skill hlpm` / `Skill hldev`。通过 Skill 工具调用。
 ---
 ![hlpm](https://img.shields.io/badge/hlpm-v16-blue) ![review](https://img.shields.io/badge/review-集中评审-green)
 
 > 当前版本: **v16** | 评审模式: **集中评审（可选择）** | v16 起更名为 hl-flow / hlpm / hldev 三件套
 > ⚠️ 多平台能力不对等:Claude Code 完整支持;Codex / Cursor 降级支持(详见 README「平台支持分级」)
 # HL 项目开发技能合集
+
+> ⚠️ **能力边界声明(先读)**:`hlskills` 本质是一份 **Markdown 开发工作流 SOP 手册**,不是带 hook / 状态机 / 编排器 runtime 的系统。文中所有"硬性关卡""会签""门禁""强同步""拒收""阻塞"都是**文档纪律**,靠加载技能的 Agent **自觉遵守 + 用户手动把关**——Claude Code **不会**机械强制执行,漏一步不会自动"无法进入下一步"。唯二真实生效的机制:① 只读类 agent 的 `disallowedTools: Write, Edit`(harness 强制);② `hl-permission` 写入 `settings.local.json` 的权限 API。详见 README「能力边界声明」。
 
 ## 子技能索引
 
@@ -16,7 +18,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 |------|------|------|------|
 | 新功能/新项目开发 | `hl-flow` | `/hl-flow` | 28步单人全流程:加载上下文→需求→竞品→PRD→设计→确认→测试→Git工作区→计划→ADR→开发→审查→联调→自测→分支→安全→测试→浏览器→审计→交付→用户确认发布→用户确认部署 |
 | **多角色协作-产品段** | `hlpm` | `/hlpm` | **23步基础 + 6 条件路径:第 0.5 步评估规模(轻量/标准/复杂)和是否涉及设计;设计阶段(6/7)是条件性执行(纯后端/接口/状态机/规则可跳过)。仅产出文档(PRD/用例/验收/非功能),绝不修改代码。配套 hldev 使用** |
-| **多角色协作-开发段** | `hldev` | `/hldev` | **15步:验证5项交付物(含版本一致性+一致性矩阵)→Git→开发→审查→联调→测试→审计→发布→部署。配套 hlpm 使用** |
+| **多角色协作-开发段** | `hldev` | `/hldev` | **15步:验证8项交付物(含版本一致性+一致性矩阵)→Git→开发→审查→联调→测试→审计→发布→部署。配套 hlpm 使用** |
 | 旧项目分析 | `hllegacy` | `/hllegacy` | 12步:项目扫描→架构理解→质量基线→知识沉淀（含前端设计规范提取） |
 | 旧项目重构 | `hlrefactor` | `/hlrefactor` | 21步：代码分析→策略→测试护城河→逐模块重构→回归→文档→上线 |
 | Bug修复/线上排查 | `hlbug` | `/hlbug` | 14步：定位→Git工作区→修复→审查→回归→验证→分支→交付（融合 /investigate 四阶段调试） |
@@ -34,6 +36,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 错误处理 | `hlerror` | `/hlerror` | 类型化错误 + 重试断路器 + 错误边界 |
 | 编码标准 | `hlcode` | `/hlcode` | 命名 + 不可变性 + 文件组织 + 代码味道清单 |
 | 项目记忆 | `hlmemory` | `/hlmemory` | 跨会话持久化（项目/技术栈/架构/约定/工作记忆） |
+| 项目知识库 | `hlkb` | `/hlkb` | 8 类工程现实单一可信源(接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量),`.hl/knowledge/` 与代码同 commit 维护 |
 | 安装部署 | `hlsetup` | `/hlsetup` | 一键安装到 Claude Code / Codex / Cursor |
 | Hooks 配置 | `hlhooks` | `/hlhooks` | 安全/质量/自动化 hooks 模板 |
 | 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |
@@ -165,6 +168,8 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 ---
 
 ## 交付文档清单
+
+> ℹ️ **交付物计数口径**(避免混淆):下面这份 **12 项**是"全流程完整交付清单"(单人 hl-flow 视角);`hlpm` 产品段交付 **8 项**(PRD/测试/验收/非功能/矩阵/自检/设计/竞品);`hldev` 视角"产品 8 + 开发 6 = **14 项**"。三个数字分属不同范围,不是矛盾。
 
 1. 需求文档
 2. 竞品分析报告（新项目必须）

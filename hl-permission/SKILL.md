@@ -1,6 +1,6 @@
 ---
 name: hl-permission
-description: 一键授权当前项目目录下所有文件改动（Edit/Write/Bash），免去逐条确认，窗口关闭后权限自然失效。Use when 不想每次文件改动都被询问授权、需要临时提升操作效率。通过 /hl-permission 调用，执行 /hl-permission --off 可恢复。
+description: 一键授权当前项目目录下所有文件改动（Edit/Write/Bash），免去逐条确认。权限写入项目 .claude/settings.local.json 持久保留，不随窗口关闭失效，需手动执行 /hl-permission --off 或删除对应条目才能撤销。Use when 不想每次文件改动都被询问授权、需要临时提升操作效率。通过 /hl-permission 调用。
 ---
 
 # 一键项目授权
@@ -45,7 +45,7 @@ mkdir -p "$_ROOT/.claude"
 ```python
 import json, os, sys
 
-root = os.environ.get('PROJECT_ROOT', os.getcwd)
+root = os.environ.get('PROJECT_ROOT', os.getcwd())
 
 settings_path = os.path.join(root, '.claude', 'settings.local.json')
 
@@ -76,7 +76,8 @@ with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2, ensure_ascii=False)
 
 print(f"\n已授权 {added} 项权限 → {root}")
-print("此权限在本次窗口关闭后随 settings.local.json 保留（不会被 git 追踪）")
+print("⚠️ 此权限写入 settings.local.json 持久保留(不被 git 追踪),不会随窗口关闭失效。")
+print("   完成任务后请执行 /hl-permission --off 撤销。")
 ```
 
 ---

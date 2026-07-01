@@ -41,3 +41,4 @@ venv/
 # .dev-rejected / .product-archived 是拒收/归档状态,新建时不应入库
 docs/*/.dev-rejected
 docs/*/.product-archived
+.gstack/
