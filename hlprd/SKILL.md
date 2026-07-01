@@ -421,7 +421,7 @@ def build_prd(ver, project_name=None):
     if tracking:
         render_markdown_to_docx(doc, tracking, max_lines=80)
     else:
-        doc.add_paragraph("⚠️ 此节内容缺失: prd.md 中未找到「数据埋点」章节 (hlpm 步骤 4 PRD 编写的第 7 大模块). 业务方/运营上线后将看不到用户行为数据, 请回到 Skill hlpm 补走 7 大模块流程")
+        doc.add_paragraph("⚠️ 此节内容缺失: prd.md 中未找到「数据埋点」章节 (hlpm 步骤 4 PRD 编写的数据埋点需求段). 业务方/运营上线后将看不到用户行为数据, 请回到 Skill hlpm 补走 PRD 流程")
 
     # === 段 6: 参考资料 ===
     doc.add_heading("六、参考资料", 1)
