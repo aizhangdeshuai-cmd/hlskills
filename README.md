@@ -1,10 +1,10 @@
 # hlskills
 
-> HL 项目开发技能合集 — 26 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
+> HL 项目开发技能合集 — 27 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
 
 ## 5 分钟快速上手
 
-**第一次用?** 先跑 `Skill hlquickstart` —— 5 分钟内用 2 个 mock 场景让你**实际看到** AI 按文档一步步做事是什么体验,而不是读 26 项 SKILL.md 想象。详见 [`hlquickstart/SKILL.md`](./hlquickstart/SKILL.md)。
+**第一次用?** 先跑 `Skill hlquickstart` —— 5 分钟内用 2 个 mock 场景让你**实际看到** AI 按文档一步步做事是什么体验,而不是读 27 项 SKILL.md 想象。详见 [`hlquickstart/SKILL.md`](./hlquickstart/SKILL.md)。
 
 ### 我该用哪个? — 5 字口诀
 
@@ -27,7 +27,7 @@
 |--------------|------------|------|
 | `hlpm` (28 步单人全流程) | **`hl-flow`** | 改名,流程不变(28 步单人自跑) |
 | `hlpmnew` (0→1 41 步) | **(删除)** | 功能与 `hl-flow` 重复,移除 |
-| `hlnew` (新项目分析 18 步) | **(删除)** | 功能由 `hlbug` / `hl-flow` 覆盖,移除 |
+| `hlnew` (新项目分析 18 步) | **(删除)** | 功能由 `hllegacy`(旧项目分析)/ `hl-flow` 覆盖,移除 |
 | `hlpm-product` (23 步产品段) | **`hlpm`** | 改名(原 hlpm 删除后,占这个名字) |
 | `hlpm-dev` (15 步开发段) | **`hldev`** | 改名 |
 
@@ -75,7 +75,7 @@ Skill hlchain "为订单列表加导出 CSV"
 
 ## 核心特性
 
-- **26 项子技能**(含 `hlquickstart` 快速上手 + `hlchain` 全流程编排 + `hlprd` 业务方签字文档合成):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
+- **27 项子技能**(含 `hlquickstart` 快速上手 + `hlchain` 全流程编排 + `hlprd` 业务方签字文档合成 + `hlkb` 项目知识库):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
 - **19 个 Agent**:analyst / executor / code-reviewer / security-reviewer / verifier / designer / test-engineer 等专业角色
 - **多角色协作**:`hlpm` (产品段 23 步) + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
 - **全流程编排**:`hlchain` 由 Agent 按文档顺序自觉加载 hlpm → hldev → hlrelease → hldeploy 全链路(中间可调 hlbug/hltest), 不必手动一次次调各技能(无真编排器 runtime, 靠 Agent 自觉 + 用户手动打断)
@@ -87,7 +87,7 @@ Skill hlchain "为订单列表加导出 CSV"
 - **`hl-flow`** = 单人/小团队自跑全流程（28 步已含发布部署）。**全流程能力内置**。
 - **`hlchain`** = 编排器，**依次调 `hlpm → hldev → hlrelease → hldeploy`** 6 阶段。**主价值是多角色分工 + 阶段间停下评审/发布**。
 
-**单人项目**用 `hl-flow`（一条龙跑完）。**多角色项目**用 `hlchain`（产品段产 PRD 后停下，开发段接手）。
+**单人项目**用 `hl-flow`(一条龙跑完)。**多角色分工**用 `hlpm` + `hldev`(产品段产 PRD 后停下,开发段接手,阶段间自己把控节奏)。**想一次编排跑完全链路**用 `hlchain`(内部按顺序串 hlpm→hldev→hlrelease→hldeploy,少手动切换)。
 
 | 场景 | 技能 | 命令 |
 |------|------|------|
@@ -100,7 +100,7 @@ Skill hlchain "为订单列表加导出 CSV"
 | 设计/审查/无障碍 | `hldesign` / `hlreview` / `hla11y` | — |
 | 测试/发布/部署 | `hltest` / `hlrelease` / `hldeploy` | — |
 | Git/API/DB/错误/编码 | `hlgit` / `hlapi` / `hldb` / `hlerror` / `hlcode` | — |
-| 基础设施 | `hlsetup` / `hlhooks` / `hl-permission` / `hlmemory` | — |
+| 基础设施 | `hlsetup` / `hlhooks` / `hl-permission` / `hlmemory` / `hlkb` | — |
 | 浏览器实时 QA | `hlbrowse` | `/hlbrowse` (70+ 命令) |
 | 架构决策记录 | `hladr` | — |
 
@@ -128,7 +128,7 @@ Skill hlchain "为订单列表加导出 CSV"
 
 ### Claude Code(完整支持)
 
-支持全部能力：26 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、role-only 行为约束写入 agent 正文) + Skill 工具调用(如 `Skill hlpm`) + 可选外部技能(`videodb` / `market-research`)调用。
+支持全部能力：27 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、role-only 行为约束写入 agent 正文) + Skill 工具调用(如 `Skill hlpm`) + 可选外部技能(`videodb` / `market-research`)调用。
 
 ### Codex CLI(降级支持)
 

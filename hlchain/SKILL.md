@@ -131,7 +131,7 @@ hlpm 完成。输出物已生成于 docs/v1/。
 - **hlbug** → 任意阶段发现问题, 修复后回到原阶段
 
 ### 不被本技能编排的 (独立可用)
-- `hlquickstart` / `hlsetup` / `hlpermission` / `hlhooks` 等是工具型技能, hlchain 不自动调
+- `hlquickstart` / `hlsetup` / `hl-permission` / `hlhooks` 等是工具型技能, hlchain 不自动调
 
 ---
 
