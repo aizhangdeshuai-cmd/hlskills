@@ -188,7 +188,7 @@ docs/master-prd.md         ← 跨版本汇总, 每次版本交付后追加
 
 ## 下一步
 
-- 想知道"目录结构长啥样" → 看 [`structure.md`](./structure.md)
+- 想知道"目录结构长啥样" → 看 [`SKILL.md`](./SKILL.md) 的"目录结构(8 类知识库)"段
 - 想"具体怎么用" → 看 [`README.md`](./README.md)
 - 想"看真实 ehr 项目知识库" → 看 `/Users/zhangdanyang/ehr/.hl/knowledge/`
 
