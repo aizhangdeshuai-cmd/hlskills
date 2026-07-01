@@ -1,6 +1,6 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 27 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排 + hlprd 业务方签字文档合成),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 23 步) / hldev(开发段 15 步) 三件套,hlchain 编排 6 阶段(产品段→开发段→发布→部署 + 测试/事故修复,Agent 按文档顺序自觉加载,无真编排器 runtime)。hlprd 在 hlpm 完成后合成 .docx 业务方签字文档。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `Skill hlchain` 全链路或单点调 `Skill hl-flow` / `Skill hlpm` / `Skill hldev`。通过 Skill 工具调用。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 26 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 23 步) / hldev(开发段 15 步) 三件套,hlchain 编排 6 阶段(产品段→开发段→发布→部署 + 测试/事故修复,Agent 按文档顺序自觉加载,无真编排器 runtime)。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `Skill hlchain` 全链路或单点调 `Skill hl-flow` / `Skill hlpm` / `Skill hldev`。通过 Skill 工具调用。
 ---
 ![hlpm](https://img.shields.io/badge/hlpm-v16-blue) ![review](https://img.shields.io/badge/review-集中评审-green)
 
@@ -42,7 +42,6 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |
 | **全流程编排** | **`hlchain`** | **`Skill hlchain`** | **一次跑完 6 阶段: hlpm(产品段) → hldev(开发段) → hlrelease(发布) → hldeploy(部署), 过程中调 hlbug/hltest 修复/补充测试。适合"一次跑完需求→开发→测试→发布"全链路, 而不是手动一次次调各技能** |
 | **快速上手** | **`hlquickstart`** | **`Skill hlquickstart`** | **5 分钟演示 hlskills:看一眼 → mock bug 走 hlbug → mock 需求走 hlpm 前 7 步。第一次用必跑** |
-| **业务方签字文档合成** | **`hlprd`** | **`Skill hlprd`** | **hlpm 完成(含评审通过)后, 把 8 项交付物合成 .docx 标准交付包 (含设计稿截图 + 验收标准 + 业务方签字区), 给业务方签字确认。前置依赖: pip install python-docx** |
 
 ---
 

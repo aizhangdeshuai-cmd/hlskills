@@ -183,7 +183,6 @@ ls .hl/knowledge/db/*.md | grep -v er-diagram
 | `hladr` 架构决策 | 输出直接写到 `adr/` |
 | `hlbug` Bug 修复 | 涉及字段/接口/配置时同步 |
 | `hllegacy` 第 12 步 | 初始化整套知识库(从现状反推) |
-| `hlprd` 文档合成 | 引用知识库作为输入 |
 
 ---
 
