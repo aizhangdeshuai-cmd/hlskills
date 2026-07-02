@@ -389,6 +389,7 @@ AI: [输出 9 类文档到 docs/v1/(预计 1000+ 行)]
 | [`path-conventions.md`](./path-conventions.md) | 交付物路径中央规范 | 想了解"输出到哪" |
 | [`consistency-rules.md`](./consistency-rules.md) | 一致性矩阵模板 | 9.5 步骤生成矩阵时 |
 | [`handoff-package.md`](./handoff-package.md) | 交付物自检清单 | 11 步骤自检时 |
+| [`design-spec.md`](./design-spec.md) | 设计阶段实施规范(档二活文档 HTML/JS 模板) | 步骤 6b 写档二活文档时 |
 | [`../hldev/SKILL.md`](../hldev/SKILL.md) | 开发段流程 | 交接后给开发看 |
 | [`../hldev/handoff-rejection.md`](../hldev/handoff-rejection.md) | 拒收模板 | 收到拒收时 |
 

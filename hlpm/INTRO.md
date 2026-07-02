@@ -239,18 +239,21 @@ PRD 业务规则 ──┐
 
 ```
 hlpm/
-├── SKILL.md                    # 完整规范(1296 行,27 步详细规则)
+├── SKILL.md                    # 完整规范(954 行,27 步详细规则)
 ├── README.md                   # 正式使用说明(412 行,日常 reference)
 ├── INTRO.md                    # 本文件(技能概览,5 分钟阅读)
 ├── TRIAL.md                    # 试用说明(10 分钟跑通,1 个完整示例)
-├── consistency-rules.md        # 一致性矩阵模板
+├── consistency-rules.md        # 一致性矩阵模板(354 行)
 ├── handoff-package.md          # 交付物自检清单
 ├── path-conventions.md         # 路径规范中央文档
-└── disciplines/                # 核心纪律子目录(v18 新增)
-    ├── role-boundary.md        # 角色边界铁律
-    ├── completion-validation.md # 完成前验证 + 受阻停止 + 升级
-    ├── strong-sync.md          # 三项强同步 + 小改快通道
-    └── baseline-commit.md      # 版本基线 commit 规范
+├── design-spec.md              # 设计阶段实施规范(档二活文档 HTML/JS 模板,SKILL.md 第二阶段引用)
+├── disciplines/                # 核心纪律子目录(v18 新增)
+│   ├── role-boundary.md        # 角色边界铁律
+│   ├── completion-validation.md # 完成前验证 + 受阻停止 + 升级
+│   ├── strong-sync.md          # 三项强同步 + 小改快通道
+│   └── baseline-commit.md      # 版本基线 commit 规范
+└── roadmap/
+    └── consistency-automation.md # 一致性矩阵自动化规划(远期,未落地)
 ```
 
 **最小可工作单元**:`SKILL.md` + `path-conventions.md`
