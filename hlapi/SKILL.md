@@ -5,7 +5,7 @@ description: API设计规范，覆盖URL命名（复数名词/kebab-case/无动�
 
 # API 设计规范
 
-> **🚨 同步项目知识库**: 任何 API 新增/修改/废弃后, 必须同步更新 `.hl/knowledge/api/{module}.md`, 与代码 **同 commit 提交**。
+> **🚨 同步项目知识库**: 任何 API 新增/修改/废弃后, 必须同步更新 `knowledge/api/{module}.md`, 与代码 **同 commit 提交**。
 > 详见 `hlkb` 技能 SKILL.md §同步触发表。
 
 ---

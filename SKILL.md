@@ -36,7 +36,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 错误处理 | `hlerror` | `/hlerror` | 类型化错误 + 重试断路器 + 错误边界 |
 | 编码标准 | `hlcode` | `/hlcode` | 命名 + 不可变性 + 文件组织 + 代码味道清单 |
 | 项目记忆 | `hlmemory` | `/hlmemory` | 跨会话持久化（项目/技术栈/架构/约定/工作记忆） |
-| 项目知识库 | `hlkb` | `/hlkb` | 9 类工程现实单一可信源(接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖),`.hl/knowledge/` 与代码同 commit 维护 |
+| 项目知识库 | `hlkb` | `/hlkb` | 9 类工程现实单一可信源(接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖),`knowledge/` 与代码同 commit 维护 |
 | 安装部署 | `hlsetup` | `/hlsetup` | 一键安装到 Claude Code / Codex / Cursor |
 | Hooks 配置 | `hlhooks` | `/hlhooks` | 安全/质量/自动化 hooks 模板 |
 | 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |

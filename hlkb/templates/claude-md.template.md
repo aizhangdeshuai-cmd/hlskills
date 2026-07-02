@@ -1,7 +1,7 @@
 # CLAUDE.md · {项目名}
 
 > 项目级 AI 助手常驻约束。与代码同 commit 维护。
-> 本文件极简:只放铁律 + 完成前自检 + 指针。详情见 .hl/knowledge/ 与 docs/ 与 .hl/memory/。
+> 本文件极简:只放铁律 + 完成前自检 + 指针。详情见 knowledge/ 与 docs/ 与 .hl/memory/。
 
 ## 项目定位(一句话)
 {技术栈一句话} · {项目类型} · 当前版本 {vN}
@@ -9,16 +9,16 @@
 ## AI 助手必读(进来先看)
 1. 读本文件了解约束铁律
 2. 读 `docs/master-prd.md` 了解当前所有功能(如存在)
-3. 读 `.hl/knowledge/` 了解工程现实(接口/数据库/决策/状态机/枚举/错误码/依赖/环境变量)
+3. 读 `knowledge/` 了解工程现实(接口/数据库/决策/状态机/枚举/错误码/依赖/环境变量)
 4. 读 `.hl/memory/` 了解跨会话项目记忆(如存在)
 5. 不许从 src/ 反推架构——查知识库或问用户
 
 ## 知识库同步铁律
-任何代码/接口/数据/配置/决策变更,必须同步 `.hl/knowledge/` 对应条目,与代码同 commit 提交。详见 `hlkb` 技能 SKILL.md §同步触发表。
+任何代码/接口/数据/配置/决策变更,必须同步 `knowledge/` 对应条目,与代码同 commit 提交。详见 `hlkb` 技能 SKILL.md §同步触发表。
 
 ## 🚨 完成前自检(声明"完成"前必跑)
-- [ ] 改了 src/ 代码 → 确认本次 diff 涉及的表/接口/枚举,在 `.hl/knowledge/` 对应文件已更新
+- [ ] 改了 src/ 代码 → 确认本次 diff 涉及的表/接口/枚举,在 `knowledge/` 对应文件已更新
 - [ ] 涉及指标数字(性能/容量/QPS)→ 确认该数字在 PRD/NFR 文档/一致性矩阵三处一致,只允许一处定义
-- [ ] 涉及枚举/错误码/依赖/环境变量变更 → 确认 `.hl/knowledge/{enums,error-codes,dependencies,env-vars}/` 同步
-- [ ] 涉及架构决策 → 确认 `.hl/knowledge/adr/` 有对应 ADR
+- [ ] 涉及枚举/错误码/依赖/环境变量变更 → 确认 `knowledge/{enums,error-codes,dependencies,env-vars}/` 同步
+- [ ] 涉及架构决策 → 确认 `knowledge/adr/` 有对应 ADR
 - [ ] 证据先于断言:上述核对有证据方可声明"完成"

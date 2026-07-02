@@ -1,6 +1,6 @@
 ---
 name: hlkb
-description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖)。项目内 `.hl/knowledge/` 目录是"工程现实单一可信源",与 src/ 代码同 commit 维护。AI 助手/新开发者进入项目看文档就能 5 分钟理解项目,不用从代码反推。Use when 需要新建/更新项目知识库条目,或调用 hlskills 其他技能时需要检查"该次变更是否需要同步知识库"。
+description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖)。项目内 `knowledge/` 目录是"工程现实单一可信源",与 src/ 代码同 commit 维护。AI 助手/新开发者进入项目看文档就能 5 分钟理解项目,不用从代码反推。Use when 需要新建/更新项目知识库条目,或调用 hlskills 其他技能时需要检查"该次变更是否需要同步知识库"。
 ---
 
 # hlkb · 项目知识库
@@ -17,8 +17,8 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ### 三条铁律
 
-1. **仓库即文档**: `.hl/knowledge/` 与 `src/` 同 commit 维护。代码变了知识库必须同步,反之亦然。**不分离提交**。
-2. **同步触发**: 调用 `hlskills` 任意技能(`hlpm` / `hldev` / `hldb` / `hlapi` / `hlbug` / `hladr` / `hllegacy` / `hlrefactor` 等),如果涉及"代码/接口/数据/配置/决策"变更, **应同步 `.hl/knowledge/` 对应条目**。
+1. **仓库即文档**: `knowledge/` 与 `src/` 同 commit 维护。代码变了知识库必须同步,反之亦然。**不分离提交**。
+2. **同步触发**: 调用 `hlskills` 任意技能(`hlpm` / `hldev` / `hldb` / `hlapi` / `hlbug` / `hladr` / `hllegacy` / `hlrefactor` 等),如果涉及"代码/接口/数据/配置/决策"变更, **应同步 `knowledge/` 对应条目**。
 3. **同步失败 = 应阻塞**: 自检不通过应视为阻塞交付/发布的信号,由 Agent/用户把关补齐——目标是不留"代码写完但知识库没更新"的状态(靠自觉,非机制强制)。
 
 ### 与版本管理的关系
@@ -26,7 +26,7 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 | 文档类型 | 跟版本走? | 存放位置 | 说明 |
 |---|---|---|---|
 | PRD / 设计稿 / 测试用例(单版本) | ✅ 是 | `docs/v{N}/` | 版本基线,固定不变 |
-| **知识库(api/db/adr/...)** | **❌ 否(跨版本)** | **`.hl/knowledge/`** | **持续维护的工程资产,跨版本共用** |
+| **知识库(api/db/adr/...)** | **❌ 否(跨版本)** | **`knowledge/`** | **持续维护的工程资产,跨版本共用** |
 | 总 PRD / 总测试用例(跨版本汇总) | ❌ 否 | `docs/master-prd.md` / `docs/master-test-cases.md` | 每次版本交付后追加章节 |
 | CLAUDE.md | ❌ 否 | 项目根 | 项目元信息,持续维护 |
 | 评审记录 / 自检报告 | ✅ 是 | `docs/v{N}/` | 单版本产物 |
@@ -39,7 +39,7 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ### 主动调用场景
 
-1. **新建项目** → 初始化 `.hl/knowledge/` 整套(9 类目录)
+1. **新建项目** → 初始化 `knowledge/` 整套(9 类目录)
 2. **跑 hllegacy 旧项目分析** → 把现状反推沉淀到知识库
 3. **查接口/数据库/枚举的定义** → 已有知识库,直接 Read
 4. **生成 CLAUDE.md / master-prd.md** → 汇总知识库
@@ -51,12 +51,12 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 | 技能 | 何时触发 hlkb(建议) | 更新什么 | 对方已对接? |
 |---|---|---|---|
 | `hlpm` 版本交付自检 | 版本交付完成 | `docs/master-prd.md` / `docs/master-test-cases.md` 追加本版本章节 | ❌ 待对接 |
-| `hldev` 步骤 4.5 PRD 走查 | 代码实现后 commit | `.hl/knowledge/api/` / `.hl/knowledge/db/` 追加对应条目 | ✅ |
+| `hldev` 步骤 4.5 PRD 走查 | 代码实现后 commit | `knowledge/api/` / `knowledge/db/` 追加对应条目 | ✅ |
 | `hldev` 步骤 12.7 发布前自检 | 发布前 | 知识库完整性自检(9 类齐全, 缺则应补齐后再发布) | ✅ |
-| `hldb` 数据库迁移 | 任何 DDL | `.hl/knowledge/db/{table}.md` + ER 图 | ✅ |
-| `hlapi` 接口设计/新增 | 任何接口契约 | `.hl/knowledge/api/{module}.md` | ✅ |
+| `hldb` 数据库迁移 | 任何 DDL | `knowledge/db/{table}.md` + ER 图 | ✅ |
+| `hlapi` 接口设计/新增 | 任何接口契约 | `knowledge/api/{module}.md` | ✅ |
 | `hlbug` Bug 修复 | 涉及字段/接口/配置变化 | 同步知识库 | ✅ |
-| `hladr` 架构决策 | 任何决策 | `.hl/knowledge/adr/{NNNN}-{slug}.md` | ✅ |
+| `hladr` 架构决策 | 任何决策 | `knowledge/adr/{NNNN}-{slug}.md` | ✅ |
 | `hllegacy` 旧项目分析 | 知识沉淀阶段 | 初始化整套知识库 | ❌ 待对接 |
 
 ---
@@ -64,7 +64,7 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 ## 目录结构(9 类知识库)
 
 ```
-.hl/knowledge/
+knowledge/
 ├── README.md                       # 知识库总目录(进入后第一眼看到的索引)
 ├── api/                            # 类别 1: HTTP 接口
 │   ├── README.md                   # 接口总览
@@ -175,9 +175,9 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 | 引用场景 | 格式 |
 |---|---|
-| PRD 引用接口 | `见 .hl/knowledge/api/blacklist.md §新增接口` |
-| ADR 引用决策 | `详见 .hl/knowledge/adr/0001-bl12-restore-strategy.md` |
-| 状态机引用 | `见 .hl/knowledge/state-machines/blacklist.md` |
+| PRD 引用接口 | `见 knowledge/api/blacklist.md §新增接口` |
+| ADR 引用决策 | `详见 knowledge/adr/0001-bl12-restore-strategy.md` |
+| 状态机引用 | `见 knowledge/state-machines/blacklist.md` |
 | master 文档引用 | `详见 docs/v{N}/prd.md §{N}` |
 
 ### 知识库条目如何引用代码
@@ -199,7 +199,7 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 > 约束文件是 hlkb 同步铁律的**常驻上下文版**——hlkb SKILL.md 按需加载(调 Skill hlkb 才进场),约束文件每次会话常驻(AI 工具启动即读)。ehr 实证:纯声明性铁律会漂移,需"完成前自检"把声明变核对动作。
 
 - **模板**:`templates/claude-md.template.md`(与 9 类知识库模板并列)
-- **内容**:极简 4 段——项目定位(一句话) + AI 助手必读(指针) + 知识库同步铁律 + 🚨 完成前自检(5 项检查项)。不内嵌角色表/字段表/技术栈明细(那些在 `.hl/knowledge/` 与 `.hl/memory/`),避免成为新漂移源。
+- **内容**:极简 4 段——项目定位(一句话) + AI 助手必读(指针) + 知识库同步铁律 + 🚨 完成前自检(5 项检查项)。不内嵌角色表/字段表/技术栈明细(那些在 `knowledge/` 与 `.hl/memory/`),避免成为新漂移源。
 - **初始化/补全**:由各子技能 step 0 检测并按模板创建(不存在)或补"完成前自检"段(已存在缺该段)。详见各子技能 step 0。
 - **IDE 适配**:Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE → 都写。
 - **校验锚点**:已存在文件用 `## 🚨 完成前自检` 段标题判断是否合规,缺则追加该段(不重写其他内容)。
@@ -215,7 +215,7 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 | `hldb` | 任何 DDL 应同步 `db/` |
 | `hlapi` | 任何接口契约同步 `api/` |
 | `hlbug` | 涉及字段/接口/配置变化同步知识库 |
-| `hladr` | 决策直接写入 `.hl/knowledge/adr/`,不独立存(可视为 hladr 与 hlkb 合并) |
+| `hladr` | 决策直接写入 `knowledge/adr/`,不独立存(可视为 hladr 与 hlkb 合并) |
 | `hllegacy` | 旧项目分析建议初始化整套知识库(对方未对接,待补) |
 | `hlrefactor` | 重构涉及字段/接口 → 同步知识库 |
 | `hlrelease` | 发布前最后一道自检(由 hldev 步骤 12.7 触发) |
@@ -238,16 +238,16 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 | 编号 | 文档 | 路径 | 触发技能 | 状态 |
 |---|---|---|---|---|
-| 0 | 知识库总目录 | `.hl/knowledge/README.md` | hlkb / hllegacy | ✅ 项目元信息(初始化) |
-| 1 | 接口文档 | `.hl/knowledge/api/*.md` | hlapi / hldev | ✅ 接口契约(每次新增/修改) |
-| 2 | 数据库文档 | `.hl/knowledge/db/*.md` | hldb / hldev | ✅ DDL(每次迁移) |
-| 3 | ADR | `.hl/knowledge/adr/*.md` | hladr / hlpm | ✅ 决策(每次重大决策) |
-| 4 | 状态机 | `.hl/knowledge/state-machines/*.md` | hlpm / hldev | ✅ 状态机变化 |
-| 5 | 枚举字典 | `.hl/knowledge/enums/*.md` | hldev | ✅ 新增 ENUM 字段 |
-| 6 | 错误码 | `.hl/knowledge/error-codes/*.md` | hldev | ✅ 新增错误码 |
-| 7 | 依赖 | `.hl/knowledge/dependencies/*.md` | hldev | ✅ 升级/新增 |
-| 8 | 环境变量 | `.hl/knowledge/env-vars/*.md` | hldev | ✅ 新增/修改 |
-| 9 | 代码层测试覆盖 | `.hl/knowledge/tests/*.md` | hldev | ✅ 代码层用例编写(步骤 10) |
+| 0 | 知识库总目录 | `knowledge/README.md` | hlkb / hllegacy | ✅ 项目元信息(初始化) |
+| 1 | 接口文档 | `knowledge/api/*.md` | hlapi / hldev | ✅ 接口契约(每次新增/修改) |
+| 2 | 数据库文档 | `knowledge/db/*.md` | hldb / hldev | ✅ DDL(每次迁移) |
+| 3 | ADR | `knowledge/adr/*.md` | hladr / hlpm | ✅ 决策(每次重大决策) |
+| 4 | 状态机 | `knowledge/state-machines/*.md` | hlpm / hldev | ✅ 状态机变化 |
+| 5 | 枚举字典 | `knowledge/enums/*.md` | hldev | ✅ 新增 ENUM 字段 |
+| 6 | 错误码 | `knowledge/error-codes/*.md` | hldev | ✅ 新增错误码 |
+| 7 | 依赖 | `knowledge/dependencies/*.md` | hldev | ✅ 升级/新增 |
+| 8 | 环境变量 | `knowledge/env-vars/*.md` | hldev | ✅ 新增/修改 |
+| 9 | 代码层测试覆盖 | `knowledge/tests/*.md` | hldev | ✅ 代码层用例编写(步骤 10) |
 
 ---
 

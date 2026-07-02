@@ -1,6 +1,6 @@
 # 环境变量模板
 
-> 复制本文件, 重命名为 `README.md` 放到 `.hl/knowledge/env-vars/`
+> 复制本文件, 重命名为 `README.md` 放到 `knowledge/env-vars/`
 
 ## 格式说明
 
@@ -19,7 +19,7 @@
 
 | 变量 | 含义 | 默认值 | dev | staging | prod | 引入版本 | 关联 |
 |---|---|---|---|---|---|---|---|
-| `DB_HOST` | 数据库地址 | `localhost` | `localhost` | `db-staging.internal` | `db-prod.internal` | v1 | `.hl/knowledge/db/` |
+| `DB_HOST` | 数据库地址 | `localhost` | `localhost` | `db-staging.internal` | `db-prod.internal` | v1 | `knowledge/db/` |
 | `DB_PORT` | 数据库端口 | `3306` | `3306` | `3306` | `3306` | v1 | - |
 | `DB_NAME` | 数据库名 | `ehr` | `ehr_dev` | `ehr_staging` | `ehr` | v1 | - |
 | `DB_USER` | 数据库用户 | `root` | `dev_user` | `staging_user` | `prod_user` | v1 | - |
@@ -109,7 +109,7 @@
 
 ## 关联
 
-- 数据库: `.hl/knowledge/db/`
-- API 接口: `.hl/knowledge/api/`
-- 依赖: `.hl/knowledge/dependencies/`
+- 数据库: `knowledge/db/`
+- API 接口: `knowledge/api/`
+- 依赖: `knowledge/dependencies/`
 - 项目元信息: 项目根 `CLAUDE.md`

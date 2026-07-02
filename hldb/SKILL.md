@@ -5,7 +5,7 @@ description: 数据库迁移规范，覆盖安全清单（UP/DOWN/默认值/分�
 
 # 数据库迁移规范
 
-> **🚨 同步项目知识库**: 任何 DDL 变更(CREATE / ALTER / DROP)完成后, 必须同步更新 `.hl/knowledge/db/{table}.md` + `db/er-diagram.md`, 与迁移 SQL **同 commit 提交**。
+> **🚨 同步项目知识库**: 任何 DDL 变更(CREATE / ALTER / DROP)完成后, 必须同步更新 `knowledge/db/{table}.md` + `db/er-diagram.md`, 与迁移 SQL **同 commit 提交**。
 > 详见 `hlkb` 技能 SKILL.md §同步触发表。
 
 ---

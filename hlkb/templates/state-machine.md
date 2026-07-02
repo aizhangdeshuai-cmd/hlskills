@@ -1,6 +1,6 @@
 # 状态机模板
 
-> 复制本文件, 重命名为 `{entity}.md` 放到 `.hl/knowledge/state-machines/`
+> 复制本文件, 重命名为 `{entity}.md` 放到 `knowledge/state-machines/`
 
 ## 实体信息
 
@@ -54,6 +54,6 @@ stateDiagram-v2
 ## 关联
 
 - 业务规则: `docs/v3/prd.md §12 BL-12`(恢复 + 合并)
-- 数据库: `.hl/knowledge/db/blacklist.md §状态枚举扩展历史`
-- ADR: `.hl/knowledge/adr/0001-bl12-restore-strategy.md`
-- 枚举: `.hl/knowledge/enums/blacklist-status.md`
+- 数据库: `knowledge/db/blacklist.md §状态枚举扩展历史`
+- ADR: `knowledge/adr/0001-bl12-restore-strategy.md`
+- 枚举: `knowledge/enums/blacklist-status.md`

@@ -112,7 +112,10 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │       └── *.md
 ├── CHANGELOG.md                            # 根目录（业界惯例）
 ├── DESIGN.md                               # 根目录（跨目录兜底）
-└── .hl/memory/                             # 项目记忆
+├── knowledge/                              # 项目知识库(hlkb,9 类工程现实单一可信源)
+│   ├── api/ db/ adr/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/
+│   └── README.md                           # 知识库总目录
+└── .hl/memory/                             # 项目记忆（AI 跨会话工作记忆,隐藏）
     ├── project.md
     └── ...
 ```
@@ -151,9 +154,10 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 
 | 文件 | 路径 | 原因 |
 |------|------|------|
-| `CHANGELOG.md` | 项目根目录 | 业界惯例（GitHub / npm / Cargo 等都放根目录） |
+| `CHANGELOG.md` | 项目根目录 | 业界惯例（GitHub / npm / Cargo 等放根目录） |
 | `DESIGN.md` | 项目根目录 | 6a.1 步骤的跨目录兜底（项目级而非文档级） |
-| `.hl/memory/` | 项目根目录 | hlskills 体系约定的项目记忆目录 |
+| `knowledge/` | 项目根目录 | hlskills 项目知识库(9 类工程现实单一可信源,hlkb 维护)。放根目录可见,与 src/ 同 commit。不进 docs/ 是因跨版本共用,非单版本交付物 |
+| `.hl/memory/` | 项目根目录 | hlskills 体系约定的 AI 跨会话工作记忆目录(hlmemory 维护)。点开头隐藏,因属工具内部状态非正式交付 |
 
 ---
 
@@ -184,7 +188,8 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │       └── *.md                             # 测试报告、健康评分、审计报告
 ├── CHANGELOG.md                             # 开发段：变更日志（根目录特例）
 ├── DESIGN.md                                # 项目设计规范（6a.1 跨目录兜底 #4）
-└── .hl/memory/                              # 项目记忆（来自 hlmemory 技能）
+├── knowledge/                               # 项目知识库（hlkb,9 类工程现实单一可信源,根目录可见）
+└── .hl/memory/                              # 项目记忆（来自 hlmemory 技能,AI 工作记忆,隐藏）
     ├── project.md                           # 项目概述
     ├── techstack.md                         # 技术栈
     ├── architecture.md                      # 架构

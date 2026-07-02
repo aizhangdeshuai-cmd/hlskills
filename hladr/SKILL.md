@@ -5,8 +5,8 @@ description: 架构决策记录（ADR）规范，定义何时记录、ADR格式�
 
 # 架构决策记录（ADR）
 
-> **🚨 与 hlkb 合并**: hladr 产出的 ADR 文件直接写入项目的 `.hl/knowledge/adr/` 目录(不独立存放在 `docs/adr/`)。
-> 模板/编号/维护规则详见 `hlkb` 技能 + `hlkb/templates/adr.md` + 项目级 `.hl/knowledge/adr/README.md`。
+> **🚨 与 hlkb 合并**: hladr 产出的 ADR 文件直接写入项目的 `knowledge/adr/` 目录(不独立存放在 `docs/adr/`)。
+> 模板/编号/维护规则详见 `hlkb` 技能 + `hlkb/templates/adr.md` + 项目级 `knowledge/adr/README.md`。
 
 ---
 
@@ -23,7 +23,7 @@ description: 架构决策记录（ADR）规范，定义何时记录、ADR格式�
 
 ## ADR 格式
 
-每个 ADR 文件存储在 `.hl/knowledge/adr/` 目录下,文件名格式:`NNNN-<slug>.md`(详见 `hlkb` 技能 + `hlkb/templates/adr.md`)
+每个 ADR 文件存储在 `knowledge/adr/` 目录下,文件名格式:`NNNN-<slug>.md`(详见 `hlkb` 技能 + `hlkb/templates/adr.md`)
 
 ```markdown
 # ADR-NNNN: <标题>

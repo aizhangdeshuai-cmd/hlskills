@@ -1,6 +1,6 @@
 # 第三方依赖模板
 
-> 复制本文件, 重命名为 `README.md` 放到 `.hl/knowledge/dependencies/`
+> 复制本文件, 重命名为 `README.md` 放到 `knowledge/dependencies/`
 
 ## 依赖总览(按项目分类)
 
@@ -51,7 +51,7 @@
 
 ### 重大升级(vue 2 → vue 3 等)
 
-- 必须有 ADR(`.hl/knowledge/adr/{NNNN}-{slug}.md`)
+- 必须有 ADR(`knowledge/adr/{NNNN}-{slug}.md`)
 - 必须有迁移脚本(代码自动迁移 + 手动兜底)
 - 必须有完整回归测试
 - 一次 commit 升级一个依赖,**避免**批量升级多依赖导致问题难定位
@@ -81,6 +81,6 @@
 
 ## 关联
 
-- API 接口: `.hl/knowledge/api/`
-- 环境变量: `.hl/knowledge/env-vars/`
+- API 接口: `knowledge/api/`
+- 环境变量: `knowledge/env-vars/`
 - 技术栈: 项目根 `CLAUDE.md` §技术栈

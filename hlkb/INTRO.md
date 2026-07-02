@@ -12,7 +12,7 @@ description: hlkb 技能说明(概览版)。5 分钟读懂"项目知识库"是�
 
 ## 一句话定义
 
-**hlkb** 是 hlskills 体系中的"**项目知识库**"——仓库里 `.hl/knowledge/` 目录是"工程现实单一可信源",与 `src/` 代码同 commit 维护,9 类文档(接口 / 数据库 / ADR / 状态机 / 枚举 / 错误码 / 依赖 / 环境变量 / 测试覆盖)。
+**hlkb** 是 hlskills 体系中的"**项目知识库**"——仓库里 `knowledge/` 目录是"工程现实单一可信源",与 `src/` 代码同 commit 维护,9 类文档(接口 / 数据库 / ADR / 状态机 / 枚举 / 错误码 / 依赖 / 环境变量 / 测试覆盖)。
 
 ---
 
@@ -49,22 +49,22 @@ description: hlkb 技能说明(概览版)。5 分钟读懂"项目知识库"是�
 ```
 新人 / AI Agent 进入项目
    │
-   ├─ 打开 .hl/knowledge/api/{module}.md
+   ├─ 打开 knowledge/api/{module}.md
    │  └─ 所有接口契约一目了然(URL / 入参 / 出参 / 错误码 / 权限)
    │
-   ├─ 打开 .hl/knowledge/db/{table}.md + er-diagram.md
+   ├─ 打开 knowledge/db/{table}.md + er-diagram.md
    │  └─ 表结构 + 索引策略 + ER 图
    │
-   ├─ 打开 .hl/knowledge/adr/{NNNN}-{slug}.md
+   ├─ 打开 knowledge/adr/{NNNN}-{slug}.md
    │  └─ 所有架构决策 + 备选方案 + 选中理由
    │
-   ├─ 打开 .hl/knowledge/state-machines/{entity}.md
+   ├─ 打开 knowledge/state-machines/{entity}.md
    │  └─ 实体状态机流转图
    │
-   ├─ 打开 .hl/knowledge/enums/{enum}.md + error-codes/
+   ├─ 打开 knowledge/enums/{enum}.md + error-codes/
    │  └─ 全局枚举值 + 错误码字典
    │
-   └─ 打开 .hl/knowledge/{dependencies,env-vars}/
+   └─ 打开 knowledge/{dependencies,env-vars}/
       └─ 技术栈 + 环境变量
 ```
 
@@ -116,7 +116,7 @@ description: hlkb 技能说明(概览版)。5 分钟读懂"项目知识库"是�
 
 ```
 docs/v{N}/                  ← 版本基线(快照), 不会变
-.hl/knowledge/              ← 跨版本共用, 持续维护
+knowledge/              ← 跨版本共用, 持续维护
 CLAUDE.md                   ← 项目元信息, 持续维护
 docs/master-prd.md         ← 跨版本汇总, 每次版本交付后追加
 ```
@@ -142,7 +142,7 @@ docs/master-prd.md         ← 跨版本汇总, 每次版本交付后追加
 
 ## 3 个关键设计决策
 
-### 决策 1: 知识库放 `.hl/knowledge/`,不进 `docs/`
+### 决策 1: 知识库放 `knowledge/`,不进 `docs/`
 
 - **理由**: 知识库跨版本共用, 不是某版本的快照
 - **代价**: 不在版本基线检查范围内(consistency-rules.md 不跟踪)
@@ -191,7 +191,7 @@ docs/master-prd.md         ← 跨版本汇总, 每次版本交付后追加
 
 - 想知道"目录结构长啥样" → 看 [`SKILL.md`](./SKILL.md) 的"目录结构(9 类知识库)"段
 - 想"具体怎么用" → 看 [`README.md`](./README.md)
-- 想"看真实 ehr 项目知识库" → 看 `/Users/zhangdanyang/ehr/.hl/knowledge/`
+- 想"看真实 ehr 项目知识库" → 看 `/Users/zhangdanyang/ehr/knowledge/`
 
 ---
 

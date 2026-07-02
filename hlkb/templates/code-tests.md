@@ -1,6 +1,6 @@
 # 代码层测试覆盖模板
 
-> 复制本文件, 重命名为 `{module}.md` 放到 `.hl/knowledge/tests/`。
+> 复制本文件, 重命名为 `{module}.md` 放到 `knowledge/tests/`。
 > 一个模块一个文件,记录该模块代码层测试点 ↔ 验收用例(AC) ↔ 测试代码路径的交叉追溯。
 > 由 `hldev` 步骤 10 基于本次 code diff 编写并维护,与代码同 commit。
 
@@ -13,8 +13,8 @@
 | 引入版本 | v1 / v3 扩展 |
 | 源码路径 | `src/main/java/.../BlacklistService.java` |
 | 测试代码路径 | `src/test/java/.../BlacklistServiceTest.java`(按项目语言约定,不写死) |
-| 关联接口知识库 | `.hl/knowledge/api/blacklist.md` |
-| 关联数据库知识库 | `.hl/knowledge/db/blacklist.md` |
+| 关联接口知识库 | `knowledge/api/blacklist.md` |
+| 关联数据库知识库 | `knowledge/db/blacklist.md` |
 
 ## 代码层测试点(白盒)
 
@@ -49,5 +49,5 @@
 
 - 验收用例: `docs/{ver}/test-cases.md`(hlpm 产出)
 - 一致性矩阵 §1: `docs/{ver}/consistency-matrix.md`(实现覆盖列指向本文件测试点 ID)
-- 涉及决策: `.hl/knowledge/adr/{NNNN}-{slug}.md`
-- 状态机: `.hl/knowledge/state-machines/{entity}.md`
+- 涉及决策: `knowledge/adr/{NNNN}-{slug}.md`
+- 状态机: `knowledge/state-machines/{entity}.md`

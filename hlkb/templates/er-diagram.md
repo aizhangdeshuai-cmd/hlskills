@@ -1,6 +1,6 @@
 # ER 关系图模板
 
-> 复制本文件, 重命名为 `er-diagram.md` 放到 `.hl/knowledge/db/`。
+> 复制本文件, 重命名为 `er-diagram.md` 放到 `knowledge/db/`。
 > 本文件是**全局 ER 图**(跨表关系),单表结构请用 `db-table.md`。
 
 ## 全局 ER 图(mermaid)

@@ -227,7 +227,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
         - 本次重构涉及的函数/模块回归点
     - **交叉验证**:每个 hlpm 验收用例须在代码层用例中有对应覆盖,或显式标注"由 xx 单元测试覆盖/由 xx 集成测试覆盖",保证业务视角不丢
     - 执行全部用例(验收 + 代码层),验证一致性矩阵 §1 验收方法列(验收标准)全部通过
-    - **产出**:代码层测试点说明写入 `.hl/knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"代码层测试覆盖"规范,模板 `hlkb/templates/code-tests.md`),与代码同 commit。测试代码本身放项目语言约定的测试目录(Java `src/test/`、Node `test/`、Go 同级、Python `tests/`),随代码 commit 不另计入文档交付物
+    - **产出**:代码层测试点说明写入 `knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"代码层测试覆盖"规范,模板 `hlkb/templates/code-tests.md`),与代码同 commit。测试代码本身放项目语言约定的测试目录(Java `src/test/`、Node `test/`、Go 同级、Python `tests/`),随代码 commit 不另计入文档交付物
     - **反模式禁止**:不得"照着实现写用例"——代码的缺陷不能被当成正确预期写进用例。预期以 PRD 验收标准为准,代码偏离 PRD 时改代码不改用例
 
 11. **浏览器验证**（`qa-tester`）
@@ -263,16 +263,16 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 12.7. **🚨 项目知识库完整性自检**(`executor` 主导, **应阻塞发布**)
    - **触发时机**: 步骤 12.5 完成后, 步骤 13 发布前
    - **检查清单**(任一缺失 → 应阻塞发布, 补齐后再发布):
-     - [ ] `.hl/knowledge/api/{module}.md` 覆盖本版本所有新增/修改/删除接口(URL / Method / 入参 / 出参 / 错误码 / 权限)
-     - [ ] `.hl/knowledge/db/{table}.md` 覆盖本版本所有新增/修改/删除表 + 字段(与 `migrations/` SQL 一致)
-     - [ ] `.hl/knowledge/db/er-diagram.md` 反映最新表关系(如有外键变化)
-     - [ ] `.hl/knowledge/adr/{NNNN}-{slug}.md` 含本版本所有重大决策(如本版本新增了 1 个 BL-N 3 方案选 1 个, 必有 ADR)
-     - [ ] `.hl/knowledge/state-machines/{entity}.md` 反映最新状态机(本版本新增/删除状态/转移)
-     - [ ] `.hl/knowledge/enums/{enum}.md` 覆盖本版本所有新增/修改枚举值
-     - [ ] `.hl/knowledge/error-codes/README.md` 含本版本所有新增/修改错误码
-     - [ ] `.hl/knowledge/dependencies/README.md` 与 `pom.xml` / `package.json` 一致
-     - [ ] `.hl/knowledge/env-vars/README.md` 含本版本所有新增/修改环境变量
-     - [ ] `.hl/knowledge/tests/{module}.md` 覆盖本版本代码层修改点(每个新增/修改的 Service/API 有关键分支测试点 + 对应 AC + 测试代码路径)
+     - [ ] `knowledge/api/{module}.md` 覆盖本版本所有新增/修改/删除接口(URL / Method / 入参 / 出参 / 错误码 / 权限)
+     - [ ] `knowledge/db/{table}.md` 覆盖本版本所有新增/修改/删除表 + 字段(与 `migrations/` SQL 一致)
+     - [ ] `knowledge/db/er-diagram.md` 反映最新表关系(如有外键变化)
+     - [ ] `knowledge/adr/{NNNN}-{slug}.md` 含本版本所有重大决策(如本版本新增了 1 个 BL-N 3 方案选 1 个, 必有 ADR)
+     - [ ] `knowledge/state-machines/{entity}.md` 反映最新状态机(本版本新增/删除状态/转移)
+     - [ ] `knowledge/enums/{enum}.md` 覆盖本版本所有新增/修改枚举值
+     - [ ] `knowledge/error-codes/README.md` 含本版本所有新增/修改错误码
+     - [ ] `knowledge/dependencies/README.md` 与 `pom.xml` / `package.json` 一致
+     - [ ] `knowledge/env-vars/README.md` 含本版本所有新增/修改环境变量
+     - [ ] `knowledge/tests/{module}.md` 覆盖本版本代码层修改点(每个新增/修改的 Service/API 有关键分支测试点 + 对应 AC + 测试代码路径)
      - [ ] `docs/master-prd.md` 含本版本章节(如 v3 章节)
      - [ ] `docs/master-test-cases.md` 含本版本章节
      - [ ] 项目根 `CLAUDE.md` 反映最新项目元信息(技术栈 / 架构 / 当前版本)
@@ -326,7 +326,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 |---|------|------|-----------|------|
 | 10 | 技术设计文档 | `docs/tech-design.md` | `architect`(内容)→ `executor`(落盘) | 3 |
 | 11 | 架构决策记录 | `docs/adr/*.md` | `architect`(内容)→ `executor`(落盘) | 3 |
-| 12 | 代码层测试用例 | `.hl/knowledge/tests/{module}.md`(按 hlkb 第 9 类规范) | `test-engineer` | 10 |
+| 12 | 代码层测试用例 | `knowledge/tests/{module}.md`(按 hlkb 第 9 类规范) | `test-engineer` | 10 |
 | 13 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
 | 14 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
 | 15 | 变更日志 | `CHANGELOG.md` | `executor` | 13 |

@@ -1,6 +1,6 @@
 # 数据库表模板
 
-> 复制本文件, 重命名为 `{table}.md` 放到 `.hl/knowledge/db/`
+> 复制本文件, 重命名为 `{table}.md` 放到 `knowledge/db/`
 
 ## 表基本信息
 
@@ -71,7 +71,7 @@
 | v1 | `ACTIVE`, `REMOVED` | 初始 |
 | v3 | + `SUPERSEDED`, `HISTORICAL` | BL-12 恢复 + 合并 + 预留归档 |
 
-详见 `.hl/knowledge/enums/blacklist-status.md` + `state-machines/blacklist.md`
+详见 `knowledge/enums/blacklist-status.md` + `state-machines/blacklist.md`
 
 ## 关键变更(v3 BL-12 方案 C 软唯一索引)
 
@@ -104,7 +104,7 @@ CREATE UNIQUE INDEX uniq_blacklist_active
 
 ## 关联
 
-- ADR: `.hl/knowledge/adr/0001-bl12-restore-strategy.md`
+- ADR: `knowledge/adr/0001-bl12-restore-strategy.md`
 - 业务规则: `docs/v3/prd.md §12 BL-12`
 - 状态机: `state-machines/blacklist.md`
 - 枚举: `enums/blacklist-status.md` + `enums/data-source.md`

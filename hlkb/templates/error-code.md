@@ -1,6 +1,6 @@
 # 错误码字典模板
 
-> 复制本文件, 重命名为 `README.md` 放到 `.hl/knowledge/error-codes/`
+> 复制本文件, 重命名为 `README.md` 放到 `knowledge/error-codes/`
 
 ## 格式说明
 
@@ -54,6 +54,6 @@
 
 ## 关联
 
-- API 接口: `.hl/knowledge/api/blacklist.md`
-- 数据库: `.hl/knowledge/db/blacklist.md`
+- API 接口: `knowledge/api/blacklist.md`
+- 数据库: `knowledge/db/blacklist.md`
 - 业务规则: `docs/v3/prd.md §{N} BL-{N}` (具体业务规则)

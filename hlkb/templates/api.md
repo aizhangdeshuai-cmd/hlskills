@@ -1,6 +1,6 @@
 # API 接口模板
 
-> 复制本文件, 重命名为 `{module}.md` 放到 `.hl/knowledge/api/`
+> 复制本文件, 重命名为 `{module}.md` 放到 `knowledge/api/`
 
 ## 接口总览
 
@@ -104,8 +104,8 @@
 - **事务**: 同事务包含 `supersede` 操作(NFR-D-1 事务原子性)
 - **关联**:
   - 业务规则: `docs/v3/prd.md §12 BL-12`
-  - ADR: `.hl/knowledge/adr/0001-bl12-restore-strategy.md`
-  - 数据库: `.hl/knowledge/db/blacklist.md §恢复流程`
+  - ADR: `knowledge/adr/0001-bl12-restore-strategy.md`
+  - 数据库: `knowledge/db/blacklist.md §恢复流程`
 
 ---
 
@@ -146,4 +146,4 @@
 | 40901 | 409 | 状态冲突 | 恢复时状态已非 REMOVED / 并发冲突 |
 | 50001 | 500 | 系统错误 | 事务失败 / DB 异常 |
 
-详见 `.hl/knowledge/error-codes/README.md`
+详见 `knowledge/error-codes/README.md`

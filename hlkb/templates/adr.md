@@ -1,6 +1,6 @@
 # ADR 模板 (Michael Nygard 格式)
 
-> 复制本文件, 重命名为 `{NNNN}-{slug}.md` 放到 `.hl/knowledge/adr/`
+> 复制本文件, 重命名为 `{NNNN}-{slug}.md` 放到 `knowledge/adr/`
 > NNNN = 4 位顺序号(如 0001, 0002), 永不重置
 > slug = 简短描述, 全小写, 单词用连字符
 
@@ -62,7 +62,7 @@
 ## 关联(References)
 
 - 业务规则: `docs/v{N}/prd.md §{N}`
-- 数据库: `.hl/knowledge/db/{table}.md`
-- 状态机: `.hl/knowledge/state-machines/{entity}.md`
+- 数据库: `knowledge/db/{table}.md`
+- 状态机: `knowledge/state-machines/{entity}.md`
 - 相关 ADR: `{NNNN}-{slug}.md` (如有)
 - 外部链接: (如有)

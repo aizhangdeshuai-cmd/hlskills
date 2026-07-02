@@ -1,6 +1,6 @@
 # 枚举字典模板
 
-> 复制本文件, 重命名为 `{enum}.md` 放到 `.hl/knowledge/enums/`
+> 复制本文件, 重命名为 `{enum}.md` 放到 `knowledge/enums/`
 
 ## 枚举信息
 
@@ -47,6 +47,6 @@
 
 ## 关联
 
-- 状态机: `.hl/knowledge/state-machines/blacklist.md`
+- 状态机: `knowledge/state-machines/blacklist.md`
 - 业务规则: `docs/v3/prd.md §1 BL-1 / §1.12 BL-12`
-- 数据库: `.hl/knowledge/db/blacklist.md §状态枚举扩展历史`
+- 数据库: `knowledge/db/blacklist.md §状态枚举扩展历史`
