@@ -23,7 +23,7 @@ description: 架构决策记录（ADR）规范，定义何时记录、ADR格式�
 
 ## ADR 格式
 
-每个 ADR 文件存储在 `docs/adr/` 目录下，文件名格式：`NNNN-<slug>.md`
+每个 ADR 文件存储在 `.hl/knowledge/adr/` 目录下,文件名格式:`NNNN-<slug>.md`(详见 `hlkb` 技能 + `hlkb/templates/adr.md`)
 
 ```markdown
 # ADR-NNNN: <标题>

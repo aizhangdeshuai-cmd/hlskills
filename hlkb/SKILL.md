@@ -46,18 +46,18 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ### 被动触发场景(其他技能约定调用 hlkb — 靠 Agent 自觉,非自动 hook)
 
-| 技能 | 何时触发 hlkb | 更新什么 |
-|---|---|---|
-| `hlpm` 步骤 11 自检 | 版本交付完成 | `docs/master-prd.md` / `docs/master-test-cases.md` 追加本版本章节 |
-| `hldev` 步骤 4.5 PRD 走查 | 代码实现后 commit | `.hl/knowledge/api/` / `.hl/knowledge/db/` 追加对应条目 |
-| `hldev` 步骤 12 发布前自检 | 发布前 | 知识库完整性自检(8 类齐全, 缺则应补齐后再发布) |
-| `hldb` 数据库迁移 | 任何 DDL | `.hl/knowledge/db/{table}.md` + ER 图 |
-| `hlapi` 接口设计/新增 | 任何接口契约 | `.hl/knowledge/api/{module}.md` |
-| `hlbug` Bug 修复 | 涉及字段/接口/配置变化 | 同步知识库 |
-| `hladr` 架构决策 | 任何决策 | `.hl/knowledge/adr/{NNNN}-{slug}.md` |
-| `hllegacy` 旧项目分析 | 第 12 步沉淀 | 初始化整套知识库 |
+> ⚠️ 下表为 hlkb **建议**的触发点。其中 `hlpm`/`hllegacy` 当前**未在其 SKILL.md 内对接**本技能(待后续补齐),实际触发由本项目 Agent/用户手动把关;`hldev`/`hldb`/`hlapi`/`hladr` 已在其各自 SKILL.md 内引用 hlkb。
 
-> 详见本节上方"被动触发场景"表。
+| 技能 | 何时触发 hlkb(建议) | 更新什么 | 对方已对接? |
+|---|---|---|---|
+| `hlpm` 版本交付自检 | 版本交付完成 | `docs/master-prd.md` / `docs/master-test-cases.md` 追加本版本章节 | ❌ 待对接 |
+| `hldev` 步骤 4.5 PRD 走查 | 代码实现后 commit | `.hl/knowledge/api/` / `.hl/knowledge/db/` 追加对应条目 | ✅ |
+| `hldev` 步骤 12.7 发布前自检 | 发布前 | 知识库完整性自检(8 类齐全, 缺则应补齐后再发布) | ✅ |
+| `hldb` 数据库迁移 | 任何 DDL | `.hl/knowledge/db/{table}.md` + ER 图 | ✅ |
+| `hlapi` 接口设计/新增 | 任何接口契约 | `.hl/knowledge/api/{module}.md` | ✅ |
+| `hlbug` Bug 修复 | 涉及字段/接口/配置变化 | 同步知识库 | ✅ |
+| `hladr` 架构决策 | 任何决策 | `.hl/knowledge/adr/{NNNN}-{slug}.md` | ✅ |
+| `hllegacy` 旧项目分析 | 知识沉淀阶段 | 初始化整套知识库 | ❌ 待对接 |
 
 ---
 
@@ -72,7 +72,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 ├── db/                             # 类别 2: 数据库表 + ER 图
 │   ├── README.md                   # 数据库总览
 │   ├── {table}.md                  # 单个表
-│   └── er-diagram.md               # ER 关系图(可嵌入 mermaid)
+│   └── er-diagram.md               # ER 关系图(全局跨表关系,可嵌入 mermaid)
 ├── adr/                            # 类别 3: 架构决策记录
 │   ├── README.md                   # ADR 索引
 │   └── {NNNN}-{slug}.md            # 单个 ADR(Michael Nygard 格式)
@@ -102,6 +102,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 |---|---|---|
 | API 接口 | `templates/api.md` | URL / Method / 入参 / 出参 / 错误码 / 权限 / 调用方 |
 | 数据库表 | `templates/db-table.md` | 字段 / 类型 / 索引 / 外键 / 索引策略 |
+| ER 关系图 | `templates/er-diagram.md` | 全局跨表关系 / mermaid 图 / 关键约束 |
 | 架构决策 | `templates/adr.md` | 上下文 / 决策 / 后果 / 备选方案 |
 | 状态机 | `templates/state-machine.md` | 状态列表 / 转移图 / 转移条件 |
 | 枚举字典 | `templates/enum.md` | 枚举值 / 含义 / 来源 / 写入方 |
@@ -145,7 +146,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ### 自检规则(发布前)
 
-`hldev` 步骤 12 发布前自检,逐项检查:
+`hldev` 步骤 12.7 发布前自检,逐项检查:
 
 - [ ] `api/` 目录覆盖所有 v{N} 文档里引用的接口
 - [ ] `db/` 目录覆盖所有数据库表
@@ -192,15 +193,15 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 | 技能 | 关系 |
 |---|---|
-| `hlpm` | 步骤 11 自检要求追加 `docs/master-prd.md` / `docs/master-test-cases.md` |
-| `hldev` | 步骤 4.5 走查同步 `api/` `db/`; 步骤 12 自检知识库完整性 |
+| `hlpm` | 版本交付自检建议追加 `docs/master-prd.md` / `docs/master-test-cases.md`(对方未对接,待补) |
+| `hldev` | 步骤 4.5 走查同步 `api/` `db/`; 步骤 12.7 自检知识库完整性 |
 | `hldb` | 任何 DDL 应同步 `db/` |
 | `hlapi` | 任何接口契约同步 `api/` |
 | `hlbug` | 涉及字段/接口/配置变化同步知识库 |
-| `hladr` | 决策直接写入 `adr/`,不再独立存(可视为 hladr 与 hlkb 合并) |
-| `hllegacy` | 旧项目分析 → 初始化整套知识库 |
+| `hladr` | 决策直接写入 `.hl/knowledge/adr/`,不独立存(可视为 hladr 与 hlkb 合并) |
+| `hllegacy` | 旧项目分析建议初始化整套知识库(对方未对接,待补) |
 | `hlrefactor` | 重构涉及字段/接口 → 同步知识库 |
-| `hlrelease` | 发布前最后一道自检(由 hldev 步骤 12 触发) |
+| `hlrelease` | 发布前最后一道自检(由 hldev 步骤 12.7 触发) |
 
 ---
 
@@ -214,18 +215,21 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ---
 
-## 8 项必交物清单(本技能不交付,只触发同步)
+## 知识库条目清单(本技能不交付,只触发同步)
+
+> 下表与"8 类知识库"一一对应(总目录 + 7 类内容类别 = 8 行)。依赖与环境变量分开列。
 
 | 编号 | 文档 | 路径 | 触发技能 | 状态 |
 |---|---|---|---|---|
-| 1 | 知识库总目录 | `.hl/knowledge/README.md` | hlkb / hllegacy | ✅ 项目元信息(初始化) |
-| 2 | 接口文档 | `.hl/knowledge/api/*.md` | hlapi / hldev | ✅ 接口契约(每次新增/修改) |
-| 3 | 数据库文档 | `.hl/knowledge/db/*.md` | hldb / hldev | ✅ DDL(每次迁移) |
-| 4 | ADR | `.hl/knowledge/adr/*.md` | hladr / hlpm | ✅ 决策(每次重大决策) |
-| 5 | 状态机 | `.hl/knowledge/state-machines/*.md` | hlpm / hldev | ✅ 状态机变化 |
-| 6 | 枚举字典 | `.hl/knowledge/enums/*.md` | hldev | ✅ 新增 ENUM 字段 |
-| 7 | 错误码 | `.hl/knowledge/error-codes/*.md` | hldev | ✅ 新增错误码 |
-| 8 | 依赖/环境变量 | `.hl/knowledge/{dependencies,env-vars}/*.md` | hldev | ✅ 升级/新增 |
+| 0 | 知识库总目录 | `.hl/knowledge/README.md` | hlkb / hllegacy | ✅ 项目元信息(初始化) |
+| 1 | 接口文档 | `.hl/knowledge/api/*.md` | hlapi / hldev | ✅ 接口契约(每次新增/修改) |
+| 2 | 数据库文档 | `.hl/knowledge/db/*.md` | hldb / hldev | ✅ DDL(每次迁移) |
+| 3 | ADR | `.hl/knowledge/adr/*.md` | hladr / hlpm | ✅ 决策(每次重大决策) |
+| 4 | 状态机 | `.hl/knowledge/state-machines/*.md` | hlpm / hldev | ✅ 状态机变化 |
+| 5 | 枚举字典 | `.hl/knowledge/enums/*.md` | hldev | ✅ 新增 ENUM 字段 |
+| 6 | 错误码 | `.hl/knowledge/error-codes/*.md` | hldev | ✅ 新增错误码 |
+| 7 | 依赖 | `.hl/knowledge/dependencies/*.md` | hldev | ✅ 升级/新增 |
+| 8 | 环境变量 | `.hl/knowledge/env-vars/*.md` | hldev | ✅ 新增/修改 |
 
 ---
 

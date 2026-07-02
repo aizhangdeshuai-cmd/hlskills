@@ -47,16 +47,16 @@ description: hlkb 技能使用说明(README)。面向"第一次在本项目跑 h
 │
 └─ 项目还没有 .hl/knowledge/ (新项目 / 接手旧项目)
    │
-   ├─ 新项目 + 跑 hlpm → hlpm 步骤 11 自检会触发初始化
+   ├─ 新项目 + 跑 hlpm → 建议在版本交付自检时触发初始化(hlpm 未对接,需手动)
    │
-   ├─ 接手旧项目 → 跑 hllegacy 第 12 步会生成 .hl/knowledge/README.md + 初始反推
+   ├─ 接手旧项目 → 跑 hllegacy 知识沉淀阶段建议生成 .hl/knowledge/README.md + 初始反推(hllegacy 未对接,需手动)
    │
-   └─ 自己手动初始化 → 看下面"手动初始化 8 步"
+   └─ 自己手动初始化 → 看下面"手动初始化"
 ```
 
 ---
 
-## 手动初始化 8 步(项目还没有 `.hl/knowledge/`)
+## 手动初始化(项目还没有 `.hl/knowledge/`)
 
 ```bash
 # 1. 创建 8 个目录(可少建, 没内容的类别不建)
@@ -69,9 +69,9 @@ mkdir -p .hl/knowledge/{api,db,adr,state-machines,enums,error-codes,dependencies
 cp templates/api.md .hl/knowledge/api/blacklist.md
 # 在里面填接口(URL/Method/入参/出参/错误码/权限)
 
-# 4. 数据库文档(按表拆分, 加 ER 图)
+# 4. 数据库文档(按表拆分, 加全局 ER 图)
 cp templates/db-table.md .hl/knowledge/db/blacklist.md
-cp templates/db-table.md .hl/knowledge/db/er-diagram.md  # ER 图可嵌入 mermaid
+cp templates/er-diagram.md .hl/knowledge/db/er-diagram.md  # 全局跨表关系图(mermaid)
 
 # 5. ADR(每次决策新建一个, 编号 0001+)
 cp templates/adr.md .hl/knowledge/adr/0001-{slug}.md
@@ -137,9 +137,10 @@ git commit -m "feat(api): 实现 BL-12 恢复接口(ADR 0001)"
 
 ## 8 类知识库填充示例
 
-详见 `templates/` 目录的 8 个模板文件:
+详见 `templates/` 目录的 9 个模板文件:
 - `templates/api.md` (接口)
 - `templates/db-table.md` (数据库表)
+- `templates/er-diagram.md` (全局 ER 关系图)
 - `templates/adr.md` (决策记录)
 - `templates/state-machine.md` (状态机)
 - `templates/enum.md` (枚举)
@@ -151,7 +152,7 @@ git commit -m "feat(api): 实现 BL-12 恢复接口(ADR 0001)"
 
 ## 自检清单(发布前必跑)
 
-`hldev` 步骤 12 发布前自动跑, 你也可以手动跑:
+`hldev` 步骤 12.7 发布前自动跑, 你也可以手动跑:
 
 ```bash
 # 检查 8 类是否齐全
@@ -163,26 +164,26 @@ grep -oE "(GET|POST|PUT|DELETE) /[a-z]" .hl/knowledge/api/*.md | sort -u
 # 检查 ADR 数量
 ls .hl/knowledge/adr/*.md | wc -l
 
-# 检查数据库表文档
-ls .hl/knowledge/db/*.md | grep -v er-diagram
+# 检查数据库表文档 + ER 图
+ls .hl/knowledge/db/*.md
 ```
 
-**任一缺失 → 阻塞发布**。
+**任一缺失 → 应补齐后再发布**(靠 Agent/用户把关,非机制强制阻断;与 SKILL.md 能力边界声明一致)。
 
 ---
 
 ## 与 hlskills 其他技能的关系
 
-| 技能 | 触发 hlkb 的位置 |
-|---|---|
-| `hlpm` 步骤 11 自检 | 版本交付后追加 `docs/master-prd.md` / `master-test-cases.md` |
-| `hldev` 步骤 4.5 走查 | 代码实现后同步 `api/` `db/` |
-| `hldev` 步骤 12 发布前 | 自检 8 类知识库完整性, 缺则阻塞 |
-| `hldb` 数据库迁移 | 任何 DDL 强约束同步 `db/` |
-| `hlapi` 接口设计 | 任何契约强约束同步 `api/` |
-| `hladr` 架构决策 | 输出直接写到 `adr/` |
-| `hlbug` Bug 修复 | 涉及字段/接口/配置时同步 |
-| `hllegacy` 第 12 步 | 初始化整套知识库(从现状反推) |
+| 技能 | 触发 hlkb 的位置 | 对方已对接? |
+|---|---|---|
+| `hlpm` 版本交付自检 | 建议追加 `docs/master-prd.md` / `master-test-cases.md` | ❌ 待对接 |
+| `hldev` 步骤 4.5 走查 | 代码实现后同步 `api/` `db/` | ✅ |
+| `hldev` 步骤 12.7 发布前 | 自检 8 类知识库完整性, 缺则应补齐 | ✅ |
+| `hldb` 数据库迁移 | 任何 DDL 强约束同步 `db/` | ✅ |
+| `hlapi` 接口设计 | 任何契约强约束同步 `api/` | ✅ |
+| `hladr` 架构决策 | 输出直接写到 `adr/` | ✅ |
+| `hlbug` Bug 修复 | 涉及字段/接口/配置时同步 | ✅ |
+| `hllegacy` 知识沉淀 | 建议初始化整套知识库(从现状反推) | ❌ 待对接 |
 
 ---
 
