@@ -79,6 +79,7 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
    - 如存在已有分析文档（竞品分析 / PRD / 技术设计 / ADR）→ Read 加载
    - 如有 `docs/design/spec.md` 或同级设计规范文件 → **记录路径**，供 6a.1 使用
    - 迭代需求场景：必须先理解项目现状，再分析新需求
+   - **项目约束文件初始化**:检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)。不存在 → 按 `hlkb/templates/claude-md.template.md` 创建;已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)。详见 `hlkb` §项目约束文件。
 
 ### 第零阶段.5：规模判断(阻塞点)
 

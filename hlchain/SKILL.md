@@ -72,6 +72,14 @@ Agent:
 
 ## Agent 加载本技能后的执行规范
 
+### 第零步: 项目约束文件初始化
+
+编排开始前,确保项目有 AI 约束文件作为常驻载体(后续各阶段产出的知识会沉淀进 `.hl/knowledge/` 与 `.hl/memory/`,约束文件指向它们):
+- 检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)
+- 不存在 → 按 `hlkb/templates/claude-md.template.md` 创建
+- 已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)
+- 详见 `hlkb` §项目约束文件(注:被编排的子技能 hlpm/hldev 等其 step 0 也会做此检测,重复检测幂等,不冲突)
+
 ### 第一步: 用 AskUserQuestion 问 3 个问题
 
 ```

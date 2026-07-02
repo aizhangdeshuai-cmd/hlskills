@@ -62,6 +62,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 ### 第零阶段：交付物验证
 
 0. **★ 验证版本目录 + 8 项交付物 + 一致性矩阵**（`executor` 主导，阻塞点）
+   - **项目约束文件初始化**:检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)。不存在 → 按 `hlkb/templates/claude-md.template.md` 创建;已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)。详见 `hlkb` §项目约束文件。
    - 接收来自 `hlpm` 步骤 12 的交付包
    - **:验证版本目录**
      - 确认交付物位于 `docs/vN/` 目录(而非散落在 `docs/` 根)

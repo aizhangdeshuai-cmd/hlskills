@@ -25,6 +25,14 @@ description: 旧项目首次分析流程（12步），纯理解不修改，覆�
 
 ## 分析流程
 
+### 第零阶段：项目约束文件初始化
+
+0. **项目约束文件初始化** — 旧项目分析前,先确保项目有 AI 约束文件作为常驻载体(后续分析结论会沉淀进 `.hl/knowledge/` 与 `.hl/memory/`,约束文件指向它们):
+   - 检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)
+   - 不存在 → 按 `hlkb/templates/claude-md.template.md` 创建
+   - 已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)
+   - 详见 `hlkb` §项目约束文件
+
 ### 第一阶段：项目扫描（3 步）
 1. **项目全景扫描** — `architect` 通读项目，输出：
    - 代码规模（总文件数、总行数、目录结构）

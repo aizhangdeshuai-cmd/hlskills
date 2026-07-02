@@ -57,6 +57,7 @@ description: 新需求开发完整流程（28步，单人/小团队全流程自�
    - 如存在 `.hl/memory/` 目录 → Read 全部 memory 文件（project.md / techstack.md / architecture.md / conventions.md / working.md）
    - 如存在已有分析文档（竞品分析报告 / PRD / 技术设计文档 / ADR）→ Read 加载
    - 📎 迭代需求场景：**必须先理解项目现状，再分析新需求**。跳过此步会导致脱离上下文
+   - **项目约束文件初始化**:检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)。不存在 → 按 `hlkb/templates/claude-md.template.md` 创建;已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)。详见 `hlkb` §项目约束文件。
 
 ### 第一阶段：需求阶段
 1. **需求分析** — `analyst` 基于已有文档上下文，理解并梳理新需求，如用户提供需求文档（含图片）：

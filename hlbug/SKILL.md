@@ -78,6 +78,7 @@ description: Bug修复流程（14步），覆盖问题定位→根因分析→�
    - 如存在 `.hl/memory/` → Read 全部文件
    - 如存在技术设计文档 / API文档 / 数据库设计 → Read 加载相关模块
    - 如 Bug 涉及已分析过的模块 → 加载对应分析文档
+   - **项目约束文件初始化**:检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)。不存在 → 按 `hlkb/templates/claude-md.template.md` 创建;已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)。详见 `hlkb` §项目约束文件。
 
 ### 第一阶段：问题定位
 1. **Bug分析** — `debugger` 基于项目文档上下文理解Bug现象与影响范围。如用户提供Bug截图/录屏：优先用模型原生多模态识别，不支持则用 Read 工具读取图片；如需分析视频可使用可选外部 `videodb` 技能（需用户自行安装，未安装不影响本流程）
