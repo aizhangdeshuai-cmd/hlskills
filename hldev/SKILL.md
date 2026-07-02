@@ -48,7 +48,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 | 角色 | Agent | 用途 |
 |------|-------|------|
 | 前端开发 | `executor` | 交付物验证、前端实现 |
-| 后端开发 | `architect` / `executor` | 后端架构设计与实现、ADR 编写 |
+| 后端开发 | `executor`(`architect` 咨询) | 后端架构设计与实现、ADR 编写。注:`architect` 是只读 agent(`disallowedTools: Write, Edit`),负责架构设计与 ADR **内容生成**;实际代码实现与文件落盘由 `executor` 执行 |
 | 代码审查 | `code-reviewer` | 代码质量审查（严重 / 重要 / 次要三级） |
 | 安全审查 | `security-reviewer` | 安全漏洞扫描 |
 | 测试 | `test-engineer` / `qa-tester` | 用例执行、浏览器验证 |
@@ -248,9 +248,9 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
      - 一般功能 < 95% 或工具 < 90% → 每低 5% 扣 10 分
    - **MVP 豁免**:小功能可豁免,**仅走生产审计(步骤 12)**
 
-12.7. **🚨 项目知识库完整性自检**(`executor` 主导, **阻塞发布**)
+12.7. **🚨 项目知识库完整性自检**(`executor` 主导, **应阻塞发布**)
    - **触发时机**: 步骤 12.5 完成后, 步骤 13 发布前
-   - **检查清单**(任一缺失 → 阻塞发布, 必须补齐):
+   - **检查清单**(任一缺失 → 应阻塞发布, 补齐后再发布):
      - [ ] `.hl/knowledge/api/{module}.md` 覆盖本版本所有新增/修改/删除接口(URL / Method / 入参 / 出参 / 错误码 / 权限)
      - [ ] `.hl/knowledge/db/{table}.md` 覆盖本版本所有新增/修改/删除表 + 字段(与 `migrations/` SQL 一致)
      - [ ] `.hl/knowledge/db/er-diagram.md` 反映最新表关系(如有外键变化)
@@ -264,7 +264,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
      - [ ] `docs/master-test-cases.md` 含本版本章节
      - [ ] 项目根 `CLAUDE.md` 反映最新项目元信息(技术栈 / 架构 / 当前版本)
    - **同 commit 规则**: 本次发布的代码 / 知识库条目 / master 文档必须**同次 commit 提交**。不允许"代码已发布, 知识库下次再说"
-   - **失败处理**: 任一缺失 → 阻塞步骤 13 发布 + 步骤 4.5 重新走
+   - **失败处理**: 任一缺失 → 应阻塞步骤 13 发布 + 步骤 4.5 重新走(靠 Agent/用户把关, 非机制强制阻断; 与 `hlkb` 能力边界声明一致)
    - **详细规则**: 详见 `hlkb` 技能 SKILL.md §同步触发表
 
 ### 第五阶段：交付与发布
@@ -298,6 +298,8 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 | 5 | 严重代码问题未修复 | 禁入联调 |
 | 8 | 代码审查未通过 | 禁入测试 |
 | 12 | 风险评分 < 50 | 禁入发布 |
+| 12.5 | 生产审计前置项不达标 | 不能发布 |
+| 12.7 | 项目知识库完整性自检 8 类任一缺失 | 阻塞发布,必须补齐后再发布(靠 Agent/用户把关) |
 | 14 | 用户未确认发布 | 禁推标签 |
 | 15 | 用户未确认部署 | 禁部署 |
 
@@ -309,12 +311,14 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
-| 10 | 技术设计文档 | `docs/tech-design.md` | `architect` | 3 |
-| 11 | 架构决策记录 | `docs/adr/*.md` | `architect` | 3 |
+| 10 | 技术设计文档 | `docs/tech-design.md` | `architect`(内容)→ `executor`(落盘) | 3 |
+| 11 | 架构决策记录 | `docs/adr/*.md` | `architect`(内容)→ `executor`(落盘) | 3 |
 | 12 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
 | 13 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
-| 14 | 变更日志 | `CHANGELOG.md` | `planner` | 13 |
-| 15 | 回滚方案 | `docs/rollback.md` | `architect` | 13 |
+| 14 | 变更日志 | `CHANGELOG.md` | `executor` | 13 |
+| 15 | 回滚方案 | `docs/rollback.md` | `architect`(内容)→ `executor`(落盘) | 13 |
+
+> 注:`architect` / `planner` 等只读或路径受限 agent 仅负责**内容生成**,文件落盘统一由 `executor` 执行(参照 hlpm 对 `analyst` 的"生成内容→主 agent 写入"模式)。`CHANGELOG.md` 在仓库根,不在 `planner` 的 `docs/plans` / `docs/drafts` 输出范围内,故由 `executor` 落盘。
 
 ---
 

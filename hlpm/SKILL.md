@@ -57,7 +57,7 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
 
 | 段 | 文件 | 主题 |
 | --- | --- | --- |
-| 🚨 角色边界铁律 | `disciplines/role-boundary.md` | 三条边界 + 输出范围 + 角色 Agent 映射 + 启动清单 + 触发 hlkb |
+| 🚨 角色边界铁律 | `disciplines/role-boundary.md` | 三条边界 + 输出范围 + 角色 Agent 映射 + 启动清单 + 触发 hlkb(建议,待对接) |
 | 通用纪律 | `disciplines/completion-validation.md` | 完成前验证 + 豁免清单 + 受阻停止 + 升级 |
 | 三项强同步 | `disciplines/strong-sync.md` | PRD/设计/用例三项一致 + 小改快通道 |
 | 版本基线 commit | `disciplines/baseline-commit.md` | 基线 v1 提交规范 |

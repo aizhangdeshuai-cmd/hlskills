@@ -88,7 +88,7 @@ git push origin vX.Y.Z
 > 2. 询问用户: "发布完成, 是否部署到生产 (hldeploy)?"
 > 3. 用户确认后, 调 `Skill hldeploy "..."` 进入下一阶段
 >
-> **hldev 步骤 14 已内置 tag 推送**, 所以单独调用 hlrelease 仅在需要补 changelog 时有必要。hldev + hlrelease 二选一即可。
+> **hldev 步骤 14 仅是"用户确认发布"硬关卡,不含 git tag/git push 动作**——tag 创建与推送由本技能(hlrelease)负责。因此 hlrelease 是发布段的必经技能,不可跳过(除非用户手动打 tag)。
 >
 > 如果用户是**单独调用本技能**, 此交接段不触发, 由用户决定下一步。
 

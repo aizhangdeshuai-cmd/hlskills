@@ -12,7 +12,7 @@
 |------|--------|
 | 演示/学习 hlskills 怎么用 | `Skill hlquickstart` (5 分钟) |
 | 单人/小团队, 想自己跑完一条需求 | `Skill hl-flow` (28 步一气呵成, 已含发布部署) |
-| 产品+开发分工, 先产品段产 PRD/设计 | `Skill hlpm` (23 步), 完事交给 `Skill hldev` |
+| 产品+开发分工, 先产品段产 PRD/设计 | `Skill hlpm` (27 步), 完事交给 `Skill hldev` |
 | 一次跑完需求→开发→测试→发布→部署 | `Skill hlchain` (编排 6 阶段, Agent 按顺序自觉加载) |
 | 改代码/修 bug | `Skill hldev` (接手 docs/) 或 `Skill hlbug` (14 步排查) |
 
@@ -32,7 +32,7 @@
 
 **新三件套**:
 - **`hl-flow`**:单人/小团队自跑全流程(28 步)
-- **`hlpm`**:产品段(多角色,23 步,产出 PRD/设计/用例给开发)
+- **`hlpm`**:产品段(多角色,27 步,产出 PRD/设计/用例给开发)
 - **`hldev`**:开发段(15 步,从产品段接手到部署上线)
 
 **典型调用示例**:
@@ -44,7 +44,7 @@ Skill hl-flow "为登录功能加短信验证码"
 # 产品+开发分工
 Skill hlpm "为订单列表加导出 CSV"
 # 评审通过后,产品段产物交接给开发段:
-Skill hldev "开始开发 docs/v1/ 里的 8 项交付物"
+Skill hldev "开始开发 docs/v1/ 里的 9 项交付物"
 
 # 一次跑完全链路 (由 Agent 按文档顺序自觉加载 hlpm→hldev→hlrelease→hldeploy, 中间可调 hlbug/hltest)
 Skill hlchain "为订单列表加导出 CSV"
@@ -76,9 +76,9 @@ Skill hlchain "为订单列表加导出 CSV"
 
 - **26 项子技能**(含 `hlquickstart` 快速上手 + `hlchain` 全流程编排 + `hlkb` 项目知识库):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
 - **19 个 Agent**:analyst / executor / code-reviewer / security-reviewer / verifier / designer / test-engineer 等专业角色
-- **多角色协作**:`hlpm` (产品段 23 步) + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
+- **多角色协作**:`hlpm` (产品段 27 步) + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
 - **全流程编排**:`hlchain` 由 Agent 按文档顺序自觉加载 hlpm → hldev → hlrelease → hldeploy 全链路(中间可调 hlbug/hltest), 不必手动一次次调各技能(无真编排器 runtime, 靠 Agent 自觉 + 用户手动打断)
-- **一体化保障**:8 项产品交付物 + 7 个一致性矩阵(业务规则 / 状态机 / 权限 / 非功能 / 代码实现追踪),确保 PRD 100% 实现
+- **一体化保障**:9 项产品交付物 + 7 个一致性矩阵(业务规则 / 状态机 / 权限 / 非功能 / 代码实现追踪),确保 PRD 100% 实现
 
 ## 子技能速览
 
@@ -92,7 +92,7 @@ Skill hlchain "为订单列表加导出 CSV"
 |------|------|------|
 | 全流程编排（Agent 按文档顺序自觉加载 6 阶段） | `hlchain` | `Skill hlchain` (编排 hlpm→hldev→hlrelease→hldeploy + hlbug/hltest) |
 | 新功能/新项目开发（单人跑, 28 步自含发布部署） | `hl-flow` | `Skill hl-flow` (28 步) |
-| 多角色协作-产品段 | `hlpm` | `Skill hlpm` (23 步, 含 5 角色评审) |
+| 多角色协作-产品段 | `hlpm` | `Skill hlpm` (27 步, 含 5 角色评审) |
 | 多角色协作-开发段 | `hldev` | `Skill hldev` (15 步, 含 4 维防御) |
 | 旧项目分析/重构/Bug 修复 | `hllegacy` / `hlrefactor` / `hlbug` | — |
 | 设计/审查/无障碍 | `hldesign` / `hlreview` / `hla11y` | — |
@@ -140,7 +140,7 @@ Codex 没有 per-agent 文件 + frontmatter 机制,定制方式是 `AGENTS.md` �
 
 ### Cursor(降级支持)
 
-> ⚠️ **Cursor 用户注意**: 与 Codex 类似,你**不能**用 `Skill hlpm` 启动流程或用 Skill 工具调用外部技能。实际使用方式: **将所需子技能 SKILL.md 转为 `.cursor/rules/*.mdc` 规则文件**,通过文件触发(`globs` 匹配)或常驻(`alwaysApply`)挂载。**功能大幅缩水**,不适合完整跑 23/28 步流程。**`hlchain` 全流程编排在 Cursor 下不可用**(依赖 Skill 工具链路),需手动按顺序调各技能。
+> ⚠️ **Cursor 用户注意**: 与 Codex 类似,你**不能**用 `Skill hlpm` 启动流程或用 Skill 工具调用外部技能。实际使用方式: **将所需子技能 SKILL.md 转为 `.cursor/rules/*.mdc` 规则文件**,通过文件触发(`globs` 匹配)或常驻(`alwaysApply`)挂载。**功能大幅缩水**,不适合完整跑 27/28 步流程。**`hlchain` 全流程编排在 Cursor 下不可用**(依赖 Skill 工具链路),需手动按顺序调各技能。
 
 Cursor rules(`.cursor/rules/*.mdc`)frontmatter 只认 `description` / `alwaysApply` / `globs`,控制"何时挂载",不认工具/模型限制;模型和工具开关在 Cursor app 设置里配置。
 
@@ -165,7 +165,7 @@ cp -r hlskills ~/.claude/skills/
 Skill hlskills
 
 # 直接调用某个子技能(Skill 工具传 args)
-Skill hlpm "为登录功能启动 28 步流程"
+Skill hlpm "为登录功能启动 27 步流程"
 
 # 子技能内部按 frontmatter 描述自动派发 role agent(无需你手动调)
 # 例如 analyst (Opus, 只读) / executor (Sonnet, 可改) / verifier (Sonnet) 等
