@@ -138,7 +138,7 @@ echo "✅ hlskills 已卸载"
 ls ~/.claude/skills/hlskills/SKILL.md && echo "✅ 总入口就绪"
 
 # 确保至少核心技能可用
-for skill in hlpm hlbug hlpm hllegacy hlrefactor hltest; do
+for skill in hlpm hldev hlbug hllegacy hlrefactor hltest; do
   [ -L ~/.claude/skills/$skill ] && echo "✅ $skill" || echo "❌ $skill"
 done
 
