@@ -1,6 +1,6 @@
 ---
 name: hlkb-readme
-description: hlkb 技能使用说明(README)。面向"第一次在本项目跑 hlkb"的人。聚焦"8 类知识库怎么填、怎么同步、怎么查",不重复 SKILL.md 硬性规则。Use when 用户问"hlkb 怎么用"/"知识库怎么填"/"怎么同步代码和文档"。
+description: hlkb 技能使用说明(README)。面向"第一次在本项目跑 hlkb"的人。聚焦"9 类知识库怎么填、怎么同步、怎么查",不重复 SKILL.md 硬性规则。Use when 用户问"hlkb 怎么用"/"知识库怎么填"/"怎么同步代码和文档"。
 ---
 
 # hlkb 项目知识库使用说明
@@ -12,7 +12,7 @@ description: hlkb 技能使用说明(README)。面向"第一次在本项目跑 h
 
 ## 这是什么?
 
-`hlkb` 是 hlskills 的"**项目知识库**"技能——仓库里 `.hl/knowledge/` 目录是"工程现实单一可信源",8 类文档覆盖接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量。
+`hlkb` 是 hlskills 的"**项目知识库**"技能——仓库里 `.hl/knowledge/` 目录是"工程现实单一可信源",9 类文档覆盖接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖。
 
 **触发式同步**: 任何代码/接口/数据/配置/决策变更, **必须同步知识库对应条目**, 与代码同 commit 提交。
 
@@ -59,8 +59,8 @@ description: hlkb 技能使用说明(README)。面向"第一次在本项目跑 h
 ## 手动初始化(项目还没有 `.hl/knowledge/`)
 
 ```bash
-# 1. 创建 8 个目录(可少建, 没内容的类别不建)
-mkdir -p .hl/knowledge/{api,db,adr,state-machines,enums,error-codes,dependencies,env-vars}
+# 1. 创建 9 个目录(可少建, 没内容的类别不建)
+mkdir -p .hl/knowledge/{api,db,adr,state-machines,enums,error-codes,dependencies,env-vars,tests}
 
 # 2. 写总目录
 # 复制 templates/ 任意模板到 .hl/knowledge/README.md 改写
@@ -87,9 +87,12 @@ cp templates/error-code.md .hl/knowledge/error-codes/README.md
 cp templates/dependency.md .hl/knowledge/dependencies/README.md
 cp templates/env-var.md .hl/knowledge/env-vars/README.md
 
+# 9. 代码层测试覆盖(按模块,hldev 步骤 10 维护)
+cp templates/code-tests.md .hl/knowledge/tests/blacklist.md
+
 # 9. 同 commit 提交(代码 + 知识库)
 git add .hl/knowledge/
-git commit -m "docs(kb): 初始化项目知识库 - 8 类"
+git commit -m "docs(kb): 初始化项目知识库 - 9 类"
 ```
 
 ---
@@ -135,9 +138,9 @@ git commit -m "feat(api): 实现 BL-12 恢复接口(ADR 0001)"
 
 ---
 
-## 8 类知识库填充示例
+## 9 类知识库填充示例
 
-详见 `templates/` 目录的 9 个模板文件:
+详见 `templates/` 目录的 10 个模板文件:
 - `templates/api.md` (接口)
 - `templates/db-table.md` (数据库表)
 - `templates/er-diagram.md` (全局 ER 关系图)
@@ -147,6 +150,7 @@ git commit -m "feat(api): 实现 BL-12 恢复接口(ADR 0001)"
 - `templates/error-code.md` (错误码)
 - `templates/dependency.md` (依赖)
 - `templates/env-var.md` (环境变量)
+- `templates/code-tests.md` (代码层测试覆盖)
 
 ---
 
@@ -155,8 +159,8 @@ git commit -m "feat(api): 实现 BL-12 恢复接口(ADR 0001)"
 `hldev` 步骤 12.7 发布前自动跑, 你也可以手动跑:
 
 ```bash
-# 检查 8 类是否齐全
-ls .hl/knowledge/{api,db,adr,state-machines,enums,error-codes,dependencies,env-vars}/README.md
+# 检查 9 类是否齐全
+ls .hl/knowledge/{api,db,adr,state-machines,enums,error-codes,dependencies,env-vars,tests}/README.md
 
 # 检查 API 文档覆盖所有接口
 grep -oE "(GET|POST|PUT|DELETE) /[a-z]" .hl/knowledge/api/*.md | sort -u
@@ -178,7 +182,7 @@ ls .hl/knowledge/db/*.md
 |---|---|---|
 | `hlpm` 版本交付自检 | 建议追加 `docs/master-prd.md` / `master-test-cases.md` | ❌ 待对接 |
 | `hldev` 步骤 4.5 走查 | 代码实现后同步 `api/` `db/` | ✅ |
-| `hldev` 步骤 12.7 发布前 | 自检 8 类知识库完整性, 缺则应补齐 | ✅ |
+| `hldev` 步骤 12.7 发布前 | 自检 9 类知识库完整性, 缺则应补齐 | ✅ |
 | `hldb` 数据库迁移 | 任何 DDL 强约束同步 `db/` | ✅ |
 | `hlapi` 接口设计 | 任何契约强约束同步 `api/` | ✅ |
 | `hladr` 架构决策 | 输出直接写到 `adr/` | ✅ |

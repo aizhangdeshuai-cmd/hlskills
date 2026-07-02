@@ -227,6 +227,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
         - 本次重构涉及的函数/模块回归点
     - **交叉验证**:每个 hlpm 验收用例须在代码层用例中有对应覆盖,或显式标注"由 xx 单元测试覆盖/由 xx 集成测试覆盖",保证业务视角不丢
     - 执行全部用例(验收 + 代码层),验证一致性矩阵 §1 验收方法列(验收标准)全部通过
+    - **产出**:代码层测试点说明写入 `.hl/knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"代码层测试覆盖"规范,模板 `hlkb/templates/code-tests.md`),与代码同 commit。测试代码本身放项目语言约定的测试目录(Java `src/test/`、Node `test/`、Go 同级、Python `tests/`),随代码 commit 不另计入文档交付物
     - **反模式禁止**:不得"照着实现写用例"——代码的缺陷不能被当成正确预期写进用例。预期以 PRD 验收标准为准,代码偏离 PRD 时改代码不改用例
 
 11. **浏览器验证**（`qa-tester`）
@@ -271,6 +272,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
      - [ ] `.hl/knowledge/error-codes/README.md` 含本版本所有新增/修改错误码
      - [ ] `.hl/knowledge/dependencies/README.md` 与 `pom.xml` / `package.json` 一致
      - [ ] `.hl/knowledge/env-vars/README.md` 含本版本所有新增/修改环境变量
+     - [ ] `.hl/knowledge/tests/{module}.md` 覆盖本版本代码层修改点(每个新增/修改的 Service/API 有关键分支测试点 + 对应 AC + 测试代码路径)
      - [ ] `docs/master-prd.md` 含本版本章节(如 v3 章节)
      - [ ] `docs/master-test-cases.md` 含本版本章节
      - [ ] 项目根 `CLAUDE.md` 反映最新项目元信息(技术栈 / 架构 / 当前版本)
@@ -310,7 +312,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 | 8 | 代码审查未通过 | 禁入测试 |
 | 12 | 风险评分 < 50 | 禁入发布 |
 | 12.5 | 生产审计前置项不达标 | 不能发布 |
-| 12.7 | 项目知识库完整性自检 8 类任一缺失 | 阻塞发布,必须补齐后再发布(靠 Agent/用户把关) |
+| 12.7 | 项目知识库完整性自检 9 类任一缺失 | 阻塞发布,必须补齐后再发布(靠 Agent/用户把关) |
 | 14 | 用户未确认发布 | 禁推标签 |
 | 15 | 用户未确认部署 | 禁部署 |
 
@@ -324,7 +326,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 |---|------|------|-----------|------|
 | 10 | 技术设计文档 | `docs/tech-design.md` | `architect`(内容)→ `executor`(落盘) | 3 |
 | 11 | 架构决策记录 | `docs/adr/*.md` | `architect`(内容)→ `executor`(落盘) | 3 |
-| 12 | 代码层测试用例 | `tests/` 目录(单元/集成测试代码 + 用例说明) | `test-engineer` | 10 |
+| 12 | 代码层测试用例 | `.hl/knowledge/tests/{module}.md`(按 hlkb 第 9 类规范) | `test-engineer` | 10 |
 | 13 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
 | 14 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
 | 15 | 变更日志 | `CHANGELOG.md` | `executor` | 13 |

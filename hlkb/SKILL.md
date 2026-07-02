@@ -1,6 +1,6 @@
 ---
 name: hlkb
-description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量)。项目内 `.hl/knowledge/` 目录是"工程现实单一可信源",与 src/ 代码同 commit 维护。AI 助手/新开发者进入项目看文档就能 5 分钟理解项目,不用从代码反推。Use when 需要新建/更新项目知识库条目,或调用 hlskills 其他技能时需要检查"该次变更是否需要同步知识库"。
+description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖)。项目内 `.hl/knowledge/` 目录是"工程现实单一可信源",与 src/ 代码同 commit 维护。AI 助手/新开发者进入项目看文档就能 5 分钟理解项目,不用从代码反推。Use when 需要新建/更新项目知识库条目,或调用 hlskills 其他技能时需要检查"该次变更是否需要同步知识库"。
 ---
 
 # hlkb · 项目知识库
@@ -39,7 +39,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ### 主动调用场景
 
-1. **新建项目** → 初始化 `.hl/knowledge/` 整套(8 类目录)
+1. **新建项目** → 初始化 `.hl/knowledge/` 整套(9 类目录)
 2. **跑 hllegacy 旧项目分析** → 把现状反推沉淀到知识库
 3. **查接口/数据库/枚举的定义** → 已有知识库,直接 Read
 4. **生成 CLAUDE.md / master-prd.md** → 汇总知识库
@@ -52,7 +52,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 |---|---|---|---|
 | `hlpm` 版本交付自检 | 版本交付完成 | `docs/master-prd.md` / `docs/master-test-cases.md` 追加本版本章节 | ❌ 待对接 |
 | `hldev` 步骤 4.5 PRD 走查 | 代码实现后 commit | `.hl/knowledge/api/` / `.hl/knowledge/db/` 追加对应条目 | ✅ |
-| `hldev` 步骤 12.7 发布前自检 | 发布前 | 知识库完整性自检(8 类齐全, 缺则应补齐后再发布) | ✅ |
+| `hldev` 步骤 12.7 发布前自检 | 发布前 | 知识库完整性自检(9 类齐全, 缺则应补齐后再发布) | ✅ |
 | `hldb` 数据库迁移 | 任何 DDL | `.hl/knowledge/db/{table}.md` + ER 图 | ✅ |
 | `hlapi` 接口设计/新增 | 任何接口契约 | `.hl/knowledge/api/{module}.md` | ✅ |
 | `hlbug` Bug 修复 | 涉及字段/接口/配置变化 | 同步知识库 | ✅ |
@@ -61,7 +61,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ---
 
-## 目录结构(8 类知识库)
+## 目录结构(9 类知识库)
 
 ```
 .hl/knowledge/
@@ -86,15 +86,18 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 │   └── README.md
 ├── dependencies/                   # 类别 7: 第三方依赖
 │   └── README.md
-└── env-vars/                       # 类别 8: 环境变量
-    └── README.md
+├── env-vars/                       # 类别 8: 环境变量
+│   └── README.md
+└── tests/                          # 类别 9: 代码层测试覆盖
+    ├── README.md                   # 测试覆盖总览
+    └── {module}.md                 # 单个模块的代码层测试点 ↔ AC ↔ 测试代码路径
 ```
 
-> 8 类不一定都用,新项目至少要建:`README.md` + 实际有内容的类别(无内容的类别不建目录,避免空文件夹)。
+> 9 类不一定都用,新项目至少要建:`README.md` + 实际有内容的类别(无内容的类别不建目录,避免空文件夹)。
 
 ---
 
-## 8 类知识库模板
+## 9 类知识库模板
 
 模板在 `templates/` 目录,复制后填充:
 
@@ -109,6 +112,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 | 错误码 | `templates/error-code.md` | 错误码 / HTTP / 含义 / 触发场景 |
 | 第三方依赖 | `templates/dependency.md` | 库名 / 版本 / 许可证 / 升级计划 |
 | 环境变量 | `templates/env-var.md` | 名称 / 含义 / 默认值 / 环境差异 |
+| 代码层测试覆盖 | `templates/code-tests.md` | 模块测试点 / 对应 AC / 测试代码路径 / 覆盖的代码分支 |
 
 详见 `templates/` 目录各文件。
 
@@ -156,6 +160,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 - [ ] `error-codes/` 覆盖所有自定义错误码
 - [ ] `dependencies/` 与 `pom.xml` / `package.json` 一致
 - [ ] `env-vars/` 覆盖所有 `.env` / `application-{profile}.yml` 变量
+- [ ] `tests/` 覆盖本版本代码层修改点(每个新增/修改的 Service/API 有关键分支测试点 + 对应 AC + 测试代码路径)
 - [ ] `docs/master-prd.md` 包含当前最新版本章节
 - [ ] `docs/master-test-cases.md` 包含当前最新版本章节
 - [ ] `CLAUDE.md` 反映最新项目元信息
@@ -193,7 +198,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 
 > 约束文件是 hlkb 同步铁律的**常驻上下文版**——hlkb SKILL.md 按需加载(调 Skill hlkb 才进场),约束文件每次会话常驻(AI 工具启动即读)。ehr 实证:纯声明性铁律会漂移,需"完成前自检"把声明变核对动作。
 
-- **模板**:`templates/claude-md.template.md`(与 8 类知识库模板并列)
+- **模板**:`templates/claude-md.template.md`(与 9 类知识库模板并列)
 - **内容**:极简 4 段——项目定位(一句话) + AI 助手必读(指针) + 知识库同步铁律 + 🚨 完成前自检(5 项检查项)。不内嵌角色表/字段表/技术栈明细(那些在 `.hl/knowledge/` 与 `.hl/memory/`),避免成为新漂移源。
 - **初始化/补全**:由各子技能 step 0 检测并按模板创建(不存在)或补"完成前自检"段(已存在缺该段)。详见各子技能 step 0。
 - **IDE 适配**:Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE → 都写。
@@ -222,14 +227,14 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 启动 hlkb 之前,确认以下 4 件事:
 - [ ] 确认项目根存在 `.hl/` 目录(已有 memory 在 `.hl/memory/`)
 - [ ] 确认本次是"新建知识库"还是"更新现有知识库"
-- [ ] 确认涉及哪几个类别(8 类中的几个)
+- [ ] 确认涉及哪几个类别(9 类中的几个)
 - [ ] 确认 git 已配置(知识库与代码同 commit)
 
 ---
 
 ## 知识库条目清单(本技能不交付,只触发同步)
 
-> 下表与"8 类知识库"一一对应(总目录 + 8 类内容类别 = 9 行)。依赖与环境变量分开列。
+> 下表与"9 类知识库"一一对应(总目录 + 9 类内容类别 = 10 行)。依赖与环境变量分开列。
 
 | 编号 | 文档 | 路径 | 触发技能 | 状态 |
 |---|---|---|---|---|
@@ -242,6 +247,7 @@ description: 项目知识库(8 类:接口/数据库/ADR/状态机/枚举/错误�
 | 6 | 错误码 | `.hl/knowledge/error-codes/*.md` | hldev | ✅ 新增错误码 |
 | 7 | 依赖 | `.hl/knowledge/dependencies/*.md` | hldev | ✅ 升级/新增 |
 | 8 | 环境变量 | `.hl/knowledge/env-vars/*.md` | hldev | ✅ 新增/修改 |
+| 9 | 代码层测试覆盖 | `.hl/knowledge/tests/*.md` | hldev | ✅ 代码层用例编写(步骤 10) |
 
 ---
 
