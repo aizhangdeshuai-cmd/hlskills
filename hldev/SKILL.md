@@ -215,9 +215,19 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
    - 安全漏洞扫描
    - 输出风险等级与修复建议
 
-10. **测试用例执行**（`qa-tester`）
-    - 按测试用例执行（单元 + 集成 + E2E）
-    - 验证一致性矩阵 §1 验收方法列(验收标准)全部通过
+10. **测试用例编写(代码层面) + 执行**（`test-engineer` 编写 + `qa-tester` 执行）
+    - **用例来源分两层**:
+      - **验收用例**(业务黑盒):来自 hlpm 交付的 `docs/{ver}/test-cases.md`,直接执行,不重写
+      - **代码层面用例**(白盒):`test-engineer` 基于**本次代码 diff** 补充编写,覆盖 hlpm 写不出的代码层修改点:
+        - 内部 API/Service 异常分支(null 分支、超时、降级)
+        - 数据库约束场景(唯一索引冲突、外键级联、乐观锁冲突)
+        - 缓存失效/穿透/雪崩、消息队列重复消费/消费失败
+        - 并发竞态(同一资源并发提交)
+        - 实现选型边界(软删除开关、部分索引、事务原子性)
+        - 本次重构涉及的函数/模块回归点
+    - **交叉验证**:每个 hlpm 验收用例须在代码层用例中有对应覆盖,或显式标注"由 xx 单元测试覆盖/由 xx 集成测试覆盖",保证业务视角不丢
+    - 执行全部用例(验收 + 代码层),验证一致性矩阵 §1 验收方法列(验收标准)全部通过
+    - **反模式禁止**:不得"照着实现写用例"——代码的缺陷不能被当成正确预期写进用例。预期以 PRD 验收标准为准,代码偏离 PRD 时改代码不改用例
 
 11. **浏览器验证**（`qa-tester`）
     - 浏览器环境验证
@@ -272,7 +282,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
 13. **交付验证**（`verifier` 主导：创建完成标记）
     - 验收所有文档与功能完整性
-    - 验证 14 项项目文档齐全（8 项产品段 + 6 项开发段补充，按 hlskills 主入口清单 / `hlpm/path-conventions.md`）
+    - 验证 15 项项目文档齐全（8 项产品段 + 7 项开发段补充，按 hlskills 主入口清单 / `hlpm/path-conventions.md`）
     - **:创建版本完成标记**:
       - 验收通过后,在 `docs/vN/` 创建空文件 `touch docs/vN/.dev-completed`
       - **严禁**验收不通过时创建(避免误标)
@@ -308,16 +318,17 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
 ## 交付文档清单（开发段补充）
 
-开发段在产品段 8 项交付物(5 必出 + 3 条件出)基础上，补充以下 6 项（合计 14 项；编号与 `hlpm/path-conventions.md` §3.2 对齐）：
+开发段在产品段 8 项交付物(5 必出 + 3 条件出)基础上，补充以下 7 项（合计 15 项；编号与 `hlpm/path-conventions.md` §3.2 对齐）：
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
 | 10 | 技术设计文档 | `docs/tech-design.md` | `architect`(内容)→ `executor`(落盘) | 3 |
 | 11 | 架构决策记录 | `docs/adr/*.md` | `architect`(内容)→ `executor`(落盘) | 3 |
-| 12 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
-| 13 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
-| 14 | 变更日志 | `CHANGELOG.md` | `executor` | 13 |
-| 15 | 回滚方案 | `docs/rollback.md` | `architect`(内容)→ `executor`(落盘) | 13 |
+| 12 | 代码层测试用例 | `tests/` 目录(单元/集成测试代码 + 用例说明) | `test-engineer` | 10 |
+| 13 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
+| 14 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
+| 15 | 变更日志 | `CHANGELOG.md` | `executor` | 13 |
+| 16 | 回滚方案 | `docs/rollback.md` | `architect`(内容)→ `executor`(落盘) | 13 |
 
 > 注:`architect` / `planner` 等只读或路径受限 agent 仅负责**内容生成**,文件落盘统一由 `executor` 执行(参照 hlpm 对 `analyst` 的"生成内容→主 agent 写入"模式)。`CHANGELOG.md` 在仓库根,不在 `planner` 的 `docs/plans` / `docs/drafts` 输出范围内,故由 `executor` 落盘。
 
