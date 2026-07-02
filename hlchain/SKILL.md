@@ -1,6 +1,6 @@
 ---
 name: hlchain
-description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hldev(开发段)→ hlrelease(发布)→ hldeploy(部署), 过程中可调用 hlbug(事故修复) + hltest(独立测试)。Use when 用户想"一次跑完需求→开发→测试→发布→部署"全链路, 而不是手动一次次调各技能。通过 Skill 工具调用 (Skill hlchain)。
+description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hldev(开发段)→ hlrelease(发布)→ hldeploy(部署), 过程中可调用 hlbug(Bug修复,任一阶段发现问题都触发) + hltest(独立测试)。Use when 用户想"一次跑完需求→开发→测试→发布→部署"全链路, 而不是手动一次次调各技能。通过 Skill 工具调用 (Skill hlchain)。
 ---
 
 # hlchain — 全流程编排
@@ -24,7 +24,7 @@ description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hlde
 | 3 | `Skill hlrelease "..."` | 生成 CHANGELOG + git tag + push | **可选**(hldev 步骤 14 已内置) |
 | 4 | `Skill hldeploy "..."` | 部署到生产环境 | **可选**(用户可手动部署) |
 | 5 | `Skill hltest "..."` | 独立测试阶段补充 | **可选**(hldev 步骤 10-11 已内置) |
-| 6 | `Skill hlbug "..."` | 任何阶段遇到 bug 时调用 | **条件**(仅在测试/审计发现问题) |
+| 6 | `Skill hlbug "..."` | 任何阶段遇到 bug 时调用 | **条件**(任一阶段发现问题都触发) |
 
 ---
 
