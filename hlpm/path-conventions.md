@@ -1,6 +1,6 @@
 ---
 name: hlpm-path-conventions
-description: 交付文档目录规范中央文档（版本管理）。定义 14 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出 8 项交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。被 SKILL.md / hlpm / hldev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
+description: 交付文档目录规范中央文档（版本管理）。定义 15 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。**v18 变更**: 产品段交付物由 8 项扩为 9 项(新增"设计稿截图"),6 必出 + 3 条件出。被 SKILL.md / hlpm / hldev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
 ---
 
 # 交付文档完整目录规范
@@ -8,7 +8,7 @@ description: 交付文档目录规范中央文档（版本管理）。定义 14 
 > 属于 `hlskills` 技能系统的**中央规范文档**。
 > 被以下 3 个文件共同引用：
 > - 主入口 `SKILL.md`（通用规则：文件输出路径）
-> - `hlpm/SKILL.md`（产品段 8 项交付物）
+> - `hlpm/SKILL.md`（产品段 9 项交付物）
 > - `hldev/SKILL.md`（开发段 6 项补充交付物）
 >
 > **目的**：解决"路径规范散落 3 个文件 + 不完整（5 个问题）"的现状，作为单一可信源（single source of truth）。
@@ -19,11 +19,11 @@ description: 交付文档目录规范中央文档（版本管理）。定义 14 
 
 ### 0.1 核心规则
 
-> **每次产品段流程产出 8 项交付物到独立版本目录** `docs/vN/`，目录名直接显示版本号
+> **每次产品段流程产出 9 项交付物(6 必出 + 3 条件出)到独立版本目录** `docs/vN/`，目录名直接显示版本号
 
 - **版本号格式**：`vN`（N 为 1, 2, 3 ... 整数递增，从 v1 开始）
 - **目录位置**：`docs/v1/` `docs/v2/` `docs/v3/` ...
-- **目录内容**：8 项产品交付物**全部**放入版本目录
+- **目录内容**：9 项产品交付物(6 必出 + 3 条件出)**全部**放入版本目录
 - **目录间关系**：版本目录之间**完全独立**，不共享文件，不软链
 
 ### 0.2 启动时版本扫描（阻塞点）
@@ -38,7 +38,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 **扫描结果 3 种情况**：
 
 #### 情况 A: 没有历史版本
-- 直接创建 `docs/v1/`，所有 8 项交付物放 `docs/v1/`
+- 直接创建 `docs/v1/`，所有 9 项交付物放 `docs/v1/`
 - 不询问用户
 
 #### 情况 B: 有历史版本，全部"已开发"
@@ -65,7 +65,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 
 - 用户选择后：
   - 选 A/B → 当前版本号仍为选中的旧版本，**所有交付物更新到该旧版本目录**
-  - 选 C → 新建版本目录，独立的 8 项交付物
+  - 选 C → 新建版本目录，独立的 9 项交付物
 
 ### 0.3 标记文件约定
 
@@ -196,20 +196,21 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 
 ---
 
-## 三、14 项交付物完整路径映射
+## 三、15 项交付物完整路径映射
 
-### 3.1 产品段交付物（8 项，v12 起全部进版本目录 `docs/vN/`）
+### 3.1 产品段交付物（9 项，v18 起含设计稿截图，全部进版本目录 `docs/vN/`）
 
 | # | 交付物 | 路径 | Agent | 步骤 |
 |---|--------|------|-------|------|
 | 1 | 竞品分析报告 | `docs/{ver}/analysis/competitive-analysis.md` | `analyst` 生成 → 写入文件 | 2b/2c |
 | 2 | PRD 文档 | `docs/{ver}/prd.md` | `analyst` 生成 → 写入文件 | 4 |
 | 3 | 设计稿 | `docs/{ver}/design/<page-name>.html` | `designer` | 6b |
-| 4 | 测试用例 | `docs/{ver}/test-cases.md` | `test-engineer` | 8 |
-| 5 | 验收标准 | `docs/{ver}/acceptance-criteria.md` | `analyst` 生成 → 写入文件 | 10 |
-| 6 | 非功能需求 | `docs/{ver}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 10 |
-| 7 | 一致性矩阵 | `docs/{ver}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
-| 8 | 自检报告 | `docs/{ver}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |
+| 4 | 设计稿截图 | `docs/{ver}/design/screenshot-<page-name>.png` | `designer` 调 `hlbrowse` | 6b.5 |
+| 5 | 测试用例 | `docs/{ver}/test-cases.md` | `test-engineer` | 8 |
+| 6 | 验收标准 | `docs/{ver}/acceptance-criteria.md` | `analyst` 生成 → 写入文件 | 10 |
+| 7 | 非功能需求 | `docs/{ver}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 10 |
+| 8 | 一致性矩阵 | `docs/{ver}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
+| 9 | 自检报告 | `docs/{ver}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |
 
 > **`{ver}` = 当前版本号**（如 `v1` / `v2` / `v3`），由 0.5 步骤的版本扫描决定
 > 例：当前产品段流程在 v2，则 PRD 写到 `docs/v2/prd.md`
@@ -218,18 +219,18 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
-| 9 | 技术设计文档 | `docs/tech-design.md` | `architect` | 3 |
-| 10 | 架构决策记录 | `docs/adr/NNNN-<slug>.md` | `architect` | 3 |
-| 11 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
-| 12 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
-| 13 | 变更日志 | `CHANGELOG.md`（根目录） | `planner` | 13 |
-| 14 | 回滚方案 | `docs/rollback.md` | `architect` | 13 |
+| 10 | 技术设计文档 | `docs/tech-design.md` | `architect` | 3 |
+| 11 | 架构决策记录 | `docs/adr/NNNN-<slug>.md` | `architect` | 3 |
+| 12 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
+| 13 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
+| 14 | 变更日志 | `CHANGELOG.md`（根目录） | `planner` | 13 |
+| 15 | 回滚方案 | `docs/rollback.md` | `architect` | 13 |
 
 ### 3.3 项目记忆（1 项，可选，由 hlmemory 技能管理）
 
 | # | 文档 | 路径 | 负责 Agent |
 |---|------|------|-----------|
-| 15 | 项目记忆文件 | `.hl/memory/*.md` | 详见 hlmemory 技能 |
+| 16 | 项目记忆文件 | `.hl/memory/*.md` | 详见 hlmemory 技能 |
 
 ---
 
@@ -288,8 +289,8 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 | 引用方 | 引用内容 | 引用位置 |
 |--------|---------|---------|
 | `SKILL.md`（主入口） | "所有产出文件路径详见 `hlpm/path-conventions.md`" | 第 112-127 行"通用规则：文件输出路径" |
-| `hlpm/SKILL.md` | 8 项交付物路径表 | 第 277-285 行"交付文档清单" |
-| `hlpm/handoff-package.md` | 7 项交付清单 + 交付包总览 | 第 9-16 行 + 第 117-118 行 |
+| `hlpm/SKILL.md` | 9 项交付物路径表 | "交付文档清单（产品段 9 项）"段 |
+| `hlpm/handoff-package.md` | 9 项交付清单 + 交付包总览 | 顶部交付清单 + 交付包总览段 |
 | `hlpm/consistency-rules.md` | 设计稿 HTML 路径示例 | 第 48-67 行 |
 | `hldev/SKILL.md` | 6 项补充交付物路径 | 第 204-211 行 |
 
@@ -309,3 +310,4 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 变更记录：
 - v8：新建本规范文档，解决"路径散落 3 文件 + 不完整 5 问题"
 - v12：新增"零、版本目录管理"章节，每次产品段流程产出 8 项交付物到独立 `docs/vN/` 目录；启动时自动扫描历史未开发版本并询问用户。**所有 3 个引用方文件必须同步更新路径**（含 `{ver}` 占位符）
+- v18：产品段交付物由 8 项扩为 9 项(新增"设计稿截图" `screenshot-<page-name>.png`,6b.5 触发)；交付物总数 14 → 15。**所有引用方文件同步更新计数与表格**

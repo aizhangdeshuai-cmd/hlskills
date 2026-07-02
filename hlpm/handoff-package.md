@@ -1,19 +1,21 @@
-# 8 项产品交付物打包模板（产品段 → 开发段）
+# 9 项产品交付物打包模板（产品段 → 开发段）
 
 > 属于 `hlpm` 技能第 11-12 步骤。
-> 产品段完成后，按本模板打包 8 项必交物到版本目录 `docs/vN/`，交付给开发段（`hldev`）。
+> 产品段完成后，按本模板打包 9 项交付物(6 必出 + 3 条件出)到版本目录 `docs/vN/`，交付给开发段（`hldev`）。
 
-## 交付清单（8 项，v12 起全部进版本目录）
+## 交付清单（9 项，v18 起含设计稿截图）
 
-| # | 交付物 | 路径模板 | 必交 | 负责 Agent |
-|---|--------|---------|------|-----------|
-| 1 | PRD | `docs/prd.md` | ✅ | `analyst` 生成 → 写入文件 |
-| 2 | 设计稿 | `docs/design/*.html` | ✅ | `designer` |
-| 3 | 测试用例 | `docs/test-cases.md` | ✅ | `test-engineer` |
-| 4 | 验收标准 | `docs/acceptance-criteria.md` | ✅ | `analyst` 生成 → 写入文件 |
-| 5 | 非功能需求 | `docs/non-functional-requirements.md` | ✅ | `analyst` 生成 → 写入文件 |
-| 6 | 一致性矩阵 | `docs/consistency-matrix.md` | ✅（v5） | `analyst` 生成 + `verifier` 验证 → 写入文件 |
-| 7 | **自检报告** | `docs/handoff-self-check.md` | ✅（v6） | `analyst` 生成 → 写入文件 |
+| # | 交付物 | 路径模板 | 必出/条件 | 负责 Agent |
+|---|--------|---------|-----------|-----------|
+| 1 | 竞品分析报告 | `docs/{ver}/analysis/competitive-analysis.md` | 条件(新项目/品类调研) | `analyst` 生成 → 写入文件 |
+| 2 | PRD 文档 | `docs/{ver}/prd.md` | **必出** | `analyst` 生成 → 写入文件 |
+| 3 | 设计稿 | `docs/{ver}/design/*.html` | 条件(涉及 UI) | `designer` |
+| 4 | 设计稿截图 | `docs/{ver}/design/screenshot-<page-name>.png` | 条件(6b.5 触发) | `designer` 调 `hlbrowse` |
+| 5 | 测试用例 | `docs/{ver}/test-cases.md` | **必出** | `test-engineer` |
+| 6 | 验收标准 | `docs/{ver}/acceptance-criteria.md` | **必出** | `analyst` 生成 → 写入文件 |
+| 7 | 非功能需求 | `docs/{ver}/non-functional-requirements.md` | **必出** | `analyst` 生成 → 写入文件 |
+| 8 | 一致性矩阵 | `docs/{ver}/consistency-matrix.md` | **必出**（v5） | `analyst` 生成 + `verifier` 验证 → 写入文件 |
+| 9 | **自检报告** | `docs/{ver}/handoff-self-check.md` | **必出**（v6） | `analyst` 生成 → 写入文件 |
 
 ---
 
@@ -52,8 +54,8 @@
   - 引用 6a.1 找到的规范文件路径
   - 规范遵循清单全部勾选（字体 / 色彩 / 间距 / 圆角 / 阴影 / 组件 / 动效）
   - 与现有页面并排对比（截图对照），逐项核对
-- [ ] **保真度档位记录**（v3）：低保真 / 中保真 / 高保真，由 6a.2 步骤确定
-- [ ] 符合所选保真度档位的全部特征（如中保真：色彩 + 真实组件 + 完整交互 + 真实示例数据）
+- [ ] **保真度档位记录**（v18 两档重定义）：档一(高保真生产态) / 档二(高保真 + 活文档)，由 6a.2 步骤确定
+- [ ] 符合所选保真度档位的全部特征（档一：URL 参数切态 + 无 DEV-NOT-FOR-PROD 元素；档二：拆 `<page>.html` + `<page>.demo.html` 两文件 + 悬浮框活文档）
 - [ ] 所有页面覆盖（列表 / 详情 / 表单 / 设置 / 登录注册 / 404 / 空状态 / 加载态）
 - [ ] 每页 5 态（默认 / hover / 空 / 错 / 加载 + 边界态）
 - [ ] 移动 / 平板 / 桌面三屏布局
@@ -70,7 +72,7 @@
 - [ ] 用例可反推 PRD 验收标准
 - [ ] **业务规则 / 状态机 / 权限 三个维度均覆盖**
 - [ ] **版本号 vX，与 PRD / 设计版本号一致**
-- [ ] 用例评审会签记录（2 方签字）
+- [ ] 用例评审会签记录（逐份立即评审 5 方签字 / 旧分阶段 2 方签字）
 
 ### 4. 验收标准自检
 
@@ -147,7 +149,7 @@
 - [✅/❌] 边界值用例 / 权限分支用例 / E2E 场景
 - [✅/❌] 业务规则 / 状态机 / 权限 三维覆盖
 - [✅/❌] 版本号 vX，与 PRD / 设计 一致
-- [✅/❌] 用例评审会签记录（2 方签字）
+- [✅/❌] 用例评审会签记录（逐份立即评审 5 方 / 旧分阶段 2 方）
 
 ### 4. 验收标准自检结果
 - [✅/❌] 每条可单独验证
@@ -195,7 +197,7 @@
 
 ---
 
-## 交付包总览（产品段 12 步填写）
+## 交付包总览（产品段步骤 11-12 填写：11 自检 + 12 打包）
 
 ```markdown
 ## 交付包总览
@@ -208,20 +210,22 @@
 ### 交付物清单
 | # | 交付物 | 路径 | 版本 | 评审状态 | 签字方 |
 |---|--------|------|------|---------|--------|
-| 1 | PRD | docs/prd.md | vX | ✅ 通过 | 5/5 |
-| 2 | 设计稿 | docs/design/*.html | vX | ✅ 通过 | 5/5 |
-| 3 | 测试用例 | docs/test-cases.md | vX | ✅ 通过 | 2/2 |
-| 4 | 验收标准 | docs/acceptance-criteria.md | — | — | — |
-| 5 | 非功能需求 | docs/non-functional-requirements.md | — | — | — |
-| 6 | 一致性矩阵 | docs/consistency-matrix.md | vX | ✅ 通过 | — |
-| 7 | **自检报告** | **docs/handoff-self-check.md** | **—** | **✅ 通过** | **—** |
+| 1 | 竞品分析 | docs/{ver}/analysis/competitive-analysis.md | vX | 条件出 | — |
+| 2 | PRD | docs/{ver}/prd.md | vX | ✅ 通过 | 5/5 |
+| 3 | 设计稿 | docs/{ver}/design/*.html | vX | ✅ 通过 | 5/5 |
+| 4 | 设计稿截图 | docs/{ver}/design/screenshot-<page>.png | — | 条件出 | — |
+| 5 | 测试用例 | docs/{ver}/test-cases.md | vX | ✅ 通过 | 5/5（逐份）/ 2/2（旧分阶段） |
+| 6 | 验收标准 | docs/{ver}/acceptance-criteria.md | — | — | — |
+| 7 | 非功能需求 | docs/{ver}/non-functional-requirements.md | — | — | — |
+| 8 | 一致性矩阵 | docs/{ver}/consistency-matrix.md | vX | ✅ 通过 | — |
+| 9 | **自检报告** | **docs/{ver}/handoff-self-check.md** | **—** | **✅ 通过** | **—** |
 
 ### 版本对齐
 - PRD vX = 设计 vX = 用例 vX ✅
 - 一致性矩阵版本 = vX
 
 ### 自检完成
-- [ ] 8 项产品交付物全部通过自检
+- [ ] 9 项产品交付物(6 必出 + 3 条件出)全部通过自检
 - [ ] 评审会签记录完整
 - [ ] 一致性矩阵全部 ✅
 
