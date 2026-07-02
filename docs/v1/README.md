@@ -9,7 +9,7 @@
 > - 本包内的 "v13" 字样属于该演示需求本身(当时目标版本为 v13),**不代表本仓库当前版本**。
 > - 本包演示的 `prd.md` / `test-cases.md` / 一致性矩阵等内容**均为演示虚构**,**不得作为业务规则引用**。
 > - 本仓库当前版本以 `SKILL.md` 顶部声明为准(v15)。
-> - 文件清单:`prd.md` / `test-cases.md` / `acceptance-criteria.md` / `non-functional-requirements.md` / `consistency-matrix.md` / `handoff-self-check.md` / `design/`,对应 hlpm 交付文档清单第 1-7 项。
+> - 文件清单:`prd.md` / `test-cases.md` / `non-functional-requirements.md` / `consistency-matrix.md`(含验收标准) / `handoff-self-check.md` / `design/`,对应 hlpm 交付文档清单第 1-6 项(v19 起验收标准并入一致性矩阵,不再独立成文档)。
 >
 > 如看到本目录的某个文件被引用到真实流程,说明引用方未读此 README,**立即停止并纠正**。
 

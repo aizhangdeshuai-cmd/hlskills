@@ -44,7 +44,7 @@ Skill hl-flow "为登录功能加短信验证码"
 # 产品+开发分工
 Skill hlpm "为订单列表加导出 CSV"
 # 评审通过后,产品段产物交接给开发段:
-Skill hldev "开始开发 docs/v1/ 里的 9 项交付物"
+Skill hldev "开始开发 docs/v1/ 里的 8 项交付物"
 
 # 一次跑完全链路 (由 Agent 按文档顺序自觉加载 hlpm→hldev→hlrelease→hldeploy, 中间可调 hlbug/hltest)
 Skill hlchain "为订单列表加导出 CSV"
@@ -78,7 +78,7 @@ Skill hlchain "为订单列表加导出 CSV"
 - **19 个 Agent**:analyst / executor / code-reviewer / security-reviewer / verifier / designer / test-engineer 等专业角色
 - **多角色协作**:`hlpm` (产品段 27 步) + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
 - **全流程编排**:`hlchain` 由 Agent 按文档顺序自觉加载 hlpm → hldev → hlrelease → hldeploy 全链路(中间可调 hlbug/hltest), 不必手动一次次调各技能(无真编排器 runtime, 靠 Agent 自觉 + 用户手动打断)
-- **一体化保障**:9 项产品交付物 + 7 个一致性矩阵(业务规则 / 状态机 / 权限 / 非功能 / 代码实现追踪),确保 PRD 100% 实现
+- **一体化保障**:8 项产品交付物 + 7 个一致性矩阵(业务规则 / 状态机 / 权限 / 非功能 / 代码实现追踪),确保 PRD 100% 实现
 
 ## 子技能速览
 

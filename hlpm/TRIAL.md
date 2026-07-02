@@ -17,7 +17,7 @@ description: hlpm 试用说明(10 分钟跑通版)。用 1 个真实小需求,st
 > **需求**:为主入口 SKILL.md 加 1 行 v18 状态徽章
 
 预计耗时:10-15 分钟
-预计产出:9 项交付物(6 必出 + 3 条件出),全部在 `docs/v1/`
+预计产出:8 项交付物(5 必出 + 3 条件出),全部在 `docs/v1/`
 
 ---
 
@@ -113,7 +113,6 @@ ls -la docs/v1/
 docs/v1/
 ├── prd.md                              # 你的 PRD(必出)
 ├── test-cases.md                       # 你的测试用例(必出)
-├── acceptance-criteria.md              # 验收标准(必出)
 ├── non-functional-requirements.md      # 非功能需求(必出)
 ├── consistency-matrix.md               # 一致性矩阵(必出)
 ├── handoff-self-check.md               # 自检报告(必出)
@@ -136,7 +135,7 @@ docs/v1/
 ```bash
 # 模拟开发段 0 步验证
 echo "=== 验证交付物齐全 ==="
-for f in prd.md test-cases.md acceptance-criteria.md non-functional-requirements.md consistency-matrix.md handoff-self-check.md; do
+for f in prd.md test-cases.md non-functional-requirements.md consistency-matrix.md handoff-self-check.md; do
   if [ -f "docs/v1/$f" ]; then
     echo "✅ docs/v1/$f"
   else
@@ -188,12 +187,12 @@ git commit -m "v1: 标记为已开发"
 - ✅ 启动产品段(0 阶段)
 - ✅ 回答 3 个阻塞问题
 - ✅ 看到 AI 自动跑约 13 步(轻量 + 逐份立即评审,三份均选不评审)
-- ✅ 拿到 9 项交付物(6 必出 + 3 条件出)
+- ✅ 拿到 8 项交付物(5 必出 + 3 条件出)
 - ✅ 模拟开发接手验证
 
 **总耗时**:10-15 分钟
 **代码量**:0 行(产品段不写代码)
-**产出文档**:9 项(6 必出 + 3 条件出)
+**产出文档**:8 项(5 必出 + 3 条件出)
 
 ---
 
@@ -301,7 +300,7 @@ AI 会怎么处理?
 - [ ] 看到逐份立即评审(4.5/6b.6/8.5,每份问是否评审)
 - [ ] 看到一致性矩阵(全部 ✅)
 - [ ] 看到自检报告
-- [ ] 9 项交付物(6 必出 + 3 条件出)都在 `docs/v1/`
+- [ ] 8 项交付物(5 必出 + 3 条件出)都在 `docs/v1/`
 - [ ] 模拟开发接手验证全部 ✅
 
 **全勾了** → 试用成功!可以正式用了。
@@ -318,7 +317,7 @@ AI 会怎么处理?
 2. **产品段不改代码** — 这是铁律
 3. **逐份立即评审是默认** — 每份文档产出后当场问是否评审,简单需求可全跳过
 4. **版本目录自动建** — 不需要你操心
-5. **交付物在 docs/v{ver}/** — 9 项(6 必出 + 3 条件出)交给开发
+5. **交付物在 docs/v{ver}/** — 8 项(5 必出 + 3 条件出)交给开发
 
 后续:
 - 想正式用 → [`README.md`](./README.md)
