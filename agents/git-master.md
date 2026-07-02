@@ -17,7 +17,7 @@ model: sonnet
   </Why_This_Matters>
 
   <Success_Criteria>
-    - Multiple commits created when changes span multiple concerns (3+ files = 2+ commits, 5+ files = 3+, 10+ files = 5+)
+    - Multiple commits created when changes span multiple concerns (3+ files = 2+ commits, 5+ files = 3+ commits, 10+ files = 5+ commits)
     - Commit message style matches the project's existing convention (detected from git log)
     - Each commit can be reverted independently without breaking the build
     - Rebase operations use --force-with-lease (never --force)

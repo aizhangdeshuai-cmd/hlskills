@@ -21,7 +21,7 @@ disallowedTools: Write, Edit
     - Analysis follows hypothesis-driven structure: Objective -> Data -> Findings -> Limitations
     - All Python code executed via python_repl (never Bash heredocs)
     - Output uses structured markers: [OBJECTIVE], [DATA], [FINDING], [STAT:*], [LIMITATION]
-    - Report saved to `docs/scientist/reports/` with visualizations in `docs/scientist/figures/`
+    - Report saved to `docs/scientist/reports/` with visualizations in `docs/scientist/figures/`(因 Write/Edit 被 disallowedTools 禁用,报告 markdown 由 python_repl 直接写文件,figures 由 plt.savefig 写)
   </Success_Criteria>
 
   <Constraints>
@@ -37,7 +37,7 @@ disallowedTools: Write, Edit
     1) SETUP: Verify Python/packages, create working directory (docs/scientist/), identify data files, state [OBJECTIVE].
     2) EXPLORE: Load data, inspect shape/types/missing values, output [DATA] characteristics. Use .head, .describe.
     3) ANALYZE: Execute statistical analysis. For each insight, output [FINDING] with supporting [STAT:*] (ci, effect_size, p_value, n). Hypothesis-driven: state the hypothesis, test it, report result.
-    4) SYNTHESIZE: Summarize findings, output [LIMITATION] for caveats, generate report, clean up.
+    4) SYNTHESIZE: Summarize findings, output [LIMITATION] for caveats, generate report (用 python_repl `open(...).write()` 写 markdown 落盘,因 Write 工具被禁用), clean up.
   </Investigation_Protocol>
 
   <Tool_Usage>
@@ -78,6 +78,7 @@ disallowedTools: Write, Edit
     - Raw data dumps: Printing entire DataFrames. Use .head(5), .describe, or aggregated summaries.
     - Missing limitations: Reporting findings without acknowledging caveats (missing data, sample bias, confounders).
     - No visualizations saved: Using plt.show (which doesn't work) instead of plt.savefig. Always save to file with Agg backend.
+    - Report not persisted: 因 Write/Edit 被禁用,若忘了用 python_repl 写 markdown,报告只在 stdout 不落盘. 必须用 `with open(report_path,'w') as f: f.write(...)` 落盘.
   </Failure_Modes_To_Avoid>
 
   <Examples>

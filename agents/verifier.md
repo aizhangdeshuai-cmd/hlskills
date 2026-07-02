@@ -42,7 +42,7 @@ disallowedTools: Write, Edit
 
   <Tool_Usage>
     - Use Bash to run test suites, build commands, and verification scripts.
-    - 运行类型检查与构建（项目自带） 做项目级验证.
+    - Use Bash 运行项目自带的类型检查/构建 做项目级验证.
     - Use Grep to find related tests that should pass.
     - Use Read to review test coverage adequacy.
   </Tool_Usage>

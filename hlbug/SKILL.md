@@ -60,9 +60,10 @@ description: Bug修复流程（14步），覆盖问题定位→根因分析→�
 
 | 角色 | Agent |
 |------|-------|
-| Bug分析 | `debugger` |
+| Bug分析+根因 | `debugger`(复杂场景调用 `tracer`) |
+| 修复方案 | `debugger` + `architect` |
 | 前端开发 | `executor` |
-| 后端开发 | `architect` / `executor` |
+| 后端开发 | `executor`(`architect` 咨询) |
 | 代码审查 | `code-reviewer` |
 | 安全审查 | `security-reviewer` |
 | 测试 | `qa-tester` |
@@ -80,12 +81,13 @@ description: Bug修复流程（14步），覆盖问题定位→根因分析→�
 
 ### 第一阶段：问题定位
 1. **Bug分析** — `debugger` 基于项目文档上下文理解Bug现象与影响范围。如用户提供Bug截图/录屏：优先用模型原生多模态识别，不支持则用 Read 工具读取图片；如需分析视频可使用可选外部 `videodb` 技能（需用户自行安装，未安装不影响本流程）
-2. **根因定位** — `architect` + `executor` 定位问题根因。遵循结构化调试四阶段（融合 gstack /investigate 方法论）：
+2. **根因定位** — `debugger` 主导根因分析(与其自述使命一致),`architect` 仅在根因涉及架构设计时咨询。遵循结构化调试四阶段（融合 gstack /investigate 方法论）：
    - **Investigation（证据收集）**：收集所有相关证据——错误日志、堆栈跟踪、复现条件、受影响范围
    - **Analysis（根因分析）**：从证据出发，追踪因果链路，定位根因而非症状
    - **Hypotheses（假设验证）**：对每个候选根因提出可验证假设，逐个排除
    - **铁律：根因未确认前，禁止进入修复阶段**。修复症状而不修复根因 = 隐藏未来 Bug
-3. **修复方案** — `architect` + `executor` 制定修复方案
+   - **复杂场景**：竞态/异步/跨组件 Bug 由 `debugger` 调用 `tracer` 做因果追踪（见调试纪律段）
+3. **修复方案** — `debugger` + `architect` 制定修复方案(debugger 出根因修复点,architect 评估架构影响)
 4. **用户确认方案** — 提交修复方案供用户确认
 
 ### 第二阶段：修复与验证
