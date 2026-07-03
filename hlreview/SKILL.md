@@ -21,7 +21,7 @@ description: 项目评审与审查机制，覆盖PRD评审、设计评审、用�
 | 设计评审 | `designer` + `executor` | 通过 / 修改建议 / 驳回（含无障碍检查） | 新需求 |
 | 用例评审 | `test-engineer` + `analyst` | 通过 / 修改建议 / 驳回 | 新需求 |
 | 修复方案评审 | `architect` + `executor` | 通过 / 修改建议 / 驳回 | Bug修复 |
-| 代码审查 | `code-reviewer` | 严重性分级：严重/重要/次要 + 是否可合并 | 两者 |
+| 代码审查 | `code-reviewer` | 严重性分级：严重/重要/次要 + 是否可合并(**双轴并行:Standards + Spec**,详见下方) | 两者 |
 | 安全审查 | `security-reviewer` | 漏洞清单 + 风险等级 + 修复建议 | 两者 |
 | 生产审计 | `verifier` | 风险评分(0-100) + 风险视角 + 证据清单 | 两者 |
 
