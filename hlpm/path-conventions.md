@@ -112,8 +112,9 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │       └── *.md
 ├── CHANGELOG.md                            # 根目录（业界惯例）
 ├── DESIGN.md                               # 根目录（跨目录兜底）
-├── knowledge/                              # 项目知识库(hlkb,10 类项目总文件库)
+├── knowledge/                              # 项目知识库(hlkb,11 类项目总文件库)
 │   ├── prd.md                           # 总 PRD(跨版本累计,hlpm 步骤 11 追加)
+│   ├── glossary.md                      # 术语表(通用语言,hlpm 步骤 1 梳理)
 │   ├── api/ db/ adr/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/
 │   └── README.md                           # 知识库总目录
 └── .hl/memory/                             # 项目记忆（AI 跨会话工作记忆,隐藏）
@@ -189,7 +190,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │       └── *.md                             # 测试报告、健康评分、审计报告
 ├── CHANGELOG.md                             # 开发段：变更日志（根目录特例）
 ├── DESIGN.md                                # 项目设计规范（6a.1 跨目录兜底 #4）
-├── knowledge/                               # 项目知识库（hlkb,10 类项目总文件库,根目录可见）
+├── knowledge/                               # 项目知识库（hlkb,11 类项目总文件库,根目录可见）
 └── .hl/memory/                              # 项目记忆（来自 hlmemory 技能,AI 工作记忆,隐藏）
     ├── project.md                           # 项目概述
     ├── techstack.md                         # 技术栈
