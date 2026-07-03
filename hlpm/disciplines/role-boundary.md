@@ -86,8 +86,8 @@
 **建议铁律**: 步骤 11 自检报告宜确认 —— 本版本交付的 PRD 中涉及的所有"代码 / 接口 / 数据 / 配置 / 决策"变更已在 `knowledge/` 标记为"待实现",等 hldev 阶段实现后落地。
 
 **项目级总览文档追加**(步骤 11 建议同步):
-- **`docs/master-prd.md`**: 追加本版本章节(如本版本 BL-N 卡片摘要 + 与上版差异清单)
-- **`docs/master-test-cases.md`**: 追加本版本用例维度 / 数量
+- **`knowledge/prd.md`**: 追加本版本章节(如本版本 BL-N 卡片摘要 + 与上版差异清单)
+- **`knowledge/tests/`**: 追加本版本用例维度 / 数量
 - **可选**: `docs/master-architecture.md` / `docs/master-decisions.md` (v4+ 评估)
 
 **触发详情**: 详见 `hlkb` 技能 SKILL.md §同步触发表

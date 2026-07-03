@@ -1,6 +1,6 @@
 ---
 name: hlkb
-description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖)。项目内 `knowledge/` 目录是"工程现实单一可信源",与 src/ 代码同 commit 维护。AI 助手/新开发者进入项目看文档就能 5 分钟理解项目,不用从代码反推。Use when 需要新建/更新项目知识库条目,或调用 hlskills 其他技能时需要检查"该次变更是否需要同步知识库"。
+description: 项目知识库(10 类:PRD/接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/总测试库)。项目内 `knowledge/` 目录是"项目总文件库"(跨版本累计单一可信源),与 src/ 代码同 commit 维护。AI 助手/新开发者进入项目看文档就能 5 分钟理解项目,不用从代码反推。Use when 需要新建/更新项目知识库条目,或调用 hlskills 其他技能时需要检查"该次变更是否需要同步知识库"。
 ---
 
 # hlkb · 项目知识库
@@ -25,9 +25,8 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 | 文档类型 | 跟版本走? | 存放位置 | 说明 |
 |---|---|---|---|
-| PRD / 设计稿 / 测试用例(单版本) | ✅ 是 | `docs/v{N}/` | 版本基线,固定不变 |
-| **知识库(api/db/adr/...)** | **❌ 否(跨版本)** | **`knowledge/`** | **持续维护的工程资产,跨版本共用** |
-| 总 PRD / 总测试用例(跨版本汇总) | ❌ 否 | `docs/master-prd.md` / `docs/master-test-cases.md` | 每次版本交付后追加章节 |
+| 版本快照(PRD/设计稿/测试用例/矩阵/自检等单版本产物) | ✅ 是 | `docs/v{N}/` | 版本基线,固定不变 |
+| **知识库(10 类,跨版本累计)** | **❌ 否** | **`knowledge/`** | **项目总文件库,跨版本持续维护**(含 prd/api/db/adr/state-machines/enums/error-codes/dependencies/env-vars/tests) |
 | CLAUDE.md | ❌ 否 | 项目根 | 项目元信息,持续维护 |
 | 评审记录 / 自检报告 | ✅ 是 | `docs/v{N}/` | 单版本产物 |
 
@@ -39,10 +38,10 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ### 主动调用场景
 
-1. **新建项目** → 初始化 `knowledge/` 整套(9 类目录)
+1. **新建项目** → 初始化 `knowledge/` 整套(10 类)
 2. **跑 hllegacy 旧项目分析** → 把现状反推沉淀到知识库
 3. **查接口/数据库/枚举的定义** → 已有知识库,直接 Read
-4. **生成 CLAUDE.md / master-prd.md** → 汇总知识库
+4. **生成 CLAUDE.md / knowledge/prd.md** → 汇总知识库
 
 ### 被动触发场景(其他技能约定调用 hlkb — 靠 Agent 自觉,非自动 hook)
 
@@ -50,9 +49,9 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 | 技能 | 何时触发 hlkb(建议) | 更新什么 | 对方已对接? |
 |---|---|---|---|
-| `hlpm` 版本交付自检 | 版本交付完成 | `docs/master-prd.md` / `docs/master-test-cases.md` 追加本版本章节 | ❌ 待对接 |
+| `hlpm` 版本交付自检 | 版本交付完成 | `knowledge/prd.md` / `knowledge/tests/` 追加本版本章节 | ❌ 待对接 |
 | `hldev` 步骤 4.5 PRD 走查 | 代码实现后 commit | `knowledge/api/` / `knowledge/db/` 追加对应条目 | ✅ |
-| `hldev` 步骤 12.7 发布前自检 | 发布前 | 知识库完整性自检(9 类齐全, 缺则应补齐后再发布) | ✅ |
+| `hldev` 步骤 12.7 发布前自检 | 发布前 | 知识库完整性自检(10 类齐全, 缺则应补齐后再发布) | ✅ |
 | `hldb` 数据库迁移 | 任何 DDL | `knowledge/db/{table}.md` + ER 图 | ✅ |
 | `hlapi` 接口设计/新增 | 任何接口契约 | `knowledge/api/{module}.md` | ✅ |
 | `hlbug` Bug 修复 | 涉及字段/接口/配置变化 | 同步知识库 | ✅ |
@@ -61,11 +60,12 @@ description: 项目知识库(9 类:接口/数据库/ADR/状态机/枚举/错误�
 
 ---
 
-## 目录结构(9 类知识库)
+## 目录结构(10 类知识库)
 
 ```
 knowledge/
 ├── README.md                       # 知识库总目录(进入后第一眼看到的索引)
+├── prd.md                          # 类别 0: 总 PRD(跨版本累计,hlpm 步骤 11 追加章节)
 ├── api/                            # 类别 1: HTTP 接口
 │   ├── README.md                   # 接口总览
 │   └── {module}.md                 # 单个模块的接口
@@ -90,19 +90,20 @@ knowledge/
 │   └── README.md
 └── tests/                          # 类别 9: 总测试库(验收用例+代码层用例)
     ├── README.md                   # 测试覆盖总览
-    └── {module}.md                 # 单个模块的代码层测试点 ↔ AC ↔ 测试代码路径
+    └── {module}.md                 # 单个模块的验收用例 + 代码层测试点 ↔ AC ↔ 测试代码路径
 ```
 
-> 9 类不一定都用,新项目至少要建:`README.md` + 实际有内容的类别(无内容的类别不建目录,避免空文件夹)。
+> 10 类不一定都用,新项目至少要建:`README.md` + 实际有内容的类别(无内容的类别不建目录,避免空文件夹)。
 
 ---
 
-## 9 类知识库模板
+## 10 类知识库模板
 
-模板在 `templates/` 目录,复制后填充:
+模板在 `templates/` 目录,复制后填充(PRD 例外,由 hlpm 步骤 4 产出累计,不用模板):
 
 | 类别 | 模板文件 | 用途 |
 |---|---|---|
+| 总 PRD | (无模板,hlpm 步骤 4 产出 + 步骤 11 追加累计) | 跨版本 PRD 汇总,每版本追加章节 |
 | API 接口 | `templates/api.md` | URL / Method / 入参 / 出参 / 错误码 / 权限 / 调用方 |
 | 数据库表 | `templates/db-table.md` | 字段 / 类型 / 索引 / 外键 / 索引策略 |
 | ER 关系图 | `templates/er-diagram.md` | 全局跨表关系 / mermaid 图 / 关键约束 |
@@ -126,7 +127,7 @@ knowledge/
 |---|---|
 | 后端开发(`executor`) | `api/`, `db/`, `enums/`, `error-codes/`, `dependencies/`, `env-vars/` |
 | 架构师(`architect`) | `adr/`, `state-machines/` |
-| 产品经理(`analyst`) | 跨版本 master 文档(`docs/master-prd.md` / `docs/master-test-cases.md`) |
+| 产品经理(`analyst`) | 跨版本 master 文档(`knowledge/prd.md` / `knowledge/tests/`) |
 | AI 助手(项目) | `CLAUDE.md` (项目根) |
 
 ### 何时更新
@@ -139,7 +140,7 @@ knowledge/
 | 任何架构决策 | `adr/{NNNN}-{slug}.md` |
 | 状态机变化 | `state-machines/{entity}.md` |
 | 新增枚举/错误码/依赖/环境变量 | 对应类目文件 |
-| 版本交付完成 | `docs/master-prd.md` + `docs/master-test-cases.md` 追加本版本章节 |
+| 版本交付完成 | `knowledge/prd.md` + `knowledge/tests/` 追加本版本章节 |
 | 项目元信息变化(技术栈/架构) | `CLAUDE.md` |
 
 ### 同步时机(铁律)
@@ -161,8 +162,8 @@ knowledge/
 - [ ] `dependencies/` 与 `pom.xml` / `package.json` 一致
 - [ ] `env-vars/` 覆盖所有 `.env` / `application-{profile}.yml` 变量
 - [ ] `tests/` 覆盖本版本所有模块(验收用例 + 代码层用例,每个新增/修改的 Service/API 有测试点 + 对应 AC + 测试代码路径,交叉追溯无 ⚠️ 待补)
-- [ ] `docs/master-prd.md` 包含当前最新版本章节
-- [ ] `docs/master-test-cases.md` 包含当前最新版本章节
+- [ ] `knowledge/prd.md` 包含当前最新版本章节
+- [ ] `knowledge/tests/` 包含当前最新版本章节
 - [ ] `CLAUDE.md` 反映最新项目元信息
 
 **任一缺失 → 应补齐后再发布**(靠 Agent/用户把关,非机制强制阻断)。
@@ -198,7 +199,7 @@ knowledge/
 
 > 约束文件是 hlkb 同步铁律的**常驻上下文版**——hlkb SKILL.md 按需加载(调 Skill hlkb 才进场),约束文件每次会话常驻(AI 工具启动即读)。ehr 实证:纯声明性铁律会漂移,需"完成前自检"把声明变核对动作。
 
-- **模板**:`templates/claude-md.template.md`(与 9 类知识库模板并列)
+- **模板**:`templates/claude-md.template.md`(与 10 类知识库模板并列)
 - **内容**:极简 4 段——项目定位(一句话) + AI 助手必读(指针) + 知识库同步铁律 + 🚨 完成前自检(5 项检查项)。不内嵌角色表/字段表/技术栈明细(那些在 `knowledge/` 与 `.hl/memory/`),避免成为新漂移源。
 - **初始化/补全**:由各子技能 step 0 检测并按模板创建(不存在)或补"完成前自检"段(已存在缺该段)。详见各子技能 step 0。
 - **IDE 适配**:Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE → 都写。
@@ -210,7 +211,7 @@ knowledge/
 
 | 技能 | 关系 |
 |---|---|
-| `hlpm` | 版本交付自检建议追加 `docs/master-prd.md` / `docs/master-test-cases.md`(对方未对接,待补) |
+| `hlpm` | 版本交付自检建议追加 `knowledge/prd.md` / `knowledge/tests/`(对方未对接,待补) |
 | `hldev` | 步骤 4.5 走查同步 `api/` `db/`; 步骤 12.7 自检知识库完整性 |
 | `hldb` | 任何 DDL 应同步 `db/` |
 | `hlapi` | 任何接口契约同步 `api/` |
@@ -227,18 +228,19 @@ knowledge/
 启动 hlkb 之前,确认以下 4 件事:
 - [ ] 确认项目根存在 `.hl/` 目录(已有 memory 在 `.hl/memory/`)
 - [ ] 确认本次是"新建知识库"还是"更新现有知识库"
-- [ ] 确认涉及哪几个类别(9 类中的几个)
+- [ ] 确认涉及哪几个类别(10 类中的几个)
 - [ ] 确认 git 已配置(知识库与代码同 commit)
 
 ---
 
 ## 知识库条目清单(本技能不交付,只触发同步)
 
-> 下表与"9 类知识库"一一对应(总目录 + 9 类内容类别 = 10 行)。依赖与环境变量分开列。
+> 下表与"10 类知识库"一一对应(总目录 + 10 类内容类别 = 11 行)。依赖与环境变量分开列。
 
 | 编号 | 文档 | 路径 | 触发技能 | 状态 |
 |---|---|---|---|---|
 | 0 | 知识库总目录 | `knowledge/README.md` | hlkb / hllegacy | ✅ 项目元信息(初始化) |
+| 0.5 | 总 PRD | `knowledge/prd.md` | hlpm | ✅ 跨版本累计(步骤 11 追加) |
 | 1 | 接口文档 | `knowledge/api/*.md` | hlapi / hldev | ✅ 接口契约(每次新增/修改) |
 | 2 | 数据库文档 | `knowledge/db/*.md` | hldb / hldev | ✅ DDL(每次迁移) |
 | 3 | ADR | `knowledge/adr/*.md` | hladr / hlpm | ✅ 决策(每次重大决策) |
