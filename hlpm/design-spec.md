@@ -20,7 +20,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则)�
    > - **`<page>.demo.html`(活文档)**:承载本段描述的**全部 DEV-NOT-FOR-PROD 元素**——区块 1/2/3.2-3.5/4/5 + 悬浮框 + 🔗 角标 + logic-data + data-* 属性
    > - **本段下文出现的"这个 HTML""区块 3 真实元素上挂 data-*""顶部 DEV-NOT-FOR-PROD 白名单注释",一律指 `.demo.html`**;生产态 `.html` 不含这些元素,因此无需白名单区分(v18 前的"单文件靠注释白名单区分"做法已废)
    >
-   > **🚨 DEV-NOT-FOR-PROD**:区块 1 / 2 / 3.2-3.5 / 4 / 5 全部是**设计稿元信息**,**只存在于 `.demo.html`,禁止进生产代码**。dev 从生产态 `.html` 直接搬(该文件已无这些元素);若历史上是单文件档二遗留,则**只搬区块 3(含 3.1)整个 DOM** + 关联 CSS（排除 `.logic-*` / `.floating-meta-*` / `[data-prd]` / `[data-tc]` / `[data-state]` / `[data-matrix]` / `.logic-badge` / `#logicPanel` / `#floatingMetaToggle` / `#floatingMetaPanel` / `#logic-data`）。
+   > **🚨 DEV-NOT-FOR-PROD**:区块 1 / 2 / 3.2-3.5 / 4 / 5 全部是**设计稿元信息**,**只存在于 `.demo.html`,禁止进生产代码**。dev 从生产态 `.html` 直接搬(该文件已无这些元素);若历史上是单文件档二遗留,则**只搬区块 3(含 3.1)整个 DOM** + 关联 CSS。**完整搬运白名单(DOM 排除/属性排除/CSS 排除/保留)见 `hldesign` 技能 §设计与实现分离(单一可信源),本段不重复定义**。
 
    #### 输出结构：`.demo.html` 内的页面流 + 悬浮框
 

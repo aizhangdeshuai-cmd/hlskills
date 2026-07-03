@@ -114,13 +114,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
    - [ ] 非功能需求含具体指标
    ```
 
-   - **🚨 设计稿搬移白名单(硬性)** — 设计稿 HTML 中含有"设计元信息"(用于评审),搬到生产代码时**必须剔除**。白名单:
-     - **DOM 排除**:`<!-- DEV-NOT-FOR-PROD -->` 注释包裹的所有内容 / `.logic-*` 类 / `.floating-meta-*` 类 / `#floatingMetaToggle` / `#floatingMetaPanel` / `#logicPanel` / `#logic-data` 整个 `<script>`
-     - **属性排除**:元素上 `[data-prd]` / `[data-tc]` / `[data-state]` / `[data-matrix]` / `[data-diff-mode]` / `.logic-badge` 类(逻辑说明角标)
-     - **CSS 排除**:`.logic-*` / `.floating-meta-*` / `.diff-add` / `.diff-mod` / `.diff-del` 选择器(评审视觉辅助)
-     - **保留**:页面主体 DOM(区块 3 + 区块 3.1)+ 实际组件样式
-   - **🚨 设计稿 5 区块扩展识别** — 如设计稿含 5 区块扩展(区块 3.2-3.5 弹窗在悬浮框 tab 内),**仅保留区块 3 + 3.1 DOM** 作为生产代码,其余 4 个区块禁止搬到生产。
-   - **白名单来源**:与 `hlpm/design-spec.md` "5 区块扩展"段对齐(原在 `hlpm/SKILL.md` 第 6b 步,v18 拆到 `design-spec.md`)。任何开发与产品对搬移范围有分歧 → 优先以本段为准。
+   - **🚨 设计稿搬移白名单(硬性)** — 设计稿 HTML 中含有"设计元信息"(用于评审),搬到生产代码时**必须剔除**。**完整白名单(DOM 排除/属性排除/CSS 排除/保留 + 5 区块扩展识别)见 `hldesign` 技能 §设计与实现分离(单一可信源),本段不重复定义**。冲突时以 `hldesign` 为准。
 
    - **全部 ✅ → 进入步骤 1**
    - **任一 ❌ → 填写 `handoff-rejection.md`（拒收原因 + 不符合项）→ 退回产品段**
