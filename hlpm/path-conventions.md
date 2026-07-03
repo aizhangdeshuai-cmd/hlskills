@@ -169,7 +169,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 ├── docs/                                    # 文档根目录
 │   ├── prd.md                               # 产品段：PRD
 │   ├── non-functional-requirements.md       # 产品段：非功能需求
-│   ├── test-cases.md                        # 产品段：测试用例
+│   ├── test-cases.md                        # 测试用例快照(产品段验收用例 + 开发段白盒用例)
 │   ├── consistency-matrix.md                # 产品段：一致性矩阵(含验收标准)
 │   ├── handoff-self-check.md                # 产品段：自检报告
 │   ├── tech-design.md                       # 开发段：技术设计
@@ -210,7 +210,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 | 2 | PRD 文档 | `docs/{ver}/prd.md` | `analyst` 生成 → 写入文件 | 4 |
 | 3 | 设计稿 | `docs/{ver}/design/<page-name>.html` | `designer` | 6b |
 | 4 | 设计稿截图 | `docs/{ver}/design/screenshot-<page-name>.png` | `designer` 调 `hlbrowse` | 6b.5 |
-| 5 | 测试用例 | `docs/{ver}/test-cases.md` | `test-engineer` | 8 |
+| 5 | 测试用例快照 | `docs/{ver}/test-cases.md` | `test-engineer`(hlpm 验收 + hldev 白盒) | 8 / 10 |
 | 6 | 非功能需求 | `docs/{ver}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 10 |
 | 7 | 一致性矩阵(含验收标准) | `docs/{ver}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
 | 8 | 自检报告 | `docs/{ver}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |

@@ -227,7 +227,8 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
         - 本次重构涉及的函数/模块回归点
     - **交叉验证**:每个 hlpm 验收用例须在代码层用例中有对应覆盖,或显式标注"由 xx 单元测试覆盖/由 xx 集成测试覆盖",保证业务视角不丢
     - 执行全部用例(验收 + 代码层),验证一致性矩阵 §1 验收方法列(验收标准)全部通过
-    - **沉淀到总测试库**:把验收用例(本期 hlpm 产出)+ 代码层用例(本步编写)+ 交叉追溯,合并写入 `knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"总测试库"规范,模板 `hlkb/templates/code-tests.md`)。总库跨版本累计维护,标注引入版本(同 `knowledge/api/`、`knowledge/db/`)。`docs/{ver}/test-cases.md` 是版本快照固定不变,`knowledge/tests/` 是累计总库
+    - **沉淀到总测试库**:把验收用例(本期 hlpm 产出)+ 代码层用例(本步编写)+ 交叉追溯,合并写入 `knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"总测试库"规范,模板 `hlkb/templates/code-tests.md`)。总库跨版本累计维护,标注引入版本(同 `knowledge/api/`、`knowledge/db/`)
+    - **双写版本快照**:本步编写的代码层用例,同时追加到 `docs/{ver}/test-cases.md`(版本快照,与 hlpm 验收用例同文件)。`docs/{ver}/test-cases.md` = 当版本测试快照(验收+白盒,固定不变),`knowledge/tests/` = 跨版本累计总库。两者关系:快照是当版本产出留存,总库是持续维护的唯一源
     - 测试代码本身放项目语言约定的测试目录(Java `src/test/`、Node `test/`、Go 同级、Python `tests/`),随代码 commit 不另计入文档交付物
     - **反模式禁止**:不得"照着实现写用例"——代码的缺陷不能被当成正确预期写进用例。预期以 PRD 验收标准为准,代码偏离 PRD 时改代码不改用例
 
