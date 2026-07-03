@@ -688,6 +688,7 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
    - 覆盖：主流程 + 替代流程 + 异常流程
    - 包含：边界值用例、权限分支用例、E2E 业务路径骨架(用户旅程级,非实现细节)
    - 用例必须能反推 PRD 验收标准
+   - **沉淀**:本步产出的验收用例,由 `hldev` 步骤 10 沉淀到 `knowledge/tests/{module}.md`(总测试库,跨版本累计维护,标注引入版本)。本步产出的 `docs/{ver}/test-cases.md` 是版本快照(固定不变),`knowledge/tests/` 是累计总库
    - **🚨 每条 TC 编号前贴截图**: 在每条用例的 `TC-XXX` 编号**之前**贴一张该用例对应界面/状态的截图,让评审人先看到 UI 再读用例步骤。规则:
      1. **优先嵌入真图**: 用 Markdown `![TC-XXX 截图](design/screenshot-<page-name>.png)` 直接显示(路径相对 `test-cases.md` 所在的 `docs/{ver}/` 目录)
      2. **来源**: 复用步骤 6b.5 已生成的 `docs/{ver}/design/screenshot-<page-name>.png`,**不重复截图**;TC 粒度更细时(如某弹窗/某异常态),指向最贴近该用例状态的那张截图,同一状态多条 TC 可复用同一张

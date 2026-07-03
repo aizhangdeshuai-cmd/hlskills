@@ -12,7 +12,7 @@ description: hlkb 技能说明(概览版)。5 分钟读懂"项目知识库"是�
 
 ## 一句话定义
 
-**hlkb** 是 hlskills 体系中的"**项目知识库**"——仓库里 `knowledge/` 目录是"工程现实单一可信源",与 `src/` 代码同 commit 维护,9 类文档(接口 / 数据库 / ADR / 状态机 / 枚举 / 错误码 / 依赖 / 环境变量 / 测试覆盖)。
+**hlkb** 是 hlskills 体系中的"**项目知识库**"——仓库里 `knowledge/` 目录是"工程现实单一可信源",与 `src/` 代码同 commit 维护,9 类文档(接口 / 数据库 / ADR / 状态机 / 枚举 / 错误码 / 依赖 / 环境变量 / 总测试库)。
 
 ---
 
@@ -110,7 +110,7 @@ description: hlkb 技能说明(概览版)。5 分钟读懂"项目知识库"是�
 | 错误码 | `error-codes/README.md` | 后端 | 新增错误码 |
 | 依赖 | `dependencies/README.md` | 前端 + 后端 | 升级 |
 | 环境变量 | `env-vars/README.md` | 后端 + 运维 | 新增/修改 |
-| 测试覆盖 | `tests/{module}.md` | 测试(`test-engineer`) | 代码层用例编写(hldev 步骤 10) |
+| 总测试库 | `tests/{module}.md` | 测试(`test-engineer`) | 验收用例(hlpm 产出)+ 代码层用例(hldev 步骤 10)+ 交叉追溯 |
 
 ### 3. 跨版本不跟版本走
 

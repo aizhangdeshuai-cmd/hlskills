@@ -12,7 +12,7 @@ description: hlkb 技能使用说明(README)。面向"第一次在本项目跑 h
 
 ## 这是什么?
 
-`hlkb` 是 hlskills 的"**项目知识库**"技能——仓库里 `knowledge/` 目录是"工程现实单一可信源",9 类文档覆盖接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/测试覆盖。
+`hlkb` 是 hlskills 的"**项目知识库**"技能——仓库里 `knowledge/` 目录是"工程现实单一可信源",9 类文档覆盖接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/总测试库。
 
 **触发式同步**: 任何代码/接口/数据/配置/决策变更, **必须同步知识库对应条目**, 与代码同 commit 提交。
 
@@ -87,7 +87,7 @@ cp templates/error-code.md knowledge/error-codes/README.md
 cp templates/dependency.md knowledge/dependencies/README.md
 cp templates/env-var.md knowledge/env-vars/README.md
 
-# 9. 代码层测试覆盖(按模块,hldev 步骤 10 维护)
+# 9. 总测试库(按模块,验收用例 hlpm 产出 + 代码层用例 hldev 沉淀)
 cp templates/code-tests.md knowledge/tests/blacklist.md
 
 # 9. 同 commit 提交(代码 + 知识库)
@@ -150,7 +150,7 @@ git commit -m "feat(api): 实现 BL-12 恢复接口(ADR 0001)"
 - `templates/error-code.md` (错误码)
 - `templates/dependency.md` (依赖)
 - `templates/env-var.md` (环境变量)
-- `templates/code-tests.md` (代码层测试覆盖)
+- `templates/code-tests.md` (总测试库:验收+代码层)
 
 ---
 

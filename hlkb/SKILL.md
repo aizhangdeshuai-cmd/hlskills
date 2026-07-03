@@ -88,7 +88,7 @@ knowledge/
 │   └── README.md
 ├── env-vars/                       # 类别 8: 环境变量
 │   └── README.md
-└── tests/                          # 类别 9: 代码层测试覆盖
+└── tests/                          # 类别 9: 总测试库(验收用例+代码层用例)
     ├── README.md                   # 测试覆盖总览
     └── {module}.md                 # 单个模块的代码层测试点 ↔ AC ↔ 测试代码路径
 ```
@@ -112,7 +112,7 @@ knowledge/
 | 错误码 | `templates/error-code.md` | 错误码 / HTTP / 含义 / 触发场景 |
 | 第三方依赖 | `templates/dependency.md` | 库名 / 版本 / 许可证 / 升级计划 |
 | 环境变量 | `templates/env-var.md` | 名称 / 含义 / 默认值 / 环境差异 |
-| 代码层测试覆盖 | `templates/code-tests.md` | 模块测试点 / 对应 AC / 测试代码路径 / 覆盖的代码分支 |
+| 总测试库 | `templates/code-tests.md` | 验收用例(黑盒)/ 代码层用例(白盒)/ 交叉追溯 / 测试代码路径 |
 
 详见 `templates/` 目录各文件。
 
@@ -160,7 +160,7 @@ knowledge/
 - [ ] `error-codes/` 覆盖所有自定义错误码
 - [ ] `dependencies/` 与 `pom.xml` / `package.json` 一致
 - [ ] `env-vars/` 覆盖所有 `.env` / `application-{profile}.yml` 变量
-- [ ] `tests/` 覆盖本版本代码层修改点(每个新增/修改的 Service/API 有关键分支测试点 + 对应 AC + 测试代码路径)
+- [ ] `tests/` 覆盖本版本所有模块(验收用例 + 代码层用例,每个新增/修改的 Service/API 有测试点 + 对应 AC + 测试代码路径,交叉追溯无 ⚠️ 待补)
 - [ ] `docs/master-prd.md` 包含当前最新版本章节
 - [ ] `docs/master-test-cases.md` 包含当前最新版本章节
 - [ ] `CLAUDE.md` 反映最新项目元信息
@@ -247,7 +247,7 @@ knowledge/
 | 6 | 错误码 | `knowledge/error-codes/*.md` | hldev | ✅ 新增错误码 |
 | 7 | 依赖 | `knowledge/dependencies/*.md` | hldev | ✅ 升级/新增 |
 | 8 | 环境变量 | `knowledge/env-vars/*.md` | hldev | ✅ 新增/修改 |
-| 9 | 代码层测试覆盖 | `knowledge/tests/*.md` | hldev | ✅ 代码层用例编写(步骤 10) |
+| 9 | 总测试库 | `knowledge/tests/*.md` | hlpm(验收用例沉淀)+ hldev(代码层用例) | ✅ hlpm 步骤8 产出 + hldev 步骤10 沉淀 |
 
 ---
 
