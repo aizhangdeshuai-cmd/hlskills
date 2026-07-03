@@ -5,16 +5,9 @@ description: 部署规范，覆盖CI/CD流水线（lint→typecheck→test→bui
 
 # 部署规范
 
-> ## ⚠️ 流程纪律的执行机制
+> ## ⚠️ 能力边界声明
 >
-> 本流程的"硬性关卡""返回上一步""强同步规则"是 markdown 文本纪律,Claude Code 不会机械地强制执行。Agent 加载后会**自觉遵守**,但如 Agent 模型弱或 prompt 冲突,关卡可能失效。
->
-> **真实约束**:文档本身 + Agent 自觉 + 用户手动打断。
-> **不是**:Claude Code runtime hook 拦截 + 状态机门禁。
->
-> 如发现 Agent 在第 X 步没停下来等你确认 / 直接跳过第 Y 步 / 没返回上一步重做,请**手动打断**让它重读 SKILL.md 对应章节。
->
-> 详细能力边界见仓库 `README.md` 「⚠️ 能力边界声明」段。
+> 本技能"硬性关卡/强同步/会签"是**文档纪律**,靠 Agent 自觉 + 用户手动打断,**非** Claude Code runtime 强制(漏一步不自动阻断;Agent 模型弱或 prompt 冲突时关卡可能失效,需手动打断重读)。详见 `README.md` 「⚠️ 能力边界声明」。
 
 ## 通用纪律
 
