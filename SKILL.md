@@ -25,6 +25,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 代码/安全/生产审查 | `hlreview` | `/hlreview` | PRD/设计/代码/安全/生产审查 + 结构性问题检测 + /cso 安全 + /codex 第二意见 |
 | UI/UX 设计 | `hldesign` | `/hldesign` | 设计依据优先级 + 交互状态覆盖 + 无障碍检查 |
 | **无障碍规范** | `hla11y` | `/hla11y` | **WCAG 2.2 AA 规范，覆盖设计→开发→测试三阶段** |
+| 技能写作 | `hlwrite-skill` | `/hlwrite-skill` | hlskills 技能写作方法论(结构/user/model-invoked/反模式/评审 checklist) |
 | 架构决策记录 | `hladr` | `/hladr` | ADR 格式、记录时机、取代规则 |
 | 测试全流程 | `hltest` | `/hltest` | 用例编写 + E2E（Playwright）+ QA三级 + Diff-aware + 健康评分 + 响应式 + 仅报告模式 |
 | 浏览器实时QA | `hlbrowse` | `/hlbrowse` | 70+命令：导航/交互/快照/截图/Cookie导入（集成 gstack 浏览器引擎） |
