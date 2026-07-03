@@ -23,7 +23,7 @@ description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hlde
 | 2 | `Skill hldev "..."` | 完成开发 + 内置测试/审计/发布 | 否(必经) |
 | 3 | `Skill hlrelease "..."` | 生成 CHANGELOG + git tag + push | 否(必经;hldev 步骤 14 仅用户确认,不含 tag 推送) |
 | 4 | `Skill hldeploy "..."` | 部署到生产环境 | **可选**(用户可手动部署) |
-| 5 | `Skill hltest "..."` | 独立测试阶段补充 | **可选**(hldev 步骤 10-11 已内置) |
+| 5 | `Skill hltest "..."` | 独立测试阶段补充 | **可选**(hldev 步骤 10-11 已内置:步骤10 编写代码层用例+执行,步骤11 浏览器验证) |
 | 6 | `Skill hlbug "..."` | 任何阶段遇到 bug 时调用 | **条件**(任一阶段发现问题都触发) |
 
 ---
