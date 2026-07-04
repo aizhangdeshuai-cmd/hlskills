@@ -586,10 +586,58 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
       - 缺规范引用 → 评审不通过,返回 6a.1 补规范检查
       - 改动超出规范范围 → 标记 `🔴 规范缺口` 升级用户
 
+   6.5. **(可选,推荐) BL 钉点标注系统 — 让设计稿自解释 PRD**
+
+      > **目的**: 在设计稿 HTML 上钉 `[N]` 蓝圆标记 → 点击 → 右侧抽屉滑出展示该 BL 的 PRD 原文摘录。让评审人/开发在看原型时**一眼**点到任一元素 → 弹出对应 PRD 章节,减少"原型长这样 / PRD 说那样"的来回切换。
+      >
+      > **何时用**: 看板类 / 演示类 / 多功能聚合页设计稿 — 这类页面 BL 密集,钉点价值大。纯静态单页(landing page 等)可不用。
+
+      - **模板位置**: `hlpm/templates/bl-marker/` 三件套:
+        - `bl-marker.css` — 钉点 / 抽屉 / 悬浮开关 / 调试面板样式
+        - `bl-marker.js` — IIFE 控制器(抽屉开关 / 拖动 / 长按复位 / 宽度调节 / 10 TC)
+        - `bl-marker-template.html` — 最小可跑样板,复制即用
+
+      - **接入步骤**(以新设计稿 `docs/v{N}/design/dashboard.html` 为例):
+        1. **复制三件套到设计稿目录**: `cp hlpm/templates/bl-marker/bl-marker.{css,js} docs/v{N}/design/`
+        2. **设计稿 `<head>` 引入 CSS**: `<link rel="stylesheet" href="bl-marker.css">`
+        3. **设计稿 `</body>` 前引入 JS + stash**:
+           ```html
+           <script>window.__BL_TEST__ = /[?&]bl-test=1\b/.test(location.search);</script>
+           <script src="bl-marker.js"></script>
+           ```
+        4. **加抽屉 + 悬浮开关 DOM**(ID 不可改,见模板):
+           ```html
+           <aside id="bl-drawer" class="bl-drawer" role="complementary" tabindex="-1">
+             <div class="bl-drawer-head">
+               <div class="title"><span class="badge" id="bl-drawer-badge">BL-?</span><span id="bl-drawer-title">未选择</span></div>
+               <button class="bl-drawer-close" id="bl-drawer-close" aria-label="关闭">×</button>
+             </div>
+             <div class="bl-drawer-body" id="bl-drawer-body"></div>
+             <div class="bl-drawer-resize" id="bl-drawer-resize" role="separator" tabindex="0"></div>
+           </aside>
+           <button id="bl-toggle" class="bl-toggle" type="button" aria-label="切换需求标记显示" aria-pressed="true">⇆</button>
+           ```
+        5. **在 UI 元素上钉位**(父元素需 `position:relative`):
+           ```html
+           <div class="card" style="position:relative">
+             <button class="bl-pin" data-bl="bl1" aria-label="查看 BL-1: 名称">1</button>
+             <!-- 原 UI 内容 -->
+           </div>
+           ```
+        6. **填 REQUIREMENTS 数据**: 改 `bl-marker.js` 顶部的 `REQUIREMENTS` 对象,每个 BL 含 `title` + `sections[]`,`body` 支持普通段落 / 编号列表 / markdown 表格三种语法。**内容摘自 `docs/v{N}/prd.md` §N 原文,不二次解读**
+        7. **(可选)调试**: URL 加 `?bl-test=1` → 右上角显示 10 个 TC 实时验证面板
+
+      - **4 个能力一览**:
+        - **钉点**: `<button class="bl-pin" data-bl="blN">N</button>`, 蓝圆 22×22, 多钉位用 `style="right: Npx"` 错开
+        - **抽屉**: 360px 默认宽, 左侧手柄可拖拽调宽(280px-70vw), 双击复位, localStorage 记忆
+        - **悬浮开关**: 右下角 ⇆, 拖动保存位置, 长按 600ms 复位, click 切换钉点显隐
+        - **抽屉内容**: REQUIREMENTS 内嵌 JS, 摘 PRD 原文, 支持 `1.` 编号 / `•` 列表 / `|表格|` 三种渲染
+
+      - **跳过条件**: 0.5 步选"不涉及设计" → 整个 BL 钉点系统不引入;或设计稿是纯静态单页无 BL 密集标注需求 → 可不用
+
    7. **🚨 设计稿输出后立即执行: 6b.5 截图**
 
-      > **触发条件**: 设计稿 HTML 写完后**立即**截图(逻辑上是 6b 的子步骤,不是独立阶段)。
-      >
+      > **触发条件**: 设计稿 HTML 写完后**立即**截图(逻辑上是 6b 的子步骤,不是独立阶段)。      >
       > **目的**: 截图产物供 PRD 附录 D(原型截图引用)嵌入 + 设计评审(默认 6b.6 / 旧分阶段 7)查验交互效果。无截图 = 评审/交付看不到 UI 呈现。
       >
       > **执行位置**: 6b 完成后、设计评审(默认 6b.6 / 旧分阶段 7)**之前**。

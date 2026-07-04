@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BL 钉点系统模板 · hlpm 设计稿样板</title>
+<!--
+  ============================================================
+  BL Marker System 模板 · hlpm 设计稿样板
+  ============================================================
+  这是一份"最小可跑"的样板,演示如何引入 bl-marker.css + bl-marker.js,
+  以及如何钉位 / 填 REQUIREMENTS 数据。
+
+  hlpm 6b 步骤产出新设计稿时:
+  1. 复制本文件到 docs/v{N}/design/{page}.html
+  2. 改 <title> 和页面内容
+  3. 在需要标注的 UI 元素上加 <button class="bl-pin" data-bl="blN">N</button>
+     (父元素记得 position:relative)
+  4. 改 bl-marker.js 顶部的 REQUIREMENTS 对象,替换成你的 PRD §N 摘录
+  5. (可选) ?bl-test=1 调出 10 个 TC 调试面板
+
+  注意: 本模板引用的 bl-marker.css / bl-marker.js 在同目录。
+  实际产出设计稿时,把这两个文件复制到 docs/v{N}/design/ 下,或改用相对路径。
+  ============================================================
+-->
+<link rel="stylesheet" href="bl-marker.css">
+<style>
+  /* 页面自身样式 — 与 BL 系统无关, 按你的设计稿主题调整 */
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff; color: #111827; font-size: 14px; line-height: 1.6; margin: 0; padding: 32px; }
+  .demo-card { position: relative; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 16px; max-width: 600px; }
+  .demo-card h2 { font-size: 16px; margin: 0 0 8px; }
+  .demo-card p { color: #6b7280; margin: 0; }
+</style>
+</head>
+<body>
+
+<h1>设计稿样板页</h1>
+<p>下面的卡片演示如何钉 BL 标记。点击任一蓝圆 → 右侧抽屉显示该 BL 的 PRD 摘录。</p>
+
+<!-- ===== 示例: 在卡片上钉 BL-1 标记 ===== -->
+<div class="demo-card">
+  <button class="bl-pin" data-bl="bl1" aria-label="查看 BL-1: 示例需求点">1</button>
+  <h2>功能区块 A</h2>
+  <p>这里是被标注的 UI 元素。钉位是 absolute 定位,父元素(demo-card)需 position:relative。</p>
+</div>
+
+<!-- ===== 示例: 第二个卡片钉 BL-2 ===== -->
+<div class="demo-card">
+  <button class="bl-pin" data-bl="bl2" aria-label="查看 BL-2: 第二个示例">2</button>
+  <h2>功能区块 B</h2>
+  <p>同一页面可钉多个 BL。REQUIREMENTS 里每个 BL 各自独立。</p>
+</div>
+
+<!-- ===== 抽屉(必须, ID 不可改) ===== -->
+<aside id="bl-drawer" class="bl-drawer" role="complementary" aria-label="需求点详情" tabindex="-1">
+  <div class="bl-drawer-head">
+    <div class="title"><span class="badge" id="bl-drawer-badge">BL-?</span><span id="bl-drawer-title">未选择</span></div>
+    <button class="bl-drawer-close" id="bl-drawer-close" aria-label="关闭">×</button>
+  </div>
+  <div class="bl-drawer-body" id="bl-drawer-body"></div>
+  <div class="bl-drawer-resize" id="bl-drawer-resize" role="separator" aria-label="调节抽屉宽度" tabindex="0"></div>
+</aside>
+
+<!-- ===== 悬浮开关(必须, ID 不可改) ===== -->
+<button id="bl-toggle" class="bl-toggle" type="button"
+        aria-label="切换需求标记显示" aria-pressed="true" title="点击切换 / 长按复位">⇆</button>
+
+<!-- ===== 调试模式触发: URL 加 ?bl-test=1 显示 10 个 TC 面板 ===== -->
+<script>window.__BL_TEST__ = /[?&]bl-test=1\b/.test(location.search);</script>
+<script src="bl-marker.js"></script>
+</body>
+</html>
