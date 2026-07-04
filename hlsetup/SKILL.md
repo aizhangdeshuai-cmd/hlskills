@@ -65,6 +65,13 @@ done
 # 总入口
 ln -sf "$HL_SRC" ~/.claude/skills/hlskills
 
+# slash commands(让 /hlpm /hldev /hlchain 等真能用)
+mkdir -p ~/.claude/commands
+if [ -d "$HL_SRC/.claude/commands" ]; then
+  cp "$HL_SRC"/.claude/commands/*.md ~/.claude/commands/ 2>/dev/null && \
+    echo "✅ slash commands: $(ls ~/.claude/commands/hl*.md 2>/dev/null | wc -l) 个(/hlpm /hldev /hlchain /hlquickstart /hlbug ...)"
+fi
+
 echo "✅ Claude Code 安装完成: $(ls ~/.claude/skills/hl* | wc -l) 个技能"
 ```
 

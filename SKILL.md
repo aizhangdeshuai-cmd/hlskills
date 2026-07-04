@@ -1,6 +1,6 @@
 ---
 name: hlskills
-description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 26 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 27 步) / hldev(开发段 15 步) 三件套,hlchain 编排 6 阶段(产品段→开发段→发布→部署 + 测试/事故修复,Agent 按文档顺序自觉加载,无真编排器 runtime)。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `Skill hlchain` 全链路或单点调 `Skill hl-flow` / `Skill hlpm` / `Skill hldev`。通过 Skill 工具调用。
+description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 26 项子技能(含 hlquickstart 快速上手 + hlchain 全流程编排),v16 起子技能改名为 hl-flow(单人 28 步) / hlpm(产品段 27 步) / hldev(开发段 15 步) 三件套,hlchain 编排 6 阶段(产品段→开发段→发布→部署 + 测试/事故修复,Agent 按文档顺序自觉加载,无真编排器 runtime)。Use when 用户提到开发流程、PRD、Bug 修复、API 设计等核心需求时自动路由;其他专项需求(数据库迁移、无障碍、ADR 等)请直接调用 `Skill hlxxx`。第一次用先跑 `/hlquickstart` 或 `Skill hlquickstart` 看 5 分钟演示, 真实需求跑 `/hlchain` 或 `Skill hlchain` 全链路, 或单点用 `/hlpm` / `/hldev` / `/hl-flow`。Claude Code 三种入口等价(slash command / Skill 工具 / 对话路由),slash 薄壳在 `.claude/commands/`,hlsetup 自动安装;Codex/Cursor 降级走 AGENTS.md。
 ---
 ![hlpm](https://img.shields.io/badge/hlpm-v16-blue) ![review](https://img.shields.io/badge/review-集中评审-green)
 

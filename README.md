@@ -171,7 +171,12 @@ Skill hlpm "为登录功能启动 27 步流程"
 # 例如 analyst (Opus, 只读) / executor (Sonnet, 可改) / verifier (Sonnet) 等
 ```
 
-> 注意:本文档表格中的 `/hlpm` / `/hlpm` 等写法是**子技能名称简写**,实际调用使用 Claude Code 的 `Skill` 工具(如 `Skill hlpm`)而非终端 `/` 斜杠命令。Codex CLI / Cursor 无此入口,改用各自平台的常规方式触发(详见各平台章节)。
+> **Claude Code 入口**:
+> - **slash 命令**(推荐): `/hlpm` `/hldev` `/hlchain` `/hlquickstart` `/hlbug` `/hltest` `/hldesign` `/hlwrite-skill` `/hl-flow` — 命令薄壳文件在 `.claude/commands/`,`hlsetup` 自动 cp 到 `~/.claude/commands/`
+> - **Skill 工具**:`Skill hlpm "<需求>"` `Skill hlkb-hooks` 等(完整技能名调用)
+> - **隐式触发**: 在对话里说"按 hlpm 流程给我做登录加短信验证码",harness 自动路由
+>
+> **Codex CLI / Cursor**: 都无 Skill 工具和 slash 命令入口,走 `AGENTS.md` 提示词降级路径(详见各平台章节)。本仓库提供的 `.claude/commands/` 薄壳**仅对 Claude Code 有效**。
 
 ### Codex CLI
 
