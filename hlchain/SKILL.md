@@ -9,7 +9,7 @@ description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hlde
 
 > ## ⚠️ 能力边界声明
 >
-> 本技能**没有真正的编排器 runtime**——不是 hook / 不是状态机 / 不是自动门禁。Agent 加载本 SKILL.md 后**按文档顺序自觉**依次调 `Skill hlpm` → `Skill hldev` → ...。**所有"阶段门禁"靠 Agent 自觉 + 用户手动打断**。
+> 本技能**没有真正的编排器 runtime**——不是 hook / 不是状态机 / 不是自动门禁。Agent 加载本 SKILL.md 后**按文档顺序自觉**依次调 `Skill hlpm` → `Skill hldev` → ...(漏一步不自动阻断;Agent 模型弱或 prompt 冲突时需手动打断重读)。**所有"阶段门禁"靠 Agent 自觉 + 用户手动打断**。
 >
 > 详见 `README.md` 「⚠️ 能力边界声明」。
 
