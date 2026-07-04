@@ -186,7 +186,7 @@ bash hlkb-hooks/verify-paths.sh --strict
 - `knowledge/adr/{NNNN}-*.md`(ADR 文件讲决策本身,必然含旧路径证据)
 - `knowledge/adr/README.md`(ADR 索引含 ADR 标题)
 - `CLAUDE.md` / `AGENTS.md`(项目约束文件本身讲历史)
-- `hlkb/SKILL.md`(规范文档反模式表必须含错误路径作反例)
+- `hlkb/SKILL.md` 或 `hlkb-hooks/SKILL.md`(规范文档反模式表必须含错误路径作反例)
 - `hlkb-hooks/verify-paths.sh`(脚本自身输出含路径名)
 
 **实测案例**:ehr 项目在 ADR-0002 通过此脚本验证 0 违规,把"修改效果"机械化。

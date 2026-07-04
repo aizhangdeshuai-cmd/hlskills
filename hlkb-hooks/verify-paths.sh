@@ -55,12 +55,13 @@ while IFS= read -r md; do
   if [[ "$md" == "./CLAUDE.md" ]] || [[ "$md" == "./AGENTS.md" ]]; then
     continue
   fi
-  # 跳过 hlkb/SKILL.md(讲知识库规范,反模式表必然含错误路径作例子)
-  # 这条同 adr/README.md 的逻辑:讲"什么错"的文档必然引用错误路径
-  if [[ "$md" == "./hlkb/SKILL.md" ]]; then
+  # 跳过所有"讲知识库路径规范"的文档
+  # 反模式表必然含错误路径作反例;这是规范文档的设计属性,不是真笔误
+  # 适用文件: hlkb/SKILL.md + hlkb-hooks/SKILL.md(任何讲路径的规范文档)
+  if [[ "$md" =~ ^\./hlkb(-hooks)?/SKILL\.md$ ]]; then
     continue
   fi
-  # 跳过 hlkb-hooks/verify-paths.sh 自身提示(本脚本输出含路径名)
+  # 跳过 verify-paths.sh 自身(脚本输出含路径名)
   if [[ "$md" == *"/hlkb-hooks/verify-paths.sh" ]]; then
     continue
   fi
@@ -88,7 +89,7 @@ fi
 # ---- 2. 检查 src/knowledge/ 笔误 ----
 echo ""
 echo "===检查 2:src/knowledge/ 笔误==="
-SRC_KNOW_VIOLATIONS=$(grep -rn "src/knowledge" --include="*.md" --include="*.java" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.py" . 2>/dev/null | grep -v "^./knowledge/adr/" | grep -v "^./hlkb/SKILL.md" || true)
+SRC_KNOW_VIOLATIONS=$(grep -rn "src/knowledge" --include="*.md" --include="*.java" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.py" . 2>/dev/null | grep -v "^./knowledge/adr/" | grep -vE "^./hlkb(-hooks)?/SKILL\.md" || true)
 if [ -z "$SRC_KNOW_VIOLATIONS" ]; then
   echo "  ✅ 无 src/knowledge/ 笔误"
 else
@@ -103,7 +104,7 @@ fi
 # ---- 3. 检查 docs/knowledge/ 笔误 ----
 echo ""
 echo "===检查 3:docs/knowledge/ 笔误==="
-DOCS_KNOW_VIOLATIONS=$(grep -rn "docs/knowledge" --include="*.md" . 2>/dev/null | grep -v "^./knowledge/adr/" | grep -v "^./hlkb/SKILL.md" || true)
+DOCS_KNOW_VIOLATIONS=$(grep -rn "docs/knowledge" --include="*.md" . 2>/dev/null | grep -v "^./knowledge/adr/" | grep -vE "^./hlkb(-hooks)?/SKILL\.md" || true)
 if [ -z "$DOCS_KNOW_VIOLATIONS" ]; then
   echo "  ✅ 无 docs/knowledge/ 笔误"
 else
@@ -118,7 +119,7 @@ fi
 # ---- 4. 检查 .knowledge/ 笔误 ----
 echo ""
 echo "===检查 4:.knowledge/ 笔误(npm 风格误用)==="
-DOT_KNOW_VIOLATIONS=$(grep -rn "\.knowledge/" --include="*.md" --include="*.json" --include="*.yml" --include="*.yaml" . 2>/dev/null | grep -v "^./knowledge/adr/" | grep -v "^./hlkb/SKILL.md" | grep -v "knowledge/" | head -10 || true)
+DOT_KNOW_VIOLATIONS=$(grep -rn "\.knowledge/" --include="*.md" --include="*.json" --include="*.yml" --include="*.yaml" . 2>/dev/null | grep -v "^./knowledge/adr/" | grep -vE "^./hlkb(-hooks)?/SKILL\.md" | grep -v "knowledge/" | head -10 || true)
 if [ -z "$DOT_KNOW_VIOLATIONS" ]; then
   echo "  ✅ 无 .knowledge/ 笔误"
 else

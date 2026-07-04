@@ -39,7 +39,8 @@ SENTINEL="$_ROOT/.hlskills"
 SETTINGS="$_ROOT/.claude/settings.local.json"
 BACKUP="$_ROOT/.claude/settings.local.json.hlkb-hooks.bak"
 HOOKS_DATA="$_ROOT/.claude/.hlkb-hooks-data.json"
-PRESETS_FILE="$(cd "$(dirname "$0")" && pwd)/presets.json"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PRESETS_FILE="$SCRIPT_DIR/presets.json"
 
 # 自定义 preset 文件支持
 if [ -f "$PRESET" ]; then
@@ -222,6 +223,25 @@ print('  ✓ PostToolUse cmd    :', len(h['PostToolUse'][0]['hooks'][0]['command
 "
 [ -f "$SENTINEL" ] && echo "  ✓ .hlskills 哨兵已放"
 [ -f "$BACKUP" ] && echo "  ✓ 备份存在: $(basename "$BACKUP")"
+
+# ---- 8. 路径合规检查(不阻断,仅警告) ----
+echo ""
+echo "🔎 路径合规检查(verify-paths.sh)..."
+if [ -f "$SCRIPT_DIR/verify-paths.sh" ]; then
+  # verify-paths 退出码:0=全过,1=有笔误. 不阻断 hook 安装,只警告
+  bash "$SCRIPT_DIR/verify-paths.sh" "$_ROOT" 2>&1 | tail -30 || true
+  VERIFY_EXIT=${PIPESTATUS[0]}
+  if [ "$VERIFY_EXIT" -ne 0 ]; then
+    echo ""
+    echo "  ⚠️  路径检查发现笔误,见上方(不阻断 hook 安装)"
+    echo "  建议修复后定期跑: bash hlkb-hooks/verify-paths.sh --strict"
+  else
+    echo ""
+    echo "  ✅ 路径合规检查通过(knowledge/ 路径规范)"
+  fi
+else
+  echo "  · verify-paths.sh 不在脚本同目录,跳过"
+fi
 
 echo ""
 echo "✅ 安装完成。"
