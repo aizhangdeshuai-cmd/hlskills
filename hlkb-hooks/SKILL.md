@@ -156,6 +156,43 @@ bash hlkb-hooks/install.sh --preset=/path/to/my-preset.json
 
 ---
 
+## 路径验证工具:verify-paths.sh
+
+`hlkb-hooks/verify-paths.sh` 是**独立**合规检查脚本,跟 install.sh / hooks 解耦:
+
+```bash
+# 当前项目
+bash hlkb-hooks/verify-paths.sh
+
+# 其他项目
+bash hlkb-hooks/verify-paths.sh /path/to/project
+
+# CI / PR 检查:任何违规就失败
+bash hlkb-hooks/verify-paths.sh --strict
+```
+
+**检查 6 项**:
+
+| # | 检查项 | 不通过时 |
+|---|---|---|
+| 1 | `.hl/knowledge/` 笔误(经典 ehr ADR-0002 案例) | exit 1 |
+| 2 | `src/knowledge/` 笔误(知识库塞 src) | exit 1 |
+| 3 | `docs/knowledge/` 笔误(迁到 docs 子目录) | exit 1 |
+| 4 | `.knowledge/` 笔误(npm 风格误用) | 仅警告 |
+| 5 | `knowledge/` 真路径存在(11 类知识库归处) | 仅警告 |
+| 6 | `.hl/memory/` 项目记忆保留(避免误伤真路径) | 仅信息 |
+
+**排除规则**(避免误报):
+- `knowledge/adr/{NNNN}-*.md`(ADR 文件讲决策本身,必然含旧路径证据)
+- `knowledge/adr/README.md`(ADR 索引含 ADR 标题)
+- `CLAUDE.md` / `AGENTS.md`(项目约束文件本身讲历史)
+- `hlkb/SKILL.md`(规范文档反模式表必须含错误路径作反例)
+- `hlkb-hooks/verify-paths.sh`(脚本自身输出含路径名)
+
+**实测案例**:ehr 项目在 ADR-0002 通过此脚本验证 0 违规,把"修改效果"机械化。
+
+---
+
 ## 不在本技能范围
 
 - ❌ **不接管 hlpm / hldev / hlchain 流程** —— 本技能只装 hooks,不调其他子技能

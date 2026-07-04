@@ -96,6 +96,35 @@ knowledge/
 
 > 11 类不一定都用,新项目至少要建:`README.md` + 实际有内容的类别(无内容的类别不建目录,避免空文件夹)。
 
+### 路径约定(避免笔误)
+
+**单一可信源**:知识库**始终位于项目根的 `knowledge/` 目录**(不嵌套,不进 `.hl/`、不挪 `docs/`、不挪 `src/` 等)。
+
+| 类型 | 位置 | 备注 |
+|---|---|---|
+| **知识库** | `<项目根>/knowledge/` | 11 类都在这里 |
+| 项目记忆 | `<项目根>/.hl/memory/` | **不属于**知识库体系,`hlmemory` 管理 |
+| 文档版本基线 | `<项目根>/docs/v{N}/` | 版本快照,**不等于**知识库 |
+| Agent metadata | `<项目根>/.hl/{metadata,workspace}/` | 杂项,不属于知识库 |
+
+**反模式(常见笔误)**:
+
+| 错误路径 | 正确 | 出处 |
+|---|---|---|
+| `.hl/knowledge/` | `knowledge/` | ehr 项目 ADR-0002 全 37 处修正 |
+| `src/knowledge/` | `knowledge/` | 部分团队把知识库塞 src |
+| `docs/knowledge/` | `knowledge/` | 部分项目迁到 docs 子目录 |
+| `.knowledge/`(以点开头) | `knowledge/` | npm 风格误用 |
+
+**hooks 验证**:`hlkb-hooks` 子技能的 `default` / `java` / `ehr` preset 全部基于 `^knowledge/(api\|tests\|db\|...)` 正则,**只匹配项目根的 knowledge/**。如果你的项目把知识库放在其他位置,要么改回去,要么自定义 preset(详见 `hlkb-hooks/SKILL.md §Preset 选择`)。
+
+**为什么统一?** ——
+1. hooks 端:**单一路径正则**匹配,不用为每个项目写不同规则
+2. 跨项目:**新成员 / AI Agent 切换项目零学习成本**
+3. hlpm / hlapi / hldb 等配套技能全部假设 `knowledge/` 路径
+
+详见 ehr 项目 `knowledge/adr/0002-knowledge-path-canonical.md`(真实决策案例)。
+
 ---
 
 ## 11 类知识库模板
