@@ -1,0 +1,50 @@
+{
+  "default": {
+    "description": "默认 preset:覆盖 src/api|controllers|routes + hlskills 内部子技能改动",
+    "patterns": {
+      "root_dirs": "src|app|lib|backend|frontend|hlpm|hldev|hl-flow|hlbug|hlrefactor|hladr|hlapi|hldb|hlerror|hlcode|hltest|hlrelease|hldeploy|hlgit|hldesign|hla11y|hlreview|hlsetup|hlhooks|hlmemory|hlkb|hlchain|hlquickstart|hlwrite-skill|hllegacy|hl-permission|hlbrowse",
+      "api_globs": "src/api/*|*controllers/*|*routes/*|*endpoints/*|*hlpm/*|*hldev/*|*hlapi/*|*hl-flow/*",
+      "db_globs": "*schema.sql|*migrations/*|*models/*|*entities/*|*hldb/*|*hladr/*",
+      "enum_globs": "*Enum*|*enums/*",
+      "error_globs": "*ErrorCode*|*errors.*|*hlerror/*",
+      "test_globs": "*.test.*|*__tests__/*|*hltest/*",
+      "sync_api_dir": "knowledge/(api|tests)",
+      "sync_db_dir": "knowledge/(db|adr)",
+      "sync_enum_dir": "knowledge/enums",
+      "sync_error_dir": "knowledge/error-codes",
+      "sync_test_dir": "knowledge/tests"
+    }
+  },
+  "java": {
+    "description": "Java/Spring Boot preset:Controller.java + Mapper.java + migrations/*.sql",
+    "patterns": {
+      "root_dirs": "src|app|lib|backend|frontend|hlpm|hldev|hl-flow|hlbug|hlrefactor|hladr|hlapi|hldb|hlerror|hlcode|hltest|hlrelease|hldeploy|hlgit|hldesign|hla11y|hlreview|hlsetup|hlhooks|hlmemory|hlkb|hlchain|hlquickstart|hlwrite-skill|hllegacy|hl-permission|hlbrowse",
+      "api_globs": "src/api/*|*controllers/*|*controller/*|*routes/*|*endpoints/*|*/controller/*Controller.java|*/controller/*Service.java|*/api/*.ts|*/api/*.js|*hlpm/*|*hldev/*|*hlapi/*|*hl-flow/*",
+      "db_globs": "*schema.sql|*migrations/*.sql|*migrations/*|*models/*|*entities/*|*Mapper.java|*Repository.java|*hldb/*|*hladr/*",
+      "enum_globs": "*Enum*|*Enum.java|*enums/*",
+      "error_globs": "*ErrorCode*|*ErrorCode.java|*errors.*|*errorCode.ts|*hlerror/*",
+      "test_globs": "*Test.java|*Tests.java|*/test/**|*AcceptanceTests.java|*.test.*|*__tests__/*|*hltest/*",
+      "sync_api_dir": "knowledge/(api|tests)",
+      "sync_db_dir": "knowledge/(db|adr)",
+      "sync_enum_dir": "knowledge/enums",
+      "sync_error_dir": "knowledge/error-codes",
+      "sync_test_dir": "knowledge/tests"
+    }
+  },
+  "ehr": {
+    "description": "ehr 项目专用 preset:ehr-report 后端 + report-admin-ui 前端 + 各自子目录结构。在 java preset 基础上加了项目特定目录。Use --preset=ehr。",
+    "patterns": {
+      "root_dirs": "src|app|lib|backend|frontend|ehr-report|report-admin-ui|hlpm|hldev|hl-flow|hlbug|hlrefactor|hladr|hlapi|hldb|hlerror|hlcode|hltest|hlrelease|hldeploy|hlgit|hldesign|hla11y|hlreview|hlsetup|hlhooks|hlmemory|hlkb|hlchain|hlquickstart|hlwrite-skill|hllegacy|hl-permission|hlbrowse",
+      "api_globs": "src/api/*|*controllers/*|*controller/*|*routes/*|*endpoints/*|*/controller/*Controller.java|*/controller/*Service.java|*/api/*.ts|*/api/*.js|*ReportAdminUi/src/api/*|*report-admin-ui/src/api/*|*hlpm/*|*hldev/*|*hlapi/*|*hl-flow/*",
+      "db_globs": "*schema.sql|*migrations/*.sql|*migrations/*|*models/*|*entities/*|*Mapper.java|*Repository.java|*hldb/*|*hladr/*",
+      "enum_globs": "*Enum*|*Enum.java|*enums/*",
+      "error_globs": "*ErrorCode*|*ErrorCode.java|*errors.*|*errorCode.ts|*hlerror/*",
+      "test_globs": "*Test.java|*Tests.java|*/test/**|*AcceptanceTests.java|*.test.*|*__tests__/*|*hltest/*",
+      "sync_api_dir": "knowledge/(api|tests)",
+      "sync_db_dir": "knowledge/(db|adr)",
+      "sync_enum_dir": "knowledge/enums",
+      "sync_error_dir": "knowledge/error-codes",
+      "sync_test_dir": "knowledge/tests"
+    }
+  }
+}

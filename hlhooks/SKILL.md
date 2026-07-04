@@ -208,6 +208,9 @@ description: Claude Code hooks 配置模板，提供推荐的安全/质量/自�
 | `hlgit` | Bash 拦截 force push main | **阻断** |
 | `hldb` | Bash 拦截 DROP TABLE/DATABASE | **阻断** |
 | `hldeploy` | 部署前检查 CI 通过 | 提示 |
+| `hlkb` / `hlkb-hooks` | PreToolUse git commit 检查 knowledge/ 同步 + PostToolUse 改完提示 | **阻断**(`git commit` 漏同步真 exit 2) |
+
+> **想直接装现成的知识库同步 hooks?** 参考 [`hlkb-hooks/SKILL.md`](./hlkb-hooks/SKILL.md),提供 `--preset=default|java` 一键安装,把"代码+knowledge 同 commit"机械化兜底;本文件的"推荐配置"段适合**手写单条 hook 用的场景**(单条规则,无需装脚本)。
 
 ---
 

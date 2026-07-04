@@ -28,6 +28,28 @@ CURSOR_SKILLS=""
 
 ---
 
+## 项目级 hooks 一键安装(知识库强同步)
+
+**`hlskills` 安装到工具** ≠ **项目用上 hooks**。要把"代码改动→knowledge/ 同步"机械化,需要在目标项目里跑:
+
+```bash
+cd <目标项目根>          # 比如 ~/work/my-app
+bash <hlskills 仓库>/hlkb-hooks/install.sh              # 通用 Web 项目
+# 或
+bash <hlskills 仓库>/hlkb-hooks/install.sh --preset=java  # Java/Spring Boot 项目
+```
+
+详见 `hlkb-hooks/SKILL.md`。安装后:
+
+- **PreToolUse**: `git commit` 漏同步时 harness 真实 exit 2 阻断
+- **PostToolUse**: 改完接口/db/枚举/错误码/测试立即 stdout 提示
+- **哨兵 `.hlskills`**: 只对 hlskills 涉及的项目生效(其他项目零干扰)
+- **可绕过**: `git commit --no-verify` 或 commit message 加 `[skip-kb-sync]`
+
+> 注:本节先于"Claude Code 安装"展示,是因为**装到项目**比**装到 IDE** 优先级更高 ── 没有 hooks 强行同步,`hlkb` 知识库很易漂。
+
+---
+
 ## Claude Code 安装
 
 ```bash
@@ -144,6 +166,30 @@ done
 
 # 确保 Agent 目录存在
 ls ~/.agents/skills/hlskills/agents/ | wc -l | xargs echo "Agent 数量:"
+```
+
+---
+
+## 一键安装(Claude Code)实际效果
+
+```bash
+$ cd <目标项目根>
+$ bash <hlskills 仓库>/hlkb-hooks/install.sh --preset=java
+📁 项目根: <目标项目根>
+  ✓ 放 .hlskills 哨兵
+  ✓ 备份原 settings 到 settings.local.json.hlkb-hooks.bak
+  · preset: java
+  ✓ 渲染 hook command 完成 (1731 + 861 字节)
+  ✓ hooks 已写入 settings.local.json
+🔍 验证...
+  ✓ JSON 格式合法
+  ✓ PreToolUse matcher : Bash
+  ✓ PostToolUse matcher: Write|Edit|MultiEdit
+  ✓ PreToolUse cmd     : 1731 字节
+  ✓ PostToolUse cmd    : 861 字节
+  ✓ .hlskills 哨兵已放
+  ✓ 备份存在: settings.local.json.hlkb-hooks.bak
+✅ 安装完成。
 ```
 
 ---

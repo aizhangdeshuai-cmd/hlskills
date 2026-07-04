@@ -38,6 +38,7 @@ description: HL 项目开发技能合集总入口,内嵌 19 个角色 agent 与 
 | 编码标准 | `hlcode` | `/hlcode` | 命名 + 不可变性 + 文件组织 + 代码味道清单 |
 | 项目记忆 | `hlmemory` | `/hlmemory` | 跨会话持久化（项目/技术栈/架构/约定/工作记忆） |
 | 项目知识库 | `hlkb` | `/hlkb` | 11 类项目总文件库(PRD/术语表/接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/总测试库),`knowledge/` 与代码同 commit 维护 |
+| **知识库强同步 hooks** | **`hlkb-hooks`** | **`Skill hlkb-hooks`** | **一键把"代码改动→knowledge/ 同步"机械化进 PreToolUse+PostToolUse:改接口/db/枚举/错误码/测试时改完提示,git commit 漏同步真阻断(exit 2);带 `.hlskills` 哨兵(只对 hlskills 项目生效,零误伤);`--uninstall` 一键卸载。仅 Claude Code 真生效,Codex/Cursor 走 AGENTS.md 铁律** |
 | 安装部署 | `hlsetup` | `/hlsetup` | 一键安装到 Claude Code / Codex / Cursor |
 | Hooks 配置 | `hlhooks` | `/hlhooks` | 安全/质量/自动化 hooks 模板 |
 | 一键授权 | `hl-permission` | `/hl-permission` | 当前项目目录 Edit/Write/Bash 全免授权，`--off` 恢复 |

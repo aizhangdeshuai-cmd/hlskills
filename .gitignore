@@ -36,6 +36,15 @@ venv/
 # OMC 运行时状态(不应入库)
 .omc/
 
+# hlkb-hooks 本地哨兵文件(每个开发者本地一份,不入库)
+.hlskills
+
+# hlkb-hooks 装/卸过程的中间产物
+.claude/.hlkb-hooks-data.json
+
+# hlkb-hooks 备份(settings.local.json.hlkb-hooks.bak)
+.claude/settings.local.json.hlkb-hooks.bak
+
 # hlpm-product 流程标记文件(空文件)
 # .dev-completed 可入库(标志版本已交付,演示包 docs/v1/.dev-completed 即此例)
 # .dev-rejected / .product-archived 是拒收/归档状态,新建时不应入库
