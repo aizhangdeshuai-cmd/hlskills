@@ -26,21 +26,18 @@ description: hlskills 产品段(13 编号步 + 4 子阶段,多角色协作)。Us
 
 ### 第二阶段:设计(v11 条件性:仅当 0.5 选"涉及设计")
 
-- **6** **设计规范检查** + 保真度咨询(**含 6a.2 ★ 设计保真度档位选择**,阻塞点)
-- **6a.2** ★ **设计保真度咨询**(`AskUserQuestion` 二选一,v18 起两档重定义)
-  - **档一(高保真 = 生产态,所见即开发交付)**
-    - 核心:设计稿代码 = 开发最终交付的同一份代码(MSW Mock 而非 setTimeout 假反馈)
-    - 单文件:`docs/{ver}/design/<page>.html`
-    - 状态用 URL 参数预置:`?state=error` `?account=13800138000`
-    - **禁止**:状态演示切换器(DEV-NOT-FOR-PROD)、setTimeout 伪反馈、假数据假成功假失败
-  - **档二(高保真 + 逻辑说明活文档,分两文件)**
-    - 核心:档一 + 额外"点开看 PRD/用例/状态机上下文"(悬浮框 + 🔗 角标 + logic-data + 状态演示)
-    - 双文件:
-      - `docs/{ver}/design/<page>.html` — 生产态(无 DEV-NOT-FOR-PROD 元素)
-      - `docs/{ver}/design/<page>.demo.html` — 活文档(含区块说明 + 浮动框 + 状态演示)
-    - 理由:档二的演示元素与"高保真=生产态"硬约束互斥,所以**物理隔离**
-  - **两档共同硬性要求**:纯静态 HTML 双击即开 / 真实交互可点 / 真实示例数据 / 全部状态可切换
-- **6b** **设计稿产出**(`designer`,按所选档位产出)
+- **6** **设计规范检查** + 保真度规范(**v21 起默认档二,不再阻塞询问**)
+- **6a.2** **设计保真度规范**(v21 默认档二,非阻塞,**钉点必须用 bl-marker**)
+  - **🚨 v21 重大变更**:取消 v18 的"档一/档二"二选一,**默认统一为档二** = 高保真生产态 + 钉点逻辑说明活文档(2 文件)
+  - **2 文件结构**:
+    - `docs/{ver}/design/<page>.html` — 生产态(高保真,所见即开发交付,**无** DEV-NOT-FOR-PROD)
+    - `docs/{ver}/design/<page>.demo.html` — 活文档(钉点 + 抽屉 + 悬浮开关 + 调试面板)
+  - **🚨 钉点系统硬性约束**(v21 新增):
+    - 活文档 demo.html **必须用 hlskills bl-marker 钉点系统**(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
+    - **禁止**:inline `<span title="BL-1">i</span>` 简陋 tooltip / 自己造悬浮框
+    - **必须**:引 bl-marker.css + bl-marker.js + 用 `<button class="bl-pin" data-bl="blN">N</button>` + 填 REQUIREMENTS 对象
+  - **两文件共同要求**:纯静态 HTML 双击即开 / 真实交互可点 / 真实示例数据 / URL 参数切态(`?state=error`)/ bl-marker 调试模式 `?bl-test=1`
+- **6b** **设计稿产出**(`designer`,按默认档二产出 2 文件)
 - **7** **★ 设计评审会签**(重量评审 2/3,阻塞点,**仅"分阶段评审"模式**)
 
 ### 第三阶段:测试准备(2 步)
