@@ -1,13 +1,50 @@
 ---
-description: hlskills Bug 修复(14 步)。Use when 用户报 Bug、线上排查、系统调试。
+description: hlskills Bug 修复(14 步,融合 /investigate 四阶段调试)。Use when 用户报 Bug、线上排查、系统调试。
 ---
 
 # hlbug ── hlskills Bug 修复
 
-加载 `hlbug` 子技能(SKILL.md 在 `hlskills/hlbug/SKILL.md`),按其 14 步流程。
+加载 `hlbug` 子技能(SKILL.md 在 `hlskills/hlbug/SKILL.md`),按其 14 步流程处理用户报告的 Bug。
 
-**14 步**: 定位 → Git 工作区 → 修复 → 审查 → 回归 → 验证 → 分支 → 交付
-**融合**: gstack `/investigate` 四阶段(Investigation / Analysis / Hypotheses / Implementation)
+## 14 步流程(完整版,源 SKILL.md L67-99)
 
-无实参: 走第 0 步定位(需要用户描述 Bug 现象)
-有实参(如 `/hlbug 用户反馈登录页 500`)按实参作为 Bug 报告输入
+### 第零阶段:加载上下文(1 步)
+0. **加载已有文档** — 修复前先读项目 docs/ + knowledge/ + .hl/memory/,避免孤立分析
+
+### 第一阶段:问题定位(4 步)
+1. **Bug 分析** — `debugger` 基于上下文理解 Bug 现象与影响范围(截图/录屏用多模态识别)
+2. **根因定位** — `debugger` 主导,融合 gstack `/investigate` 四阶段:
+   - **Investigation**: 收集证据(日志/复现路径/相关代码段)
+   - **Analysis**: 区分症状 vs 根因(问"为什么" 5 次)
+   - **Hypotheses**: 列出所有可能假设,逐个验证
+   - **Implementation**: 验证假设 = 根因
+3. **修复方案** — `debugger` + `architect`(debugger 出修复点,architect 评估架构影响)
+4. **用户确认方案** — 提交修复方案供用户确认(阻塞点)
+
+### 第二阶段:修复与验证(9 步)
+5. **Git 工作区准备** — 创建隔离工作区
+6. **修复开发** — `executor` 执行修复
+7. **修复自测** — 验证无回归
+8. **代码审查** — `code-reviewer` 审查
+9. **安全审查** — `security-reviewer` 审查
+10. **回归测试** — `qa-tester` 对受影响模块测试
+11. **浏览器验证** — `qa-tester` 浏览器确认(非前端 Bug 可跳过,需说明原因)
+12. **分支完成** — 收尾流程(同 hldev 步骤 8:本地合并 / 推 PR / 保持 / 丢弃)
+13. **最终验证** — `verifier` 验证;如有健康评分基线,低于修复前 → 回退
+14. **交付** — 更新文档,记录修复内容
+
+## 调试纪律(关键铁律)
+
+- **绝不靠"猜"**: 任何根因判断必须有证据(日志/测试/复现)
+- **保留原 Bug 现场**: 不要在未定位前就改代码
+- **最小修复原则**: 只改根因,不顺手"重构"
+- **回归测试前不提交**: 哪怕 fix 看起来对
+- **5 Why 必问**: 为什么报错 → 为什么触发 → 为什么没拦截 → ...
+
+## 调用方式
+
+- **无实参**: 走第 0 步加载上下文,然后**问你 Bug 现象**
+- **有实参**(如 `/hlbug 用户反馈登录页 500`): 实参作为 Bug 报告输入,从第 1 步开始
+- **附图片/截图/录屏**: 走 Bug 分析多模态识别(模型原生支持)
+
+详见 `hlskills/hlbug/SKILL.md` 完整规范。
