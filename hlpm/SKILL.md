@@ -64,7 +64,7 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
 
 ## 产品段开发流程(分层步骤)
 
-> **步骤编号说明**:采用分层标签而非线性 1→N。完整标签序列(按执行顺序):`0 / 0.5 / 0.6 / 1 / 2a / 2b / 2c / 3 / 3.5 / 4a / 4b / 4.5 / 5 / 6a.0 / 6a.1 / 6a.2 / 6b / 6b.5 / 6b.5.1 / 6b.6 / 7 / 8 / 8.5 / 9 / 9c / 9.5 / 10 / 11 / 12`。子步骤(如 6a.1)表示同一阶段内的细分。**v18 起:v17 的 9a 已删除;新增 4.5/6b.6/8.5 三处逐份立即评审;集中评审改标签 9c**。**v20 起:新增 3.5 方案构思(复杂需求)+ 4a 大纲门禁(4 拆为 4a/4b)**。**v21 起:6a.2 取消阻塞点(默认档二,不再询问选档;但保留规范检查功能)**。**v22 起:取消评审模式选项 B(分阶段)/C(集中),只留 A(逐份立即评审)作为唯一评审机制;5/7/9/9c 四步标 [DEPRECATED] 保留编号用于历史可追溯**。实际执行时按 0.5 步评估的规模/设计条件会跳过部分步骤(如不涉及设计跳过整个第二阶段;默认模式跳过 5/7/9/9c)。
+> **步骤编号说明**:采用分层标签而非线性 1→N。完整标签序列(按执行顺序):`0 / 0.5 / 0.6 / 1 / 2a / 2b / 2c / 3 / 3.5 / 4a / 4b / 4.5 / 5 / 6a.0 / 6a.1 / 6a.2 / 6b / 6b.5 / 6b.5.1 / 6b.6 / 7 / 8 / 8.5 / 9 / 9c / 9.5 / 10 / 11 / 12`。子步骤(如 6a.1)表示同一阶段内的细分。**v18 起:v17 的 9a 已删除;新增 4.5/6b.6/8.5 三处逐份立即评审;集中评审改标签 9c**。**v20 起:新增 3.5 方案构思(复杂需求)+ 4a 大纲门禁(4 拆为 4a/4b)**。**v21 起:6a.2 取消阻塞点(默认档二,不再询问选档;但保留规范检查功能)**。**v22 起:取消评审模式选项 B(分阶段)/C(集中),只留 A(逐份立即评审)作为唯一评审机制;5/7/9/9c 四步标 [DEPRECATED] 保留编号用于历史可追溯**。**v23 起:6a.2 取消 2 文件物理隔离,回归单文件 .html 带钉点(评审稿 + 开发参考,开发者不写钉点部分);取消 .demo.html**。实际执行时按 0.5 步评估的规模/设计条件会跳过部分步骤(如不涉及设计跳过整个第二阶段;默认模式跳过 5/7/9/9c)。
 
 ### 第零阶段：加载项目上下文
 0. **加载已有文档** — 在分析新需求之前，**先读取项目已有知识**，避免重复分析：
@@ -414,34 +414,38 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
      - 形式:在 HTML/CSS 注释中标注 `/* 规范: docs/design/spec.md §3.2 圆角值 */`
      - 便于设计评审时核对每条设计决策的规范依据
 
-6a.2 **设计保真度规范**（v21 起:**默认统一为档二**,不再 AskUserQuestion 选档）
-   - **🚨 v21 重大变更**:取消 v18 的"档一/档二"二选一,**默认统一为档二**:高保真生产态 + 钉点逻辑说明活文档(2 文件)
-   - **理由**:
-     - **档一(单文件生产态)的"高保真 = 生产态"硬约束**与"演示态 = 生产态,不允许切换器"在实践中**容易被破坏**(designer 忍不住加切换器演示方便)
-     - **档二 2 文件物理隔离** = 演示态元素根本进不了生产代码,纪律有保障
-     - **hlskills 提供完整 bl-marker 钉点系统模板**,设计师零成本接入(不必手写悬浮框/inline tooltip)
-     - **钉点必须用 bl-marker 系统**(硬性约束,见下方)
-   - **🚨 钉点系统硬性约束**(v21 新增):
-     - **档二 demo.html 的钉点必须用 hlskills `bl-marker` 钉点系统**(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
+6a.2 **设计保真度规范**（v23 起:**单文件 .html 带钉点**,不再 AskUserQuestion 选档)
+   - **🚨 v23 重大变更**:取消 v21 的"2 文件物理隔离"(生产态 .html + 活文档 .demo.html),**回归单文件**:`docs/{ver}/design/<page-name>.html` 一份,带 bl-marker 钉点
+   - **用途定位**(v23 明确):
+     - **.html 是评审稿 + 开发参考**(不是"生产态所见即开发交付")
+     - 评审人打开 .html → 看到高保真界面 + 钉点(点钉点弹抽屉看 PRD 摘录)
+     - 开发者基于 .html 写生产代码,**但不写钉点相关内容**(bl-marker.css/.js/`<button class="bl-pin">`/`<aside id="bl-drawer">`/`<button id="bl-toggle">`/REQUIREMENTS 对象 — 这些是评审辅助,不进生产)
+   - **理由**(v23 调整 v21):
+     - v21 的"2 文件物理隔离"虽理念纯,但**维护 2 文件成本高**(.html 和 .demo.html 大量内容重复,同步改动易漏)
+     - v21 的"生产态零 DEV 元素"洁癖在实践中**没必要** —— 开发者本来就不会照抄 .html 的钉点代码(钉点是评审辅助,不是业务代码)
+     - **单文件简化** = 维护成本减半 + 评审体验不变(打开 .html 就有钉点)
+     - **钉点仍必须用 bl-marker 系统**(硬性约束保留,见下方)
+   - **🚨 钉点系统硬性约束**(v21 起,v23 保留):
+     - **.html 的钉点必须用 hlskills `bl-marker` 钉点系统**(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
      - **禁止**:
        - ❌ inline `<span title="BL-1">i</span>` 简陋 tooltip
        - ❌ 自己造的悬浮框 + 角标实现
        - ❌ 其他简化版"钉点"(没抽屉/悬浮开关/调试面板)
      - **必须**:引入 `bl-marker.css` + `bl-marker.js`,在 `REQUIREMENTS` 对象填 PRD §N 摘录,钉点用 `<button class="bl-pin" data-bl="blN">N</button>`
      - **评审检查项**:
-       - [ ] demo.html 是否引用 `bl-marker.css` + `bl-marker.js`
+       - [ ] .html 是否引用 `bl-marker.css` + `bl-marker.js`
        - [ ] 是否含 `<aside id="bl-drawer">` 抽屉
        - [ ] 是否含 `<button id="bl-toggle">` 悬浮开关
        - [ ] 是否填了 REQUIREMENTS 对象(每 BL 各自独立)
        - [ ] URL `?bl-test=1` 调试模式可触发 10 个 TC 面板(可选验证)
-   - **默认档二 2 文件结构**:
-     - `docs/{ver}/design/<page-name>.html` — **生产态**(高保真,所见即开发交付,**无**任何 DEV-NOT-FOR-PROD 元素)
-     - `docs/{ver}/design/<page-name>.demo.html` — **活文档**(同生产态 + bl-marker 钉点 + 抽屉 + 悬浮开关 + 调试面板,纯评审用)
-   - **🚨 两档共同硬性要求(继承 v18,仍生效)**:
+   - **v23 单文件结构**:
+     - `docs/{ver}/design/<page-name>.html` — **评审稿 + 开发参考**(高保真界面 + bl-marker 钉点 + 抽屉 + 悬浮开关 + 调试面板,钉点默认显示)
+     - ~~`docs/{ver}/design/<page-name>.demo.html`~~ — **v23 取消**(合并进 .html)
+   - **🚨 硬性要求(继承 v18/v21,仍生效)**:
      - **纯静态 HTML,双击即开**,不依赖构建/后端/网络(若用 MSW,CDN 引入即可),评审人本地直接打开就能看
      - **真实交互可点**:按钮、表单、弹窗、tab、筛选、分页等**必须真能点、真有反馈**(不是静态贴图),评审时能走通主要用户操作路径
      - **真实示例数据**:填真实感数据(非 "xxx"/"占位"),让评审人看到接近上线的效果
-     - **全部关键状态可切换**(生产态用 URL 参数 `?state=error`,demo 文件额外可用悬浮开关切):
+     - **全部关键状态可切换**(URL 参数 `?state=error` + bl-marker 悬浮开关切态):
        - 空态 / 加载态 / 错误态 / 成功态 / 校验失败态(按页面实际涉及)
      - **交互脚本内联**:所有交互逻辑写在 HTML 内联 `<script>`,保证单文件可运行
      - **🚨 拆分规则(不设行数阈值,依复杂度自觉)**:
@@ -453,15 +457,16 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
          3. 多弹窗/抽屉(> 3 个独立 modal)→ 子组件化,引用 `<page>-modals.html`
        - **保持体验连续性**:拆分后**任一独立 HTML 仍能双击打开**(共享样式可内联或 `<link>` 相对路径)
        - **拆完后自检**:打开任一 HTML 应能独立看到完整功能,不依赖其他 HTML 的内联脚本
-   - ~~【阻塞点】:未询问用户不得进入 6b 设计~~ → **v21 取消阻塞点**(默认档二,不再询问)
-   - ~~保真度一经选定,整个项目统一遵循该档~~ → **v21 取消**:默认就是档二,无档位选择
-   - ~~档二拆分硬规定:档二必须拆 2 文件~~ → **v21 强化**:默认档二 = 默认拆 2 文件,不允许单文件混进 DEMO 元素
+   - ~~【阻塞点】:未询问用户不得进入 6b 设计~~ → **v21 取消阻塞点**(v23 仍非阻塞,单文件不询问)
+   - ~~保真度一经选定,整个项目统一遵循该档~~ → **v21 取消**(v23 单文件,无档位选择)
+   - ~~档二拆分硬规定:档二必须拆 2 文件~~ → **v23 取消**:单文件,无 2 文件拆分要求
 
-   **v18 → v21 变更摘要**(本步骤):
-   - 移除"AskUserQuestion 选档"阻塞点
-   - 默认档二(高保真生产态 + 钉点活文档 2 文件)
-   - 钉点必须用 hlskills bl-marker 系统(参照 `hlpm/templates/bl-marker/`)
-   - 9 项"文件命名 + 必含内容"规则继承 v18,详见下方 6b 步骤
+   **v18 → v21 → v23 变更摘要**(本步骤):
+   - v18:档一(单文件生产态)/ 档二(2 文件)二选一,AskUserQuestion 阻塞
+   - v21:取消选档,默认档二(2 文件:生产态 .html + 活文档 .demo.html),钉点必须用 bl-marker
+   - **v23:取消 2 文件,回归单文件 .html 带钉点**;用途明确为"评审稿 + 开发参考"(开发者参考 .html 写生产代码,不写钉点部分)
+   - 钉点必须用 bl-marker 系统(v21 起保留,v23 不变)
+   - 9 项"文件命名 + 必含内容"规则继承 v18,详见下方 6b 步骤(v23 文件数从 2 改 1)
 
 6b. **UI/UX 设计**（`designer`"已有页面微调"产出规则）
    - 按 6a.1 规范 + 6a.2 保真度产出设计
@@ -485,33 +490,34 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
 
    | 场景 | 判定 | 设计稿产出 |
    |------|------|----------|
-   | **全新页面 / 全新模块** | 无任何已有页面可参考 | 独立设计稿 `docs/{ver}/design/<page-name>.html`(生产态) + `<page-name>.demo.html`(活文档 + bl-marker 钉点) |
+   | **全新页面 / 全新模块** | 无任何已有页面可参考 | 独立设计稿 `docs/{ver}/design/<page-name>.html`(评审稿 + 开发参考,带 bl-marker 钉点) |
    | **已有页面微调** | 有 1 个或多个已有页面要改 | **基于原页面 diff 的设计稿**（见下） |
 
    **"全新页面"设计稿产出规则**（v17 补充,v18 修订: 拆分 + 演示态隔离）：
 
    > 全新页面无原页面可 diff,直接产出高保真独立设计稿,但**必须自包含以下内容**(否则评审无法验证):
 
-   1. **文件命名**(v21 起统一,移除 v18 档位选择):
-      - **生产态**:`docs/{ver}/design/<page-name>.html` — 高保真,所见即开发交付,无 DEV-NOT-FOR-PROD 元素
-      - **活文档**:`docs/{ver}/design/<page-name>.demo.html` — **必须用 hlskills bl-marker 钉点系统**(见下方铁律),带 `.demo.html` 后缀区分
+   1. **文件命名**(v23 起单文件,移除 v21 的 2 文件拆分):
+      - **评审稿 + 开发参考**:`docs/{ver}/design/<page-name>.html` — 高保真界面 + bl-marker 钉点(默认显示),开发者参考写生产代码时不写钉点部分
+      - ~~`docs/{ver}/design/<page-name>.demo.html`~~ — **v23 取消**(合并进 .html)
       - **量过大时的拆分**(继承 v18):多视图 / 多 modal / 子组件独立时,各自独立 HTML(如 `<page>-list.html` / `<page>-detail.html`),参考 §6a.2 拆分规则
-   2. **必含全部关键状态**(v21 默认档二统一规则):
-      - **生产态 .html**:**URL 参数切换**(`?state=error` / `?state=success` / `?account=13800138000`),**无状态演示切换器**(演示态 = 生产态,不允许切换器)
-      - **活文档 .demo.html**:可保留状态演示切换器(顶部小工具条,`DEV-NOT-FOR-PROD`),便于评审人切各状态查看;**生产文件无此元素**
+   2. **必含全部关键状态**(v23 单文件统一规则):
+      - **URL 参数切换**(`?state=error` / `?state=success` / `?account=13800138000`)+ bl-marker 悬浮开关切态(可选)
       - 空态 / 加载态 / 成功态 / 错误态 / 校验失败态(按页面实际涉及的状态)
    3. **必含真实交互**(6a.2 硬性要求):表单校验、按钮点击、tab/弹窗/倒计时等真能点、真有反馈,交互脚本内联在 `<script>`。**禁止**:`setTimeout(800) → setDemoState('error')` 伪反馈;**必须走 mock 服务或真接口**(MSW / fetch 拦截)
    4. **必含真实示例数据**:非 "xxx"/占位符,填接近上线的真实感数据
    5. **规范引用注释**(v18 加强):**关键 CSS 决策处必须标** `/* 规范: docs/design/spec.md §X.X */`,每 8-10 处 CSS 规则至少 1 处引用(色彩/字号/圆角/间距/4 态/阴影等),便于评审核对。**不允许只在顶部写一次**
-   6. **🚨 活文档 .demo.html 必须用 bl-marker 钉点系统**(v21 新增强制):
+   6. **🚨 .html 必须用 bl-marker 钉点系统**(v21 起强制,v23 保留):
       - 引入 `bl-marker.css` + `bl-marker.js`(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
       - 钉点统一用 `<button class="bl-pin" data-bl="blN">N</button>`(父元素 `position: relative`)
       - 在 `REQUIREMENTS` 对象填 PRD §N 摘录(每个 BL 各自独立)
       - **禁止**:inline `<span title="BL-1">i</span>` 简陋 tooltip / 自己造悬浮框 / 不含抽屉+悬浮开关的简化版
       - 评审检查项:抽屉 `<aside id="bl-drawer">` ✓ / 悬浮开关 `<button id="bl-toggle">` ✓ / REQUIREMENTS 对象填充 ✓ / `?bl-test=1` 调试模式可触发(可选)
-   7. **生产态 .html 文件不挂任何** `data-prd`/`data-tc`/`data-state`/`data-matrix` 属性、不含 🔗 角标、不含 DEV-NOT-FOR-PROD 元素(物理隔离,见 6a.2 铁律)
-   - **参考模板**:`hlpm/templates/bl-marker/bl-marker-template.html`(v21 取代 v18 的 `examples/order-list-with-export-csv.html` 示例)
-     - **关键差异**:v21 模板自带 bl-marker 系统 + REQUIREMENTS + 抽屉 + 调试面板,v18 示例是单文件悬浮框版(已被取代)
+   7. **开发者基于 .html 写生产代码时,不写钉点部分**(v23 明确):
+      - 生产代码**不含**:bl-marker.css / bl-marker.js / `<button class="bl-pin">` / `<aside id="bl-drawer">` / `<button id="bl-toggle">` / REQUIREMENTS 对象
+      - 这些是评审辅助,不进生产;开发者参考 .html 的**业务实现**(布局/交互/样式)写生产代码
+   - **参考模板**:`hlpm/templates/bl-marker/bl-marker-template.html`(v21 起取代 v18 的 `examples/order-list-with-export-csv.html` 示例)
+     - **关键差异**:bl-marker 模板自带 bl-marker 系统 + REQUIREMENTS + 抽屉 + 调试面板,v18 示例是单文件悬浮框版(已被取代)
 
    **"已有页面微调"设计稿产出规则**（v14 强制）：
 
@@ -635,7 +641,7 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
       - **实现**: `designer` agent 调 `Skill hlbrowse` 打开 `docs/{ver}/design/*.html` (含子目录 components/ 和 flows/), 用 `screenshot` 命令保存为:
         - **命名约定(v17)**: `screenshot-<page-name>.png`,`<page-name>` 与设计稿 HTML 同名(如 `login.html` → `screenshot-login.png`);一个页面多状态时用 `screenshot-<page-name>-<state>.png`(如 `screenshot-login-error.png`)
         - 这样 PRD 卡片 / TC 引用截图时能**按页面名精确对应**,避免 `screenshot-1/2` 无法辨别是哪个页面
-        - **🚨 默认档二截图策略(v21 修订)**:生产态 `.html` 状态由 URL 参数(`?state=` / `?ver=` 等)决定,理论上状态空间无限,**不穷举截图**。活文档 `.demo.html` 由 bl-marker 悬浮开关切态。按以下原则截代表态:
+        - **🚨 单文件截图策略(v23 修订)**:.html 状态由 URL 参数(`?state=` / `?ver=` 等)决定 + bl-marker 悬浮开关切态。按以下原则截代表态:
           1. **默认态必截**:生产态不带参数或带当前版本默认参数的页面,截 1 张 `screenshot-<page-name>.png`(无 `-<state>` 后缀),供 PRD BL 卡片 / TC 默认引用
           2. **关键异常态按需截**:仅当 PRD/TC 明确需要引用某异常态(如错误态、空态)作验收证据时,才追加 `screenshot-<page-name>-<state>.png`;无引用需求不截
           3. **活文档 .demo.html**:同理截默认态;bl-marker 悬浮开关内的各态不逐一截图(评审人现场切换查看)
@@ -652,10 +658,9 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
      - **验证清单**(逐项确认,写入 `docs/{ver}/design/interaction-check.md`):
        - [ ] 主流程能走通(如登录:输入→提交→成功态)
        - [ ] 表单校验触发(空值/格式错→错误提示)
-       - [ ] 全部关键状态可切换查看(**档一通过 URL 参数 `?state=` 切;档二 demo 文件可用切换器**)
+       - [ ] 全部关键状态可切换查看(URL 参数 `?state=` 切 + bl-marker 悬浮开关切态)
        - [ ] 无 JS 报错(检查 console)
-       - [ ] **v18 新增**:档一时,确认**无 DEV-NOT-FOR-PROD 元素**(无状态演示切换器、无 🔗 角标、无 logic-data)— 验证 grep 0 命中
-       - [ ] **v18 新增**:档二时,确认 `<page>.html` 与 `<page>.demo.html` 各自双击可独立打开
+       - [ ] **v23 新增**:确认 .html 引用 bl-marker.css + bl-marker.js,钉点默认显示,`?bl-test=1` 可触发调试面板
      - **失败处理**:任一项不通过 → 返回 6b 修设计稿;`Skill hlbrowse` 不可用 → 标"未做交互验证"并告知用户(不静默跳过)
 
    - **🚨 6b.6 设计立即评审(逐份立即评审模式专属)**
@@ -674,16 +679,10 @@ description: 多角色协作-产品段(分层多步流程)。从需求到交付�
 
    ---
 
-   ### 🆕 5 区块扩展 → 见 `design-spec.md`
+   ### 🆕 5 区块扩展 → 见 `design-spec.md`(v23 起 DEPRECATED)
 
-   > **5 区块扩展(档二活文档实施规范)已拆出**到 [`design-spec.md`](./design-spec.md),含:
-   > - 悬浮框 7 tab 结构 + 弹窗概要默认展开
-   > - 区块 4+5 逻辑说明层(🔗 角标 + logic-data JSON)
-   > - 🚨 角标→悬浮框联动脚本(必出物清单 4 项 + 模板)
-   > - 框架场景(Vue/React/jQuery/ElementUI)mounted 回调事件绑定
-   > - sticky header 滚出视口修复(CSS scroll-padding-top + JS 兜底)
-   > - 顶部注释模板(DEV-NOT-FOR-PROD 白名单)
-   > - 自检 grep 7 条 + verifier 二次验证
+   > ~~**5 区块扩展(档二活文档实施规范)已拆出**到 [`design-spec.md`](./design-spec.md)~~
+   > **v23 起**:5 区块扩展(悬浮框 7 tab / 🔗 角标 / logic-data JSON / 框架 mounted 回调)**已被 bl-marker 钉点系统取代**。`design-spec.md` 保留仅供历史可追溯,v23 设计稿统一用 `hlpm/templates/bl-marker/` 模板,不再用旧 5 区块悬浮框实现。
    >
    > 本 SKILL.md 只保留流程关卡;设计稿实施细节一律查 `design-spec.md`。
 

@@ -26,28 +26,29 @@ description: hlskills 产品段(13 编号步 + 4 子阶段,多角色协作)。Us
 
 ### 第二阶段:设计(v11 条件性:仅当 0.5 选"涉及设计")
 
-- **6** **设计规范检查** + 保真度规范(**v21 起默认档二,不再阻塞询问**)
-- **6a.2** **设计保真度规范**(v21 默认档二,非阻塞,**钉点必须用 bl-marker**)
-  - **🚨 v21 重大变更**:取消 v18 的"档一/档二"二选一,**默认统一为档二** = 高保真生产态 + 钉点逻辑说明活文档(2 文件)
-  - **2 文件结构**:
-    - `docs/{ver}/design/<page>.html` — 生产态(高保真,所见即开发交付,**无** DEV-NOT-FOR-PROD)
-    - `docs/{ver}/design/<page>.demo.html` — 活文档(钉点 + 抽屉 + 悬浮开关 + 调试面板)
-  - **🚨 钉点系统硬性约束**(v21 新增):
-    - 活文档 demo.html **必须用 hlskills bl-marker 钉点系统**(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
+- **6** **设计规范检查** + 保真度规范(**v23 起单文件,不再阻塞询问**)
+- **6a.2** **设计保真度规范**(v23 单文件 .html 带钉点,非阻塞,**钉点必须用 bl-marker**)
+  - **🚨 v23 重大变更**:取消 v21 的"2 文件物理隔离"(生产态 .html + 活文档 .demo.html),**回归单文件**:`<page>.html` 一份,带 bl-marker 钉点
+  - **用途**:.html 是**评审稿 + 开发参考**(不是生产态);开发者基于 .html 写生产代码,**不写钉点部分**(bl-marker.css/.js/bl-pin/bl-drawer/bl-toggle/REQUIREMENTS 不进生产)
+  - **单文件结构**:
+    - `docs/{ver}/design/<page>.html` — 评审稿 + 开发参考(高保真界面 + bl-marker 钉点 + 抽屉 + 悬浮开关,钉点默认显示)
+    - ~~`<page>.demo.html`~~ — **v23 取消**(合并进 .html)
+  - **🚨 钉点系统硬性约束**(v21 起,v23 保留):
+    - .html **必须用 hlskills bl-marker 钉点系统**(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
     - **禁止**:inline `<span title="BL-1">i</span>` 简陋 tooltip / 自己造悬浮框
     - **必须**:引 bl-marker.css + bl-marker.js + 用 `<button class="bl-pin" data-bl="blN">N</button>` + 填 REQUIREMENTS 对象
-  - **两文件共同要求**:纯静态 HTML 双击即开 / 真实交互可点 / 真实示例数据 / URL 参数切态(`?state=error`)/ bl-marker 调试模式 `?bl-test=1`
-- **6b** **设计稿产出**(`designer`,按默认档二产出 2 文件)
-- **7** **★ 设计评审会签**(重量评审 2/3,阻塞点,**仅"分阶段评审"模式**)
+  - **硬性要求**:纯静态 HTML 双击即开 / 真实交互可点 / 真实示例数据 / URL 参数切态(`?state=error`)/ bl-marker 调试模式 `?bl-test=1`
+- **6b** **设计稿产出**(`designer`,按 v23 单文件产出 .html)
+- **7** **[DEPRECATED v22]** 评审在 6b.6 完成,本步骤已移除
 
 ### 第三阶段:测试准备(2 步)
 
 - **8** **验收用例编写**(`test-engineer`,含 E2E 业务路径骨架) + 沉淀 knowledge/tests/
-- **9** **★ 用例评审会签**(重量评审 3/3,阻塞点,**仅"分阶段评审"模式**)
+- **9** **[DEPRECATED v22]** 评审在 8.5 完成,本步骤已移除
 
 ### 第三阶段.5:集中评审(可选)
 
-- **9c** **集中评审**(5 角色一次评,仅"集中评审"模式时执行)
+- **9c** **[DEPRECATED v22]** 评审在 4.5/6b.6/8.5 完成,本步骤已移除
 
 ### 第四阶段:交付前终检(3 步)
 
