@@ -21,21 +21,33 @@
      ------------------------------------------------------------
      1. 这是模板数据 — 在你自己的设计稿里替换成实际 PRD 章节
      2. 每个 BL 必须有 title (含 "BL-N 名称" 前缀) + sections[] 数组
-     3. sections[].body 支持三种语法:
+     3. 叙事结构(v28 起固定, 对齐 PRD 15 字段卡片):
+        一句话 → 主场景 → 替代/异常场景 → 业务规则 → 状态机变化 → AC 验收表
+        (缺场景/规则/AC 任一段 → hlpm 6b.6 评审驳回)
+     4. sections[].body 支持四种语法:
         - 普通段落: 多行用 \n 分隔(渲染时用 <br> 分行)
         - 编号列表: 任一行以 "1." 开头 → 渲染为 <ol>
         - markdown 表格: | 表格 | 列分隔 | + 第二行 |---|---|
-     4. ⚠️ 同步源: 同步 docs/{ver}/prd.md §N 时, 这里也要改
+        - [flow] 场景流程链(v28): 首行写 [flow], 步骤用 → 或换行连接,
+          编号可带字母标分支(3a./3b., 红色虚框渲染); 场景段必须用 [flow]
+     5. sections[].state (v28, 可选): 替代/异常场景段标页面态(如 'error')
+        → 抽屉显示"▶ 查看该状态"按钮。点击: 优先派 bl:state 事件
+        (页面 document.addEventListener('bl:state', e => { e.preventDefault(); ...自切... })
+        则页面自切不刷新); 页面未监听 → URL ?state= 兜底重载并重开抽屉
+     6. 钉点 hover 摘要(v28): JS 自动取"一句话"段首行填 pin 的 title, 无需手填
+     7. ⚠️ 同步源: 同步 docs/{ver}/prd.md §N 时, 这里也要改
      ============================================================ */
   var REQUIREMENTS = {
     bl1: { title: 'BL-1 示例需求点', sections: [
-      { title: '一句话', body: '替换成你的 PRD 原文摘录.' },
-      { title: '主功能场景', body: '1. 第一步\n2. 第二步\n3. 第三步' },
-      { title: '业务逻辑', body: '• 业务规则 1\n• 业务规则 2\n• 业务规则 3' },
-      { title: 'AC 验收明细', body: '| AC | 验收点 | 优先级 |\n|---|---|---|\n| AC-1 | 示例验收 1 | P0 |\n| AC-2 | 示例验收 2 | P0 |' }
+      { title: '一句话', body: '替换成你的 PRD §1 一句话描述(本节首行会被 JS 自动用作钉点 hover 摘要).' },
+      { title: '主场景', body: '[flow]\n1. 用户点击"导出" → 2. 系统校验筛选条件 → 3. 生成并下载文件' },
+      { title: '替代/异常场景', body: '[flow]\n3a. 筛选结果为空:提示"无数据可导出"\n3b. 无权限:按钮置灰 + hover 提示原因', state: 'error' },
+      { title: '业务规则', body: '1. 业务规则 1(摘自 PRD §1.9 原文)\n2. 业务规则 2\n3. 业务规则 3' },
+      { title: '状态机变化', body: '导出任务: 无 → 生成中 → 已完成/失败(不涉及状态机则写"不涉及")' },
+      { title: 'AC 验收', body: '| AC | 验收点 | 优先级 |\n|---|---|---|\n| AC-1 | 示例验收 1 | P0 |\n| AC-2 | 示例验收 2 | P0 |' }
     ]},
     bl2: { title: 'BL-2 第二个示例', sections: [
-      { title: '一句话', body: '复制上面 BL-1 的结构, 替换内容即可.' }
+      { title: '一句话', body: '复制上面 BL-1 的叙事结构(一句话/主场景/替代异常/规则/状态机/AC), 替换内容即可.' }
     ]}
   };
 
@@ -56,7 +68,9 @@
       if (!s || !s.body) return;
       html += '<div class="bl-section">';
       if (s.title) html += '<div class="bl-section-title">' + s.title + '</div>';
-      html += '<div class="bl-section-body">' + renderText(s.body) + '</div>';
+      html += '<div class="bl-section-body">' + renderText(s.body);
+      if (s.state) html += '<button type="button" class="bl-state-btn" data-state="' + escapeHtml(s.state) + '">▶ 查看该状态(' + escapeHtml(s.state) + ')</button>';
+      html += '</div>';
       html += '</div>';
     });
     if (!html) html = WARN_MSG;
@@ -64,6 +78,10 @@
   }
   function renderText(text) {
     if (!text) return '';
+    // [flow] 场景流程链(v28): 首行 [flow]
+    if (/^\s*\[flow\]\s*(\n|$)/.test(text)) {
+      return renderFlow(text.replace(/^\s*\[flow\]\s*(\n|$)/, ''));
+    }
     // 表格语法: 首行含 |, 第二行是对齐行
     if (/\|/.test(text) && /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(text.split('\n')[1] || '')) {
       return renderTable(text);
@@ -78,6 +96,23 @@
     // 普通段落
     var lines = text.split('\n').map(function(l){ return escapeHtml(l); });
     return '<p>' + lines.join('<br>') + '</p>';
+  }
+  // [flow] 场景流程链渲染(v28): 步骤用 → 或换行分隔, "3a./3b." 编号前缀标分支(红虚框)
+  function renderFlow(text) {
+    var tokens = text.split(/\n|→/);
+    var html = '<div class="bl-flow">';
+    var count = 0;
+    tokens.forEach(function(t){
+      t = t.trim();
+      if (!t) return;
+      var branch = false;
+      var m = t.match(/^(\d+)([a-z]?)\.\s*(.*)$/);
+      if (m) { branch = !!m[2]; t = m[3]; }
+      if (count) html += '<span class="bl-flow-arrow">→</span>';
+      html += '<span class="bl-flow-step' + (branch ? ' branch' : '') + '">' + escapeHtml(t) + '</span>';
+      count++;
+    });
+    return html + '</div>';
   }
   function renderTable(text) {
     var rows = text.split('\n').filter(function(r){ return r.trim().length > 0; });
@@ -154,6 +189,44 @@
     if (currentBl === blId) { closeDrawer(); return; }
     openDrawer(blId);
   });
+
+  // ===== 场景联动 + hover 摘要(v28) =====
+  // 点"▶ 查看该状态": 优先派 bl:state 事件(页面监听并 preventDefault → 页面自切不刷新);
+  // 页面未监听 → URL ?state= 兜底重载, 重载后自动重开抽屉
+  var REOPEN_LS_KEY = 'blReopen';
+  function gotoState(state) {
+    if (!state) return;
+    var ev = new CustomEvent('bl:state', { detail: { state: state }, cancelable: true });
+    var handled = !document.dispatchEvent(ev);
+    if (handled) return;
+    try { if (currentBl) localStorage.setItem(REOPEN_LS_KEY, currentBl); } catch(e) {}
+    var url = location.href.split('#')[0].replace(/([?&])state=[^&]*(&|$)/, function(m, p1, p2){ return p2 === '&' ? p1 : ''; });
+    url += (url.indexOf('?') >= 0 ? '&' : '?') + 'state=' + encodeURIComponent(state);
+    location.href = url;
+  }
+  drawerBody.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('.bl-state-btn');
+    if (!btn) return;
+    gotoState(btn.dataset.state);
+  });
+
+  // 钉点 hover 摘要: 自动取"一句话"段(sections[0])首行填 title(已手填 title 的钉点不覆盖)
+  document.querySelectorAll('.bl-pin[data-bl]').forEach(function(pin){
+    if (pin.getAttribute('title')) return;
+    var d = REQUIREMENTS[pin.dataset.bl];
+    if (!d || !d.sections || !d.sections.length || !d.sections[0].body) return;
+    var line = d.sections[0].body.split('\n')[0].trim();
+    if (line) pin.setAttribute('title', d.title + ': ' + line);
+  });
+
+  // URL 兜底切态重载后, 自动重开之前打开的抽屉
+  try {
+    var reopen = localStorage.getItem(REOPEN_LS_KEY);
+    if (reopen) {
+      localStorage.removeItem(REOPEN_LS_KEY);
+      if (REQUIREMENTS[reopen]) openDrawer(reopen);
+    }
+  } catch(e) {}
 
   // ===== 标记可见性 + 悬浮按钮位置 =====
   var toggleBtn = document.getElementById('bl-toggle');
@@ -318,7 +391,7 @@
   }
   function runAllTC() {
     var results = {};
-    results.TC01 = { name: '10 个 BL 抽屉有内容', pass: false };
+    results.TC01 = { name: '所有 BL 抽屉有内容', pass: false };
     var checked = [];
     Object.keys(REQUIREMENTS).forEach(function(blId){
       var pin = document.querySelector('.bl-pin[data-bl="' + blId + '"]');
@@ -381,7 +454,7 @@
     var rect = toggleBtn.getBoundingClientRect();
     results.TC07.pass = rect.left >= 0 && rect.top >= 0 && rect.left <= maxX && rect.top <= maxY;
 
-    results.TC08 = { name: '10 BL 各有钉位', pass: false };
+    results.TC08 = { name: '每 BL 各有钉位', pass: false };
     var counts = {};
     document.querySelectorAll('.bl-pin').forEach(function(p){
       counts[p.dataset.bl] = (counts[p.dataset.bl] || 0) + 1;
@@ -400,10 +473,17 @@
     if (anyPin) {
       anyPin.click();
       var navItem = document.querySelector('.nav-item');
-      if (navItem) navItem.click();
-      results.TC10.pass = !currentBl;
+      if (navItem) {
+        navItem.click();
+        results.TC10.pass = !currentBl;
+      } else {
+        // 无 nav 时跳过：复位抽屉后判通过
+        document.getElementById('bl-drawer-close').click();
+        results.TC10.name = '切页关闭抽屉（无 nav，跳过）';
+        results.TC10.pass = true;
+      }
     } else {
-      results.TC10.pass = true;  // 无 nav 时跳过
+      results.TC10.pass = true;  // 无钉位时跳过
     }
 
     showTestPanel(results);

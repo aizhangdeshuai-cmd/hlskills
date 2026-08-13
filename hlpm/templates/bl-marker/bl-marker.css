@@ -124,3 +124,22 @@ body.drawer-open { overflow: hidden; }
 @media (max-width: 1024px) {
   .bl-drawer { width: calc(100vw - 40px); min-width: 320px; }
 }
+/* ===== 场景流程链 (v28, [flow] 语法渲染) ===== */
+.bl-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 4px 0; }
+.bl-flow-step {
+  background: var(--accent-bg); color: var(--accent);
+  border-radius: 10px; padding: 2px 8px; font-size: 12px; line-height: 1.6;
+}
+.bl-flow-step.branch {
+  background: transparent; color: var(--red);
+  border: 1px dashed var(--red);
+}
+.bl-flow-arrow { color: var(--text-2); font-size: 12px; }
+
+/* ===== 场景联动按钮 (v28, sections[].state) ===== */
+.bl-state-btn {
+  margin: 2px 0 4px; border: 1px solid var(--border); background: var(--surface);
+  color: var(--accent); border-radius: var(--radius); padding: 3px 10px;
+  font-size: 12px; cursor: pointer;
+}
+.bl-state-btn:hover { background: var(--accent-bg); }

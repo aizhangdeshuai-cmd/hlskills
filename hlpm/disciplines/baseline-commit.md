@@ -26,9 +26,11 @@ PRD / 设计 / 测试用例任一基线版本 v1 登记到 `consistency-rules.md
 
 ## 示例
 
+> 注: 项目侧基线表 = `docs/{ver}/consistency-rules.md`(首次从技能模板 `hlpm/consistency-rules.md` 复制创建,之后随基线登记更新)
+
 ```bash
 git add docs/v1/prd.md docs/v1/consistency-rules.md
-git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段第 4 步登记基线版本 v1。"
+git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段第一阶段(PRD 定稿后)登记基线版本 v1。"
 ```
 
 ---

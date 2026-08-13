@@ -1,13 +1,15 @@
 ---
 name: hlpm-design-spec
-description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则)。含 6a.1 规范遵循、6a.2 两档保真度定义、6b 微调/全新页面产出规则、6b.5 截图策略、6b.5.1 交互验证、6b.6 评审把关 + 档二活文档 5 区块扩展(悬浮框/角标/logic-data/联动脚本/框架场景 mounted 绑定/sticky header)。被 SKILL.md §第二阶段步骤 6a-6b.6 引用,避免在流程文档内塞大段 HTML 实施教程。Use when 用户/agent 在设计阶段需要"档二活文档怎么写""联动脚本模板""框架场景事件绑定""sticky header 修复"等实施细节。
+description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v23 起 DEPRECATED,仅供历史追溯,不得用于新设计稿)。原含 6a.1 规范遵循、6a.2 两档保真度定义、6b 微调/全新页面产出规则、6b.5 截图策略、6b.5.1 交互验证、6b.6 评审把关 + 档二活文档 5 区块扩展(悬浮框/角标/logic-data/联动脚本/框架场景 mounted 绑定/sticky header)。v23 前曾被 SKILL.md §第二阶段步骤 6a-6b.6 引用;v23 起档二活文档(5 区块悬浮框)已被 `templates/bl-marker/` 钉点系统取代。Use when 仅历史追溯——查询旧档二活文档/悬浮框写法的历史规范时;新设计稿一律使用 `templates/bl-marker/` 钉点系统。
 ---
 
 # hlpm 设计阶段实施规范
 
+> ⚠️ **v23 起 DEPRECATED**:5 区块悬浮框/档二活文档已被 `templates/bl-marker/` 钉点系统取代,本文件仅供历史追溯,不得用于新设计稿。
+
 > 本文件从 `SKILL.md` 第二阶段拆出,承载设计稿产出的**实施细节**(尤其档二活文档的 HTML/JS/CSS 模板)。
 > SKILL.md 第二阶段只保留**流程关卡 + 触发条件 + 指向本文件**;具体怎么写见此。
-> 配套示例:`examples/order-list-with-export-csv.html`
+> 配套示例:`examples/order-list-with-export-csv.html`(v21 起已被 `templates/bl-marker/bl-marker-template.html` 取代,冻结存档)
 
    ### 🆕 5 区块扩展（仅当 6a.2 选"档二:高保真 + 逻辑说明活文档"时强制）
 

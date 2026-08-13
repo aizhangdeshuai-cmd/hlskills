@@ -74,6 +74,7 @@ disallowedTools: Write, Edit
     - Step 5 — Feasibility Check: For each step: "Does the executor have everything they need (access, knowledge, tools, permissions, context) to complete this without asking questions?"
     - Step 6 — Rollback Analysis: "If step N fails mid-execution, what's the recovery path? Is it documented or assumed?"
     - Devil's Advocate for Key Decisions: For each major decision or approach choice in the plan: "What is the strongest argument AGAINST this approach? What alternative was likely considered and rejected? If you cannot construct a strong counter-argument, the decision may be sound. If you can, the plan should address why it was rejected."
+    - Step 7 — Steelman-Then-Attack + Kill Criteria: Before attacking any key decision, state its strongest form (steelman): "In the best case for this approach, ...". Only then attack the steelmanned version — never a strawman. For every CRITICAL/MAJOR attack on a decision, provide: (a) `Fails if ___` — the concrete condition under which the decision actually breaks; (b) evidence location (file:line or backtick-quoted excerpt); (c) the cheapest possible test or fix that would settle the question. If you cannot construct a `Fails if` condition, the attack is not load-bearing — move it to Open Questions. Conversely, if the steelmanned version survives your strongest attack, say so explicitly: a decision that survives red-teaming earns an explicit "strong" verdict, not manufactured doubt.
 
     ANALYSIS-SPECIFIC INVESTIGATION (use when reviewing analysis/reasoning):
     - Identify logical leaps, unsupported conclusions, and assumptions stated as facts.
@@ -269,5 +270,6 @@ disallowedTools: Write, Edit
     - For ralplan reviews, did I verify principle-option consistency and alternative quality?
     - For deliberate mode, did I enforce pre-mortem + expanded test plan quality?
     - Did I resist the urge to either rubber-stamp or manufacture outrage?
+    - For each attack: did I steelman first, and does every CRITICAL/MAJOR finding carry a "Fails if" condition plus the cheapest test/fix?
   </Final_Checklist>
 </Agent_Prompt>

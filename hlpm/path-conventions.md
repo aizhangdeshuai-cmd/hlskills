@@ -89,7 +89,9 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │   │   ├── consistency-matrix.md          # 含验收标准(§1 业务规则覆盖矩阵"验收方法"列)
 │   │   ├── handoff-self-check.md
 │   │   ├── design/
-│   │   │   └── *.html
+│   │   │   ├── *.html
+│   │   │   ├── bl-marker.css                   # bl-marker 钉点资产(v23 起随设计稿复制)
+│   │   │   └── bl-marker.js                    # bl-marker 钉点资产(v23 起随设计稿复制)
 │   │   ├── analysis/
 │   │   │   └── competitive-analysis.md
 │   │   ├── .dev-completed                  # 标记文件(空文件）
@@ -112,7 +114,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │       └── *.md
 ├── CHANGELOG.md                            # 根目录（业界惯例）
 ├── DESIGN.md                               # 根目录（跨目录兜底）
-├── knowledge/                              # 项目知识库(hlkb,11 类项目总文件库)
+├── knowledge/                              # 项目知识库(hlkb,10 类项目总文件库)
 │   ├── prd.md                           # 总 PRD(跨版本累计,hlpm 步骤 11 追加)
 │   ├── glossary.md                      # 术语表(通用语言,hlpm 步骤 1 梳理)
 │   ├── api/ db/ adr/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/
@@ -190,7 +192,7 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 │       └── *.md                             # 测试报告、健康评分、审计报告
 ├── CHANGELOG.md                             # 开发段：变更日志（根目录特例）
 ├── DESIGN.md                                # 项目设计规范（6a.1 跨目录兜底 #4）
-├── knowledge/                               # 项目知识库（hlkb,11 类项目总文件库,根目录可见）
+├── knowledge/                               # 项目知识库（hlkb,10 类项目总文件库,根目录可见）
 └── .hl/memory/                              # 项目记忆（来自 hlmemory 技能,AI 工作记忆,隐藏）
     ├── project.md                           # 项目概述
     ├── techstack.md                         # 技术栈
@@ -216,25 +218,25 @@ ls -d docs/v*/ 2>/dev/null | sort -V
 | 7 | 一致性矩阵(含验收标准) | `docs/{ver}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
 | 8 | 自检报告 | `docs/{ver}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |
 
-> **`{ver}` = 当前版本号**（如 `v1` / `v2` / `v3`），由 0.5 步骤的版本扫描决定
+> **`{ver}` = 当前版本号**（如 `v1` / `v2` / `v3`），由 0.6 步骤的版本扫描决定
 > 例：当前产品段流程在 v2，则 PRD 写到 `docs/v2/prd.md`
 
 ### 3.2 开发段交付物（6 项，hldev 步骤 13 输出）
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
-| 10 | 技术设计文档 | `docs/tech-design.md` | `architect` | 3 |
-| 11 | 架构决策记录 | `docs/adr/NNNN-<slug>.md` | `architect` | 3 |
-| 12 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
-| 13 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
-| 14 | 变更日志 | `CHANGELOG.md`（根目录） | `planner` | 13 |
-| 15 | 回滚方案 | `docs/rollback.md` | `architect` | 13 |
+| 9 | 技术设计文档 | `docs/tech-design.md` | `architect` | 3 |
+| 10 | 架构决策记录 | `docs/adr/NNNN-<slug>.md` | `architect` | 3 |
+| 11 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
+| 12 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
+| 13 | 变更日志 | `CHANGELOG.md`（根目录） | `planner` | 13 |
+| 14 | 回滚方案 | `docs/rollback.md` | `architect` | 13 |
 
 ### 3.3 项目记忆（1 项，可选，由 hlmemory 技能管理）
 
 | # | 文档 | 路径 | 负责 Agent |
 |---|------|------|-----------|
-| 16 | 项目记忆文件 | `.hl/memory/*.md` | 详见 hlmemory 技能 |
+| 15 | 项目记忆文件 | `.hl/memory/*.md` | 详见 hlmemory 技能 |
 
 ---
 
@@ -316,3 +318,6 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 - v12：新增"零、版本目录管理"章节，每次产品段流程产出 8 项交付物到独立 `docs/vN/` 目录；启动时自动扫描历史未开发版本并询问用户。**所有 3 个引用方文件必须同步更新路径**（含 `{ver}` 占位符）
 - v18：产品段交付物由 8 项扩为 9 项(新增"设计稿截图" `screenshot-<page-name>.png`,6b.5 触发)；交付物总数 14 → 15。**所有引用方文件同步更新计数与表格**
 - v19：验收标准合并入一致性矩阵 §1"业务规则覆盖矩阵"的"验收方法"列,原独立文档 `acceptance-criteria.md` 取消；产品段交付物由 9 项减为 8 项(5 必出 + 3 条件出),交付物总数 15 → 14。**所有引用方文件同步更新计数与表格**
+- v23：设计稿单文件化（单文件 .html + bl-marker 钉点）；接入时 `cp hlpm/templates/bl-marker/bl-marker.{css,js} docs/{ver}/design/`，`docs/{ver}/design/` 目录新增 `bl-marker.css` / `bl-marker.js` 两个资产文件
+- v24：PRD 附录 A-G；附录 G 在 `prd.md` 内部，无新增文件，无路径影响
+- v25：取消需求规模（轻量/标准/复杂）选择，一律按复杂需求标准；无路径影响

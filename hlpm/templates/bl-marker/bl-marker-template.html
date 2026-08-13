@@ -17,6 +17,10 @@
   3. 在需要标注的 UI 元素上加 <button class="bl-pin" data-bl="blN">N</button>
      (父元素记得 position:relative)
   4. 改 bl-marker.js 顶部的 REQUIREMENTS 对象,替换成你的 PRD §N 摘录
+     (v28 起叙事结构固定: 一句话 → 主场景[flow] → 替代/异常场景[flow]+state → 业务规则 → 状态机变化 → AC 验收表;
+      钉点 hover 摘要由 JS 自动取"一句话"首行,无需手填 title;
+      场景段 state 字段: 点"▶ 查看该状态"→ 优先派 bl:state 事件,页面监听并 e.preventDefault() 自切;
+      页面未监听 → URL ?state= 兜底重载并自动重开抽屉)
   5. (可选) ?bl-test=1 调出 10 个 TC 调试面板
 
   注意: 本模板引用的 bl-marker.css / bl-marker.js 在同目录。
