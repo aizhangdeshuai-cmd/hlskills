@@ -19,7 +19,7 @@ description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hlde
 
 | 阶段 | 调用 Skill | 阶段输出物 | 默认跳过？ |
 |------|-----------|------------|----------|
-| 1 | `Skill hlpm "..."` | `docs/vN/` 8 项产品交付物 | 否(必经) |
+| 1 | `Skill hlpm "..."` | `knowledge/doc/vN/` 8 项产品交付物 | 否(必经) |
 | 2 | `Skill hldev "..."` | 完成开发 + 内置测试/审计/发布 | 否(必经) |
 | 3 | `Skill hlrelease "..."` | 生成 CHANGELOG + git tag + push | 否(必经;hldev 步骤 14 仅用户确认,不含 tag 推送) |
 | 4 | `Skill hldeploy "..."` | 部署到生产环境 | **可选**(用户可手动部署) |
@@ -47,7 +47,7 @@ description: 全流程编排技能,按顺序依次加载 hlpm(产品段)→ hlde
 
 Agent:
   1. 加载 hlpm (27 步产品段)
-     输出: docs/v1/ 下 8 项交付物 (prd.md / test-cases.md / 设计稿 HTML 等)
+     输出: knowledge/doc/v1/ 下 8 项交付物 (prd.md / test-cases.md / 设计稿 HTML 等)
   2. 询问用户: "产品段完成, 是否进入开发段?"
      用户: "继续"
   3. 加载 hldev (15 步开发段)
@@ -109,7 +109,7 @@ Agent:
 
 | 阶段 | 验证输出物 |
 |------|----------|
-| hlpm 完成 | `docs/vN/` 存在 + 8 项交付物文件非空 |
+| hlpm 完成 | `knowledge/doc/vN/` 存在 + 8 项交付物文件非空 |
 | hldev 完成 | git log 有新 commit + 测试报告 |
 | hlrelease 完成 | `CHANGELOG.md` 更新 + git tag 存在 |
 | hldeploy 完成 | 部署日志有成功标记 |
@@ -117,7 +117,7 @@ Agent:
 ### 第四步: 每阶段完成后询问用户是否继续
 
 ```
-hlpm 完成。输出物已生成于 docs/v1/。
+hlpm 完成。输出物已生成于 knowledge/doc/v1/。
 下一步: 加载 Skill hldev 开始开发?
 
 [选项]
@@ -131,8 +131,8 @@ hlpm 完成。输出物已生成于 docs/v1/。
 ## 与其他子技能的关系
 
 ### 互补关系 (本技能编排的)
-- **hlpm** → 产出 `docs/vN/` 8 项产品交付物
-- **hldev** → 接手 `docs/vN/` 8 项交付物, 完成开发
+- **hlpm** → 产出 `knowledge/doc/vN/` 8 项产品交付物
+- **hldev** → 接手 `knowledge/doc/vN/` 8 项交付物, 完成开发
 - **hlrelease** → 接手 git 历史, 生成 CHANGELOG + tag
 - **hldeploy** → 接手 tag, 部署到环境
 - **hltest** → 补充独立测试阶段 (hldev 内部测试不够时)
@@ -154,4 +154,4 @@ hlpm 完成。输出物已生成于 docs/v1/。
 
 ## 路径规范
 
-本文件不涉及 `docs/` 路径, 无需引用 `path-conventions.md`。
+本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

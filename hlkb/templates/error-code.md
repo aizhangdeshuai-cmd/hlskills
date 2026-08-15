@@ -56,4 +56,4 @@
 
 - API 接口: `knowledge/api/blacklist.md`
 - 数据库: `knowledge/db/blacklist.md`
-- 业务规则: `docs/v3/prd.md §{N} BL-{N}` (具体业务规则)
+- 业务规则: `knowledge/doc/v3/prd.md §{N} BL-{N}` (具体业务规则)

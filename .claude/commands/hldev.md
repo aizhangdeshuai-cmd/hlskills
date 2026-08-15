@@ -20,7 +20,7 @@ description: hlskills 开发段(15 步,5 阶段,多角色)。Use when 产品交�
 
 - **1** Git 工作区准备(隔离工作区)
 - **2** 开发计划(`planner`,任务粒度 = 单步 2-5 分钟)
-- **3** 架构决策记录(`architect`,→ docs/adr/NNNN-slug.md)
+- **3** 架构决策记录(`architect`,→ knowledge/adr/NNNN-slug.md)
 
 ### 第二阶段:开发与审查(4 步)
 
@@ -42,7 +42,7 @@ description: hlskills 开发段(15 步,5 阶段,多角色)。Use when 产品交�
 
 ### 第五阶段:交付与发布(3 步)
 
-- **13** 交付验证(`verifier` 创建完成标记,如 docs/v{N}/.dev-completed)
+- **13** 交付验证(`verifier` 创建完成标记,如 knowledge/doc/v{N}/.dev-completed)
 - **14** 发布(`hlrelease` 子技能)
 - **15** 部署(`hldeploy` 子技能)
 
@@ -51,13 +51,13 @@ description: hlskills 开发段(15 步,5 阶段,多角色)。Use when 产品交�
 - **必前置**:hlpm 8 项交付物 + 一致性矩阵(否则步骤 0 拒收)
 - **拒收纪律**:版本不一致 / 缺交付物 / 矩阵漏项 → 不进入开发,返回 hlpm 修补
 - **TDD + 覆盖率 ≥ 80%**
-- **跨版本一致性**:docs/{ver}/ 版本快照 + knowledge/ 跨版本累计 双写
+- **跨版本一致性**:knowledge/doc/{ver}/ 版本快照 + knowledge/ 跨版本累计 双写
 - **代码层用例沉淀**:hldev 步骤 10 把验收用例(来自 hlpm)+ 代码层用例合并 → knowledge/tests/{module}.md
 
 ## 调用方式
 
-- **无实参**: 走第 0 步读取产品段 `docs/v{N}/` 交付物
-- **有实参**(如 `/hldev 开始开发 docs/v1/ 里的 8 项交付物`): 按实参指定文档路径
+- **无实参**: 走第 0 步读取产品段 `knowledge/doc/v{N}/` 交付物
+- **有实参**(如 `/hldev 开始开发 knowledge/doc/v1/ 里的 8 项交付物`): 按实参指定文档路径
 - **典型耗时**: 半天-2 天(看交付物复杂度)
 
 详见 `hlskills/hldev/SKILL.md` 完整规范(369 行,含拒收纪律、自检报告模板)。

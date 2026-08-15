@@ -117,11 +117,13 @@ description: hlkb 技能说明(概览版)。5 分钟读懂"项目知识库"是�
 ### 3. 跨版本不跟版本走
 
 ```
-docs/v{N}/                  ← 版本基线(快照), 不会变
+knowledge/doc/v{N}/         ← 版本基线(快照, v29 起;老项目兼容 docs/v{N}/), 不会变
 knowledge/              ← 跨版本共用, 持续维护
 CLAUDE.md                   ← 项目元信息, 持续维护
 knowledge/prd.md         ← 跨版本汇总, 每次版本交付后追加
 ```
+
+> 📌 `knowledge/doc/` 是 hlpm 版本快照区(v29 起),路径归 `hlpm/path-conventions.md` 管,不属于 hlkb 11 类总库。
 
 ---
 

@@ -48,5 +48,5 @@
 ## 关联
 
 - 状态机: `knowledge/state-machines/blacklist.md`
-- 业务规则: `docs/v3/prd.md §1 BL-1 / §1.12 BL-12`
+- 业务规则: `knowledge/doc/v3/prd.md §1 BL-1 / §1.12 BL-12`
 - 数据库: `knowledge/db/blacklist.md §状态枚举扩展历史`

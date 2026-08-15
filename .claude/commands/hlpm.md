@@ -10,7 +10,7 @@ description: hlskills 产品段(13 编号步 + 4 子阶段,多角色协作)。Us
 
 ### 第零阶段:加载上下文(3 步)
 
-- **0** **加载已有文档** — 读项目 docs/ + knowledge/ + .hl/memory/,避免孤立分析
+- **0** **加载已有文档** — 读项目 knowledge/(老项目兼容 docs/) + .hl/memory/,避免孤立分析
 - **0.5** **★ 规模判断 + 设计需求 + 评审模式**(`analyst` 启动后**阻塞点**,一次性 `AskUserQuestion` 问 3 问题):
   - 规模:轻量(规则<3 条/1 模块/<100 行)/ 标准(3-10 条/2-3 模块)/ 复杂(>10 条/多角色/NFR)
   - 设计:涉及 / 不涉及(纯后端/接口/状态机/规则可跳 6/7 设计阶段)
@@ -31,7 +31,7 @@ description: hlskills 产品段(13 编号步 + 4 子阶段,多角色协作)。Us
   - **🚨 v23 重大变更**:取消 v21 的"2 文件物理隔离"(生产态 .html + 活文档 .demo.html),**回归单文件**:`<page>.html` 一份,带 bl-marker 钉点
   - **用途**:.html 是**评审稿 + 开发参考**(不是生产态);开发者基于 .html 写生产代码,**不写钉点部分**(bl-marker.css/.js/bl-pin/bl-drawer/bl-toggle/REQUIREMENTS 不进生产)
   - **单文件结构**:
-    - `docs/{ver}/design/<page>.html` — 评审稿 + 开发参考(高保真界面 + bl-marker 钉点 + 抽屉 + 悬浮开关,钉点默认显示)
+    - `knowledge/doc/{ver}/design/<page>.html` — 评审稿 + 开发参考(高保真界面 + bl-marker 钉点 + 抽屉 + 悬浮开关,钉点默认显示)
     - ~~`<page>.demo.html`~~ — **v23 取消**(合并进 .html)
   - **🚨 钉点系统硬性约束**(v21 起,v23 保留):
     - .html **必须用 hlskills bl-marker 钉点系统**(参照 `hlpm/templates/bl-marker/bl-marker-template.html`)
@@ -54,7 +54,7 @@ description: hlskills 产品段(13 编号步 + 4 子阶段,多角色协作)。Us
 
 - **10** **非功能需求打包**(性能/安全/兼容 3 子表,→ knowledge/{dependencies,env-vars}/)
 - **11** **交付物自检**(`analyst` 用 `handoff-package.md` 逐项核对 → 输出自检报告)
-- **12** **打包交付**(8 项产物 → docs/v{N}/)
+- **12** **打包交付**(8 项产物 → knowledge/doc/v{N}/)
 
 ## 关键铁律
 

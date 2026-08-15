@@ -168,7 +168,7 @@ QA 执行分三个层级，根据场景选择：
 
 **仅报告模式（融合 gstack /qa-only）**：
 - 产出完整 Bug 报告但不修复，适合独立测试人员或用户验收测试
-- 报告保存到 `docs/qa/`，格式：问题标题 + 严重性（Critical/Major/Minor）+ 复现步骤 + 预期 vs 实际 + 截图证据
+- 报告保存到 `knowledge/qa/`，格式：问题标题 + 严重性（Critical/Major/Minor）+ 复现步骤 + 预期 vs 实际 + 截图证据
 
 ---
 
@@ -316,4 +316,4 @@ checkout → install → deps → test → upload artifacts
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

@@ -125,4 +125,4 @@ ls ~/.claude/skills/ | grep hl
 
 ## 路径规范
 
-本文件不涉及 `docs/` 路径,无需引用 `path-conventions.md`。
+本文件不涉及 `knowledge/` 路径,无需引用 `path-conventions.md`。

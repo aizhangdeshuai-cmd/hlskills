@@ -201,4 +201,4 @@ $ bash <hlskills 仓库>/hlkb-hooks/install.sh --preset=java
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

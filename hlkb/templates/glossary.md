@@ -32,6 +32,6 @@
 
 ## 关联
 
-- PRD:`docs/{ver}/prd.md`(术语首次出现处)
+- PRD:`knowledge/doc/{ver}/prd.md`(术语首次出现处)
 - ADR:`knowledge/adr/`(术语相关决策)
 - 枚举:`knowledge/enums/`(术语对应枚举值)

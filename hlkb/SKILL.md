@@ -25,10 +25,10 @@ description: 项目知识库(11 类:PRD/术语表/接口/数据库/ADR/状态机
 
 | 文档类型 | 跟版本走? | 存放位置 | 说明 |
 |---|---|---|---|
-| 版本快照(PRD/设计稿/测试用例/矩阵/自检等单版本产物) | ✅ 是 | `docs/v{N}/` | 版本基线,固定不变 |
+| 版本快照(PRD/设计稿/测试用例/矩阵/自检等单版本产物) | ✅ 是 | `knowledge/doc/v{N}/`(v29 起;老项目兼容 `docs/v{N}/`) | 版本基线,固定不变 |
 | **知识库(11 类,跨版本累计)** | **❌ 否** | **`knowledge/`** | **项目总文件库,跨版本持续维护**(含 prd/glossary/api/db/adr/state-machines/enums/error-codes/dependencies/env-vars/tests) |
 | CLAUDE.md | ❌ 否 | 项目根 | 项目元信息,持续维护 |
-| 评审记录 / 自检报告 | ✅ 是 | `docs/v{N}/` | 单版本产物 |
+| 评审记录 / 自检报告 | ✅ 是 | `knowledge/doc/v{N}/` | 单版本产物 |
 
 > 知识库**不跟版本走**——v2 加的接口在 v3 仍存在,接口知识库条目是持续维护的,不是 v2 版本快照。
 
@@ -95,6 +95,8 @@ knowledge/
 ```
 
 > 11 类不一定都用,新项目至少要建:`README.md` + 实际有内容的类别(无内容的类别不建目录,避免空文件夹)。
+>
+> 📌 **`knowledge/doc/` 是 hlpm 版本快照区(v29 起)**:存放 `v{N}/` 单版本交付物快照,路径归 `hlpm/path-conventions.md` 中央规范管,**不属于** hlkb 11 类总库,hlkb 不维护其中内容(老项目兼容 `docs/v{N}/`)。
 
 ### 路径约定(避免笔误)
 
@@ -104,7 +106,7 @@ knowledge/
 |---|---|---|
 | **知识库** | `<项目根>/knowledge/` | 11 类都在这里 |
 | 项目记忆 | `<项目根>/.hl/memory/` | **不属于**知识库体系,`hlmemory` 管理 |
-| 文档版本基线 | `<项目根>/docs/v{N}/` | 版本快照,**不等于**知识库 |
+| 文档版本基线 | `<项目根>/knowledge/doc/v{N}/` | 版本快照,**不等于**知识库(老项目兼容 `docs/v{N}/`) |
 | Agent metadata | `<项目根>/.hl/{metadata,workspace}/` | 杂项,不属于知识库 |
 
 **反模式(常见笔误)**:
@@ -211,7 +213,7 @@ knowledge/
 | PRD 引用接口 | `见 knowledge/api/blacklist.md §新增接口` |
 | ADR 引用决策 | `详见 knowledge/adr/0001-bl12-restore-strategy.md` |
 | 状态机引用 | `见 knowledge/state-machines/blacklist.md` |
-| master 文档引用 | `详见 docs/v{N}/prd.md §{N}` |
+| master 文档引用 | `详见 knowledge/doc/v{N}/prd.md §{N}` |
 
 ### 知识库条目如何引用代码
 

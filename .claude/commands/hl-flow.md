@@ -10,7 +10,7 @@ description: hlskills 单人/小团队全流程(23 步自跑,含发布部署)。
 
 ### 第零阶段:加载上下文(1 步)
 
-- **0** 加载已有文档(读 docs/ + knowledge/ + .hl/memory/,避免孤立分析)
+- **0** 加载已有文档(读 knowledge/(老项目兼容 docs/) + .hl/memory/,避免孤立分析)
 
 ### 第一阶段:需求与设计(7 步)
 
@@ -31,7 +31,7 @@ description: hlskills 单人/小团队全流程(23 步自跑,含发布部署)。
 
 - **10** Git 工作区准备(隔离工作区,避免污染主分支)
 - **11** 开发计划(`planner`,任务粒度 = 单步 2-5 分钟可完成,无占位符/TBD)
-- **12** 架构决策记录(`architect`,→ docs/adr/NNNN-slug.md)
+- **12** 架构决策记录(`architect`,→ knowledge/adr/NNNN-slug.md)
 - **13** 开发(`executor`,前端+后端,TDD 覆盖率 ≥80%)
 - **14** 代码审查(`code-reviewer`,按严重/重要/次要分级)
 - **15** 前后端联调

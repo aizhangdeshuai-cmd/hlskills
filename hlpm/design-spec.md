@@ -161,24 +161,24 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
 
    ```bash
    # 1. 角标 HTML 存在
-   grep -c 'class="logic-badge"' docs/{ver}/design/*.html
+   grep -c 'class="logic-badge"' knowledge/doc/{ver}/design/*.html
    # 期望: ≥ 1
 
    # 2. data-* 属性存在
-   grep -cE 'data-(prd|tc|state|matrix)=' docs/{ver}/design/*.html
+   grep -cE 'data-(prd|tc|state|matrix)=' knowledge/doc/{ver}/design/*.html
    # 期望: ≥ 1
 
    # 3. logic-data JSON 存在
-   grep -c 'id="logic-data"' docs/{ver}/design/*.html
+   grep -c 'id="logic-data"' knowledge/doc/{ver}/design/*.html
    # 期望: = 1
 
    # 4. 🚨 联动脚本存在(关键检查)
-   grep -c "addEventListener('click'" docs/{ver}/design/*.html
-   grep -c "querySelectorAll('.logic-badge')" docs/{ver}/design/*.html
+   grep -c "addEventListener('click'" knowledge/doc/{ver}/design/*.html
+   grep -c "querySelectorAll('.logic-badge')" knowledge/doc/{ver}/design/*.html
    # 期望: 各 ≥ 1
 
    # 5. 联动脚本能引用到 logic-data
-   grep -c "getElementById('logic-data')" docs/{ver}/design/*.html
+   grep -c "getElementById('logic-data')" knowledge/doc/{ver}/design/*.html
    # 期望: ≥ 1
    ```
 
@@ -195,7 +195,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
    **触发条件**(命中任一 → 必须按框架/UI 库场景处理):
 
    ```bash
-   grep -cE "new Vue|new app|createApp|createElement|useEffect|new ReactDOM|\\\$\\(.+?\\)\\.ready|\\\$\\(.+?\\)\\.on\\(|el-form|el-table|el-button|ant-table|ant-form|antd|element-plus|naive-ui|ELEMENT\\.|ElementUI" docs/{ver}/design/*.html
+   grep -cE "new Vue|new app|createApp|createElement|useEffect|new ReactDOM|\\\$\\(.+?\\)\\.ready|\\\$\\(.+?\\)\\.on\\(|el-form|el-table|el-button|ant-table|ant-form|antd|element-plus|naive-ui|ELEMENT\\.|ElementUI" knowledge/doc/{ver}/design/*.html
    # 期望: 命中即进入框架/UI 库场景
    ```
 
@@ -259,7 +259,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
 
    ```bash
    # 6. 🚨 框架检测 — 命中即必须用 mounted/useEffect/$(document).ready 回调
-   grep -cE "new Vue\(|createApp\(|useEffect\(|new ReactDOM|createElement\(|\\\$\(.+?\\)\\.ready" docs/{ver}/design/*.html
+   grep -cE "new Vue\(|createApp\(|useEffect\(|new ReactDOM|createElement\(|\\\$\(.+?\\)\\.ready" knowledge/doc/{ver}/design/*.html
    # 命中 ≥ 1 → 必须验证事件绑定脚本在回调内,不在 <script> 顶层
    ```
 
@@ -267,7 +267,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
 
    ```bash
    # 找 mounted/useEffect 回调位置
-   awk '/mounted\(\)\s*{|useEffect\(|\\\$\(function/{found=NR; depth=0} found && NR>=found {if (/{/) depth++; if (/}/) depth--; if (depth>0 && /logic-badge/) {print "OK: 角标绑定在回调内 第"NR"行"; exit}}' docs/{ver}/design/*.html
+   awk '/mounted\(\)\s*{|useEffect\(|\\\$\(function/{found=NR; depth=0} found && NR>=found {if (/{/) depth++; if (/}/) depth--; if (depth>0 && /logic-badge/) {print "OK: 角标绑定在回调内 第"NR"行"; exit}}' knowledge/doc/{ver}/design/*.html
    # 期望: 输出 "OK: 角标绑定在回调内 第N行"
    ```
 
@@ -350,7 +350,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
    **自检 grep** (1 条):
    ```bash
    # 7. 🚨 panel 必须有 scroll-padding-top (跳过 sticky header)
-   grep -c "scroll-padding-top" docs/{ver}/design/*.html
+   grep -c "scroll-padding-top" knowledge/doc/{ver}/design/*.html
    # 命中 ≥ 1 → 通过;= 0 → 标 🔴
    ```
 

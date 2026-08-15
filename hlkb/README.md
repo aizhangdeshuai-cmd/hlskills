@@ -198,7 +198,8 @@ ls knowledge/db/*.md
 
 - **同 commit**: 代码 + 知识库条目**必须同次提交**, 不分离
 - **同 PR**: 如果用 PR 流程, 也必须同 PR
-- **知识库不跟版本走**: 不放在 `docs/v{N}/`, 跨版本共用
+- **知识库不跟版本走**: 不放在 `knowledge/doc/v{N}/`, 跨版本共用
+- **`knowledge/doc/` 归 hlpm 管**: 版本快照区(v29 起,老项目兼容 `docs/v{N}/`),路径规范见 `hlpm/path-conventions.md`,不属于 hlkb 11 类总库
 - **编号永不重置**: ADR 编号从 0001 起, 不删除, 只标 Deprecated / Superseded
 - **README.md 必填**: 每个 `knowledge/{类别}/` 目录都有 README.md 当索引
 

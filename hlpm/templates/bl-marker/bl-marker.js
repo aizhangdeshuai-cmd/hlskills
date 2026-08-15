@@ -1,6 +1,6 @@
 /* ============================================================
    BL Marker System — JS 控制器
-   抽取自 docs/v1/design/dashboard.html
+   抽取自 knowledge/doc/v1/design/dashboard.html
    用于 hlpm 6b 步骤产出的 HTML 设计稿复用
 
    用法: 在设计稿 </body> 前
@@ -35,7 +35,7 @@
         (页面 document.addEventListener('bl:state', e => { e.preventDefault(); ...自切... })
         则页面自切不刷新); 页面未监听 → URL ?state= 兜底重载并重开抽屉
      6. 钉点 hover 摘要(v28): JS 自动取"一句话"段首行填 pin 的 title, 无需手填
-     7. ⚠️ 同步源: 同步 docs/{ver}/prd.md §N 时, 这里也要改
+     7. ⚠️ 同步源: 同步 knowledge/doc/{ver}/prd.md §N 时, 这里也要改
      ============================================================ */
   var REQUIREMENTS = {
     bl1: { title: 'BL-1 示例需求点', sections: [

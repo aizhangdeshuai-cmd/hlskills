@@ -46,7 +46,7 @@ description: hlskills 5 分钟快速上手演示(看一眼 + Mock Bug + Mock 需
 ## 不做的事(源 SKILL.md L113-124)
 
 - 不替代任何子技能(只演示前 7 步/前 4 步)
-- 不写实际代码、不修改 docs/ 或 knowledge/
+- 不写实际代码、不修改 knowledge/ 或老 docs/
 - 不评估你的项目质量
 - 不配置 hooks(那是 hlkb-hooks 的事)
 

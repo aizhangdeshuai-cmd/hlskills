@@ -73,7 +73,7 @@
 - [ ] 确认本技能是"产品段",**不是开发段**; 代码修改请启动 `hldev`
 - [ ] 确认本次需求**是否涉及 UI 变化** (决定是否出设计稿)
 - [ ] 确认走"完整 29 步(含 DEPRECATED 编号)"(v25 起取消需求规模选择,一律按复杂需求标准)
-- [ ] 确认项目已有 `.hl/memory/` 和 `docs/` 的现状
+- [ ] 确认项目已有 `.hl/memory/` 和 `knowledge/`(老项目兼容 `docs/`)的现状
 - [ ] **理解兜底铁律**:需求分析(步骤 1)中,凡没理解/不确定/模棱两可的,必须问用户到无任何问题,并复述确认
 
 ---
@@ -87,7 +87,7 @@
 **项目级总览文档追加**(步骤 11 建议同步):
 - **`knowledge/prd.md`**: 追加本版本章节(如本版本 BL-N 卡片摘要 + 与上版差异清单)
 - **`knowledge/tests/`**: 追加本版本用例维度 / 数量
-- **可选**: `docs/master-architecture.md` / `docs/master-decisions.md` (v4+ 评估)
+- **可选**: `knowledge/master-architecture.md` / `knowledge/master-decisions.md` (v4+ 评估)
 
 **触发详情**: 详见 `hlkb` 技能 SKILL.md §同步触发表
 **失败处理**: `knowledge/` 未对齐 → 自检报告标 🔴(靠 Agent/用户把关,非机制强制阻断)

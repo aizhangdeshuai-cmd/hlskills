@@ -95,7 +95,7 @@ description: 项目记忆与工作记忆管理，跨会话持久化项目知识�
 ## 关键ADR
 - ADR-0001: 选择 PostgreSQL 而非 MySQL | 理由: JSONB 支持
 - ADR-0002: 使用 Redis 缓存 | 理由: 低延迟
-- 详见 `docs/adr/NNNN-<slug>.md`（NNNN = 4 位顺序编号）
+- 详见 `knowledge/adr/NNNN-<slug>.md`（NNNN = 4 位顺序编号）
 
 ## 数据流
 Client → Nginx → API Gateway → Service → DB/Cache
@@ -177,4 +177,4 @@ mkdir -p .hl/memory
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

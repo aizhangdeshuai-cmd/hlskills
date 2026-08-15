@@ -9,7 +9,7 @@ description: hlskills Bug 修复(14 步,融合 /investigate 四阶段调试)。U
 ## 14 步流程(完整版,源 SKILL.md L67-99)
 
 ### 第零阶段:加载上下文(1 步)
-0. **加载已有文档** — 修复前先读项目 docs/ + knowledge/ + .hl/memory/,避免孤立分析
+0. **加载已有文档** — 修复前先读项目 knowledge/(老项目兼容 docs/) + .hl/memory/,避免孤立分析
 
 ### 第一阶段:问题定位(4 步)
 1. **Bug 分析** — `debugger` 基于上下文理解 Bug 现象与影响范围(截图/录屏用多模态识别)

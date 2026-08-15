@@ -240,7 +240,7 @@ $B snapshot -a -o /tmp/qa-evidence.png  # 注释截图证据
 $B console --errors               # 收集 JS 错误
 
 # 3. 产出结构化报告
-# 报告格式（保存到 docs/qa/）：
+# 报告格式（保存到 knowledge/qa/）：
 # - 问题标题 + 严重性（Critical/Major/Minor）
 # - 复现步骤
 # - 预期行为 vs 实际行为
@@ -285,4 +285,4 @@ $B goto about:blank && $B text   # 应返回空
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

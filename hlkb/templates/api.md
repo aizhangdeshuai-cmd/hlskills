@@ -103,7 +103,7 @@
 - **性能**: P95 < 300ms
 - **事务**: 同事务包含 `supersede` 操作(NFR-D-1 事务原子性)
 - **关联**:
-  - 业务规则: `docs/v3/prd.md §12 BL-12`
+  - 业务规则: `knowledge/doc/v3/prd.md §12 BL-12`
   - ADR: `knowledge/adr/0001-bl12-restore-strategy.md`
   - 数据库: `knowledge/db/blacklist.md §恢复流程`
 

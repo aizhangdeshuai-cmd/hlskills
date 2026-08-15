@@ -169,4 +169,4 @@ gstack /cso 首席安全官审查可独立运行，或作为 hlreview 安全审�
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

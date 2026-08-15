@@ -72,4 +72,4 @@ description: 无障碍规范（WCAG 2.2 AA），跨设计→开发→测试三�
 
 ---
 
-> **路径规范**：本文件涉及的 `docs/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。

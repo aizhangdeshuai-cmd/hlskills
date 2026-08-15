@@ -34,7 +34,7 @@ CHANGED=$(git diff --name-only origin/main..HEAD)
 
 **前置条件**:
 - 矩阵文件中"代码提交 SHA"列必须含"对应文件路径"列(当前未含,需扩展)
-- 矩阵文件必须纳入版本控制(`docs/consistency-matrix.md` 或同等位置)
+- 矩阵文件必须纳入版本控制(`knowledge/doc/vN/consistency-matrix.md` 或同等位置)
 
 **收益**:
 - 消除"开发忘记填 SHA"场景
@@ -86,7 +86,7 @@ jobs:
 
 **入口**:`make consistency-report` 或 `npm run consistency:report`
 
-**输出**:`docs/consistency-report.html`,包含:
+**输出**:`knowledge/consistency-report.html`,包含:
 - 5 个矩阵的可视化表格(红黄绿状态着色)
 - 覆盖率仪表盘(核心 100% / 一般 ≥95% / 工具 ≥90%)
 - 偏离项清单(点击展开详情)

@@ -61,7 +61,7 @@
 
 ## 关联(References)
 
-- 业务规则: `docs/v{N}/prd.md §{N}`
+- 业务规则: `knowledge/doc/v{N}/prd.md §{N}`
 - 数据库: `knowledge/db/{table}.md`
 - 状态机: `knowledge/state-machines/{entity}.md`
 - 相关 ADR: `{NNNN}-{slug}.md` (如有)

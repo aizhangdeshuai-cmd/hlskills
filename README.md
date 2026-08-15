@@ -14,7 +14,7 @@
 | 单人/小团队, 想自己跑完一条需求 | `Skill hl-flow` (28 步一气呵成, 已含发布部署) |
 | 产品+开发分工, 先产品段产 PRD/设计 | `Skill hlpm` (27 步), 完事交给 `Skill hldev` |
 | 一次跑完需求→开发→测试→发布→部署 | `Skill hlchain` (编排 6 阶段, Agent 按顺序自觉加载) |
-| 改代码/修 bug | `Skill hldev` (接手 docs/) 或 `Skill hlbug` (14 步排查) |
+| 改代码/修 bug | `Skill hldev` (接手 knowledge/) 或 `Skill hlbug` (14 步排查) |
 
 详细对比见下方 [子技能速览](#子技能速览)。
 
@@ -44,7 +44,7 @@ Skill hl-flow "为登录功能加短信验证码"
 # 产品+开发分工
 Skill hlpm "为订单列表加导出 CSV"
 # 评审通过后,产品段产物交接给开发段:
-Skill hldev "开始开发 docs/v1/ 里的 8 项交付物"
+Skill hldev "开始开发 knowledge/doc/v1/ 里的 8 项交付物"
 
 # 一次跑完全链路 (由 Agent 按文档顺序自觉加载 hlpm→hldev→hlrelease→hldeploy, 中间可调 hlbug/hltest)
 Skill hlchain "为订单列表加导出 CSV"
@@ -59,7 +59,7 @@ Skill hlchain "为订单列表加导出 CSV"
 - ✅ **流程纪律是文本**:28/23/15/14 步流程、"硬性关卡"、"三项强同步"、"角色边界铁律"——这些都是 Markdown 文档,**Claude Code 不会机械地强制执行**。它们靠 Agent 加载后**自觉遵守**。
 - ✅ **角色工具隔离靠 frontmatter 字段**:只读 agent 的 `disallowedTools: Write, Edit` 字段是 Claude Code 原生支持的,会被 harness 强制执行——这是仓库**真实生效**的工具隔离。
 - ❌ **"会签""门禁""阶段门禁"等是文档语言**:仓库没有 hook / 状态机 / 编排器强制 Agent 走完某一步才能进入下一步。"5 角色会签"是 5 个 Agent 角色**在同一个 LLM 会话里被 prompt 提示**(你看到的"5 方评审意见"实际是同一个 LLM 在扮演)。
-- ❌ **代码覆盖率审计靠一致性矩阵**:靠人工对照 `docs/v1/consistency-matrix.md` 第 5 矩阵逐行核对实现状态(已在前次 v15 修复 grep 正则审计方案)。
+- ❌ **代码覆盖率审计靠一致性矩阵**:靠人工对照 `knowledge/doc/v1/consistency-matrix.md` 第 5 矩阵逐行核对实现状态(已在前次 v15 修复 grep 正则审计方案)。
 - ⚠️ **hooks 模板需自测**:`hlhooks/SKILL.md` 提供的 hook 模板已对齐 Claude Code 真实协议,但启用后请按模板"验证"段实测一次,确认真的生效。
 
 **对你的实际影响**:

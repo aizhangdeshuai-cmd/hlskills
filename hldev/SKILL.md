@@ -58,20 +58,20 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
    - **项目约束文件初始化**:检测项目根 AI 约束文件(Claude Code→`CLAUDE.md` / Codex→`AGENTS.md` / Cursor→`.cursor/rules/*.mdc`;检测不出或多 IDE 都写)。不存在 → 按 `hlkb/templates/claude-md.template.md` 创建;已存在 → 校验是否含 `## 🚨 完成前自检` 段,缺则追加该段(不重写其他)。详见 `hlkb` §项目约束文件。
    - 接收来自 `hlpm` 步骤 12 的交付包
    - **:验证版本目录**
-     - 确认交付物位于 `docs/vN/` 目录(而非散落在 `docs/` 根)
-     - 扫描项目根目录:`ls -d docs/v*/ 2>/dev/null | sort -V`
+     - 确认交付物位于 `knowledge/doc/vN/` 目录(而非散落在 `knowledge/` 根;老项目兼容 `docs/vN/`)
+     - 扫描项目根目录:`ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V`
      - 找到含 8 项交付物(5 必出:PRD/测试用例/非功能/一致性(含验收标准)/自检;3 条件出:设计稿/设计稿截图/竞品分析)的最新版本目录
      - **vN 标记文件检查**:
-       - `docs/vN/.dev-completed` 存在 → 已被接手/发布,**当前验收的是更新的版本**
-       - `docs/vN/.dev-rejected` 存在 → 已被开发段拒收,**当前验收的是补齐版本**
-       - `docs/vN/.product-archived` 存在 → 已归档,**跳过该版本**
+       - `knowledge/doc/vN/.dev-completed` 存在 → 已被接手/发布,**当前验收的是更新的版本**
+       - `knowledge/doc/vN/.dev-rejected` 存在 → 已被开发段拒收,**当前验收的是补齐版本**
+       - `knowledge/doc/vN/.product-archived` 存在 → 已归档,**跳过该版本**
    - 验证清单（来自 `handoff-package.md`）：
 
    ```markdown
    ## 版本目录 + 8 项交付物验证
 
    ### 版本目录（v12 必查）
-   - [ ] 交付物位于 `docs/vN/` 目录(N 为版本号)
+   - [ ] 交付物位于 `knowledge/doc/vN/` 目录(N 为版本号)
    - [ ] 5 必出齐全:prd / test-cases / non-functional-requirements / consistency-matrix(含验收标准) / handoff-self-check
    - [ ] 3 条件出按本次是否涉及核对:design/*.html(涉及 UI 时)/ design/screenshot-*.png(6b.5 触发时)/ analysis/competitive-analysis.md(新项目/品类调研时);不适用项标"不适用"
    - [ ] 标记文件状态:无 .dev-completed (未被接手) / 无 .dev-rejected (未被拒收)
@@ -92,13 +92,13 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
    - [ ] 全部 ✅ 通过
 
    ### 自检报告（v6 必查）
-   - [ ] 自检报告存在（`docs/{ver}/handoff-self-check.md`）
+   - [ ] 自检报告存在（`knowledge/doc/{ver}/handoff-self-check.md`）
    - [ ] 自检报告与 handoff-package.md 自检清单勾选一致
    - [ ] 自检报告签字方完整
 
    ### 8 项产品交付物自检
    - [ ] PRD 章节结构合规(按"功能点剖切"组织:§0 上下文 + §1-§N BL-N 卡片 + 附录 A-F, 详见 hlpm SKILL.md §4 PRD 编写)
-   - [ ] PRD 每张 BL-N 卡片含 15 字段模板(用例编号/名称/优先级/角色/前置/触发/主功能/拓展/业务逻辑/关键决策/埋点/验证/频率/NFR/未决)
+   - [ ] PRD 每张 BL-N 卡片含 15 字段模板(用例编号/名称/优先级/角色/前置/触发/主功能/拓展/业务逻辑/关键决策/埋点/验证/频率/NFR/未决)(涉及 UI 的卡片另需含 9.5 字段与控件行为表, v30)
    - [ ] PRD 6 大模块齐全(业务逻辑/操作流程/数据流转/状态机/权限/非功能) + 数据埋点 + 原型截图引用
    - [ ] PRD 无模糊字眼 + 字段级定义 + 评审会签
    - [ ] 设计稿符合项目设计规范 + 保真度档位 + 评审会签
@@ -111,7 +111,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
    - **全部 ✅ → 进入步骤 1**
    - **任一 ❌ → 填写 `handoff-rejection.md`（拒收原因 + 不符合项）→ 退回产品段**
-     - ****:在 `docs/vN/` 创建空文件 `touch docs/vN/.dev-rejected`（标记该版本已被拒收,产品段补齐后再次启动会知道该版本已拒收需重新走 9.5 终检）
+     - ****:在 `knowledge/doc/vN/` 创建空文件 `touch knowledge/doc/vN/.dev-rejected`（标记该版本已被拒收,产品段补齐后再次启动会知道该版本已拒收需重新走 9.5 终检）
    - 拒收原因分类（v5）：
      - 缺失（产品漏交某项）
      - 不达标（PRD 模糊字眼 / 设计违反规范 / 用例覆盖率低 / 非功能需求缺指标）
@@ -133,7 +133,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
    - 任务执行遵循受阻停止纪律
 
 3. **架构决策记录**（`architect`）
-   - 对关键技术选型以 ADR 格式记录到 `docs/adr/`
+   - 对关键技术选型以 ADR 格式记录到 `knowledge/adr/`
    - 接口设计遵循 `hlapi` 规范
    - 数据库迁移遵循 `hldb` 规范
    - 错误处理遵循 `hlerror` 规范
@@ -150,14 +150,14 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 4.5. **★ PRD 逐项勾选**(`executor` 主导，拦截漏实现 A 类）
    - **触发时机**：开发**过程中**，每完成一个业务规则/状态机分支/非功能实现并 **commit** 后 → 立即更新第 5 矩阵的 SHA 列（代码未 commit 则 SHA 不存在，无法填写）
    - **PRD 引用方式(按 hlpm v18 章节结构)**: PRD 按"功能点剖切", 每条业务规则对应 `§N` BL-N 卡片(详见 hlpm SKILL.md §4 PRD 编写)。一致性矩阵第 5 矩阵的"PRD 条款引用"列填 `§N.9` 或 `§N.12` 等卡片内子节编号, 而非"§1.BL-12"这种旧式维度章节编号
-   - **操作**：更新一致性矩阵第 5 矩阵（`docs/consistency-matrix.md` §5，又名「代码实现追踪矩阵」）
+   - **操作**：更新一致性矩阵第 5 矩阵（`knowledge/doc/{ver}/consistency-matrix.md` §5，又名「代码实现追踪矩阵」）
      - 填写：代码提交 SHA（`git log -1 --format=%H -- <file>` 取最近一次修改；如一规则跨多 commit，取最后一个相关 commit 的 SHA）+ 实现状态（✅/❌/⚠️/➕）
      - 偏离说明必填：含 PRD 条款引用 + 实际实现描述
    - **越界检测**：如发现代码实现 PRD 未定义的功能 → 立即通知产品段确认
-   - **MVP 豁免**：豁免决定已在产品段 9.5 步骤做出（见 `docs/consistency-matrix.md` §6 不一致清单），开发段只需查询结论；小功能（< 3 个业务规则）豁免后无需逐项勾选
+   - **MVP 豁免**：豁免决定已在产品段 9.5 步骤做出（见 `knowledge/doc/{ver}/consistency-matrix.md` §6 不一致清单），开发段只需查询结论；小功能（< 3 个业务规则）豁免后无需逐项勾选
    - **目的**：把"实现后检查"前移到"动手中勾选"，避免技术债累积
    - **与 7.5 走查关系**：4.5 边做边勾，7.5 全部完成后逐行核对（4.5 是录入，7.5 是审计）
-   - **产出物路径**：`docs/consistency-matrix.md`（第 5 矩阵）+ 必要时 `docs/code-checklist.md`（勾选过程留痕）
+   - **产出物路径**：`knowledge/doc/{ver}/consistency-matrix.md`（第 5 矩阵）+ 必要时 `knowledge/doc/{ver}/code-checklist.md`（勾选过程留痕）
 
 5. **代码审查**（`code-reviewer`）
    - 审查代码质量，按严重 / 重要 / 次要三级输出
@@ -177,7 +177,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
 7.5. **★ PRD 走查**(`executor` + `code-reviewer` 联合，拦截错误实现 B + 范围越界 D）
    - **触发时机**：开发**完成后**，分支完成前
-   - **操作**：对照 `docs/consistency-matrix.md` 第 5 矩阵（代码实现追踪矩阵），**逐行核对代码实现**
+   - **操作**：对照 `knowledge/doc/{ver}/consistency-matrix.md` 第 5 矩阵（代码实现追踪矩阵），**逐行核对代码实现**
      - 每行确认：实现状态（✅/❌/⚠️/➕） + 偏离说明（如有）
      - 输出**走查报告**：每行结果 + 偏离原因 + 修复计划
    - **走查不通过**：
@@ -207,7 +207,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
 10. **测试用例编写(代码层面) + 执行 + 总库沉淀**（`test-engineer` 编写 + `qa-tester` 执行）
     - **用例来源分两层**:
-      - **验收用例**(业务黑盒):来自 hlpm 交付的 `docs/{ver}/test-cases.md`(版本快照),直接执行,不重写
+      - **验收用例**(业务黑盒):来自 hlpm 交付的 `knowledge/doc/{ver}/test-cases.md`(版本快照),直接执行,不重写
       - **代码层面用例**(白盒):`test-engineer` 基于**本次代码 diff** 补充编写,覆盖 hlpm 写不出的代码层修改点:
         - 内部 API/Service 异常分支(null 分支、超时、降级)
         - 数据库约束场景(唯一索引冲突、外键级联、乐观锁冲突)
@@ -218,7 +218,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
     - **交叉验证**:每个 hlpm 验收用例须在代码层用例中有对应覆盖,或显式标注"由 xx 单元测试覆盖/由 xx 集成测试覆盖",保证业务视角不丢
     - 执行全部用例(验收 + 代码层),验证一致性矩阵 §1 验收方法列(验收标准)全部通过
     - **沉淀到总测试库**:把验收用例(本期 hlpm 产出)+ 代码层用例(本步编写)+ 交叉追溯,合并写入 `knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"总测试库"规范,模板 `hlkb/templates/code-tests.md`)。总库跨版本累计维护,标注引入版本(同 `knowledge/api/`、`knowledge/db/`)
-    - **双写版本快照**:本步编写的代码层用例,同时追加到 `docs/{ver}/test-cases.md`(版本快照,与 hlpm 验收用例同文件)。`docs/{ver}/test-cases.md` = 当版本测试快照(验收+白盒,固定不变),`knowledge/tests/` = 跨版本累计总库。两者关系:快照是当版本产出留存,总库是持续维护的唯一源
+    - **双写版本快照**:本步编写的代码层用例,同时追加到 `knowledge/doc/{ver}/test-cases.md`(版本快照,与 hlpm 验收用例同文件)。`knowledge/doc/{ver}/test-cases.md` = 当版本测试快照(验收+白盒,固定不变),`knowledge/tests/` = 跨版本累计总库。两者关系:快照是当版本产出留存,总库是持续维护的唯一源
     - 测试代码本身放项目语言约定的测试目录(Java `src/test/`、Node `test/`、Go 同级、Python `tests/`),随代码 commit 不另计入文档交付物
     - **反模式禁止**:不得"照着实现写用例"——代码的缺陷不能被当成正确预期写进用例。预期以 PRD 验收标准为准,代码偏离 PRD 时改代码不改用例
 
@@ -235,7 +235,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 12.5. **★ PRD 覆盖率审计**(`verifier` 主导，拦截非功能漏实现 C + 兜底 A/B/D）
    - **触发时机**：生产审计**前**，上线前最后一道关卡
    - **操作**（人工 + 矩阵双轨）：
-     - **主方式**：对照 `docs/consistency-matrix.md` 第 5 矩阵（代码实现追踪矩阵）逐行核对实现状态，已实现(✅)行数 / 应实现行数 = 覆盖率
+     - **主方式**：对照 `knowledge/doc/{ver}/consistency-matrix.md` 第 5 矩阵（代码实现追踪矩阵）逐行核对实现状态，已实现(✅)行数 / 应实现行数 = 覆盖率
      - **辅助线索（可选）**：可用 Grep 搜索关键词（如状态名 / 业务规则名）定位候选实现位置；正则/搜索结果**仅作线索，不作"已实现"判定依据**
      - **不依赖**：纯正则匹配控制流关键字（`if` / `switch` / `case`）作为"已实现业务规则数"的统计——这种推断不可信，因注释/字符串/任意控制流都会匹配上
    - **覆盖率要求**：
@@ -278,7 +278,7 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
     - 验收所有文档与功能完整性
     - 验证 15 项项目文档齐全（8 项产品段 + 7 项开发段补充，按 hlskills 主入口清单 / `hlpm/path-conventions.md`）
     - **:创建版本完成标记**:
-      - 验收通过后,在 `docs/vN/` 创建空文件 `touch docs/vN/.dev-completed`
+      - 验收通过后,在 `knowledge/doc/vN/` 创建空文件 `touch knowledge/doc/vN/.dev-completed`
       - **严禁**验收不通过时创建(避免误标)
       - **严禁**删除已存在的 .dev-completed(让历史版本保持已开发状态)
     - 创建后通知:该版本已标记为"已开发",后续产品段启动会跳过此版本
@@ -316,13 +316,13 @@ description: 多角色协作-开发段(15步)。从产品交付物验收到部�
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
-| 10 | 技术设计文档 | `docs/tech-design.md` | `architect`(内容)→ `executor`(落盘) | 3 |
-| 11 | 架构决策记录 | `docs/adr/*.md` | `architect`(内容)→ `executor`(落盘) | 3 |
+| 10 | 技术设计文档 | `knowledge/tech-design.md` | `architect`(内容)→ `executor`(落盘) | 3 |
+| 11 | 架构决策记录 | `knowledge/adr/*.md` | `architect`(内容)→ `executor`(落盘) | 3 |
 | 12 | 总测试库(验收+代码层) | `knowledge/tests/{module}.md`(按 hlkb 第 9 类规范) | `test-engineer` | 10 |
-| 13 | 用户操作手册 | `docs/user/manual.md` | `writer` | 13 |
-| 14 | 帮助文档 | `docs/user/help.md` | `writer` | 13 |
+| 13 | 用户操作手册 | `knowledge/user/manual.md` | `writer` | 13 |
+| 14 | 帮助文档 | `knowledge/user/help.md` | `writer` | 13 |
 | 15 | 变更日志 | `CHANGELOG.md` | `executor` | 13 |
-| 16 | 回滚方案 | `docs/rollback.md` | `architect`(内容)→ `executor`(落盘) | 13 |
+| 16 | 回滚方案 | `knowledge/rollback.md` | `architect`(内容)→ `executor`(落盘) | 13 |
 
 > 注:`architect` / `planner` 等只读或路径受限 agent 仅负责**内容生成**,文件落盘统一由 `executor` 执行(参照 hlpm 对 `analyst` 的"生成内容→主 agent 写入"模式)。`CHANGELOG.md` 在仓库根,不在 `planner` 的 `docs/plans` / `docs/drafts` 输出范围内,故由 `executor` 落盘。
 

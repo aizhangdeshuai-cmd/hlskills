@@ -17,7 +17,7 @@ description: hlpm 试用说明(10 分钟跑通版)。用 1 个真实小需求,st
 > **需求**:为主入口 SKILL.md 加 1 行 v25 状态徽章
 
 预计耗时:10-15 分钟
-预计产出:8 项交付物(5 必出 + 3 条件出),全部在 `docs/v1/`
+预计产出:8 项交付物(5 必出 + 3 条件出),全部在 `knowledge/doc/v1/`
 
 ---
 
@@ -25,7 +25,7 @@ description: hlpm 试用说明(10 分钟跑通版)。用 1 个真实小需求,st
 
 **你需要的**:
 - 一个 `hlpm` 可用的环境(Claude Code / Codex / Cursor)
-- 一个空项目目录(没有 `.hl/` 也没有 `docs/`,模拟全新项目)
+- 一个空项目目录(没有 `.hl/` 也没有 `knowledge/`,模拟全新项目)
 - 不需要写任何代码
 
 **不需要的**:
@@ -74,7 +74,7 @@ AI 会自动执行(不需要你做什么):
 
 ```
 ✓ 扫描项目上下文(无 memory,无 docs)
-✓ 0.6 步:扫描历史版本 → 无 → 自动建 docs/v1/
+✓ 0.6 步:扫描历史版本 → 无 → 自动建 knowledge/doc/v1/
 ✓ 步骤 1:需求分析
 ✓ 步骤 2:竞品分析
 ✓ 步骤 4a/4b:PRD 大纲 + 详细编写(§0 + BL-N 卡片 + 附录 A-G)
@@ -97,16 +97,16 @@ AI 会自动执行(不需要你做什么):
 
 ### Step 5: 查看产出物(2 分钟)
 
-完成后,AI 会告诉你产出在 `docs/v1/`。打开看:
+完成后,AI 会告诉你产出在 `knowledge/doc/v1/`。打开看:
 
 ```bash
 cd ~/hlpm-trial
-ls -la docs/v1/
+ls -la knowledge/doc/v1/
 ```
 
 你应该看到:
 ```
-docs/v1/
+knowledge/doc/v1/
 ├── prd.md                              # 你的 PRD(必出)
 ├── test-cases.md                       # 你的测试用例(必出)
 ├── non-functional-requirements.md      # 非功能需求(必出)
@@ -132,22 +132,22 @@ docs/v1/
 # 模拟开发段 0 步验证
 echo "=== 验证交付物齐全 ==="
 for f in prd.md test-cases.md non-functional-requirements.md consistency-matrix.md handoff-self-check.md; do
-  if [ -f "docs/v1/$f" ]; then
-    echo "✅ docs/v1/$f"
+  if [ -f "knowledge/doc/v1/$f" ]; then
+    echo "✅ knowledge/doc/v1/$f"
   else
-    echo "❌ docs/v1/$f 缺失"
+    echo "❌ knowledge/doc/v1/$f 缺失"
   fi
 done
 
 echo ""
 echo "=== 验证版本一致性 ==="
-grep "v1" docs/v1/prd.md | head -1
-grep "v1" docs/v1/test-cases.md | head -1
-grep "v1" docs/v1/consistency-matrix.md | head -1
+grep "v1" knowledge/doc/v1/prd.md | head -1
+grep "v1" knowledge/doc/v1/test-cases.md | head -1
+grep "v1" knowledge/doc/v1/consistency-matrix.md | head -1
 
 echo ""
 echo "=== 验证一致性矩阵 ==="
-if grep -q "全部" docs/v1/consistency-matrix.md && ! grep -q "❌" docs/v1/consistency-matrix.md; then
+if grep -q "全部" knowledge/doc/v1/consistency-matrix.md && ! grep -q "❌" knowledge/doc/v1/consistency-matrix.md; then
   echo "✅ 一致性矩阵全部通过"
 else
   echo "❌ 一致性矩阵有 ❌ 项"
@@ -164,14 +164,14 @@ fi
 # 在 main 分支加徽章
 echo "" >> SKILL.md
 echo "![version](https://img.shields.io/badge/hlpm--product-v25-blue)" >> SKILL.md
-git add SKILL.md docs/v1/
+git add SKILL.md knowledge/doc/v1/
 git commit -m "v1: 加 v25 状态徽章"
 ```
 
-然后在 `docs/v1/` 创建标记文件:
+然后在 `knowledge/doc/v1/` 创建标记文件:
 ```bash
-touch docs/v1/.dev-completed
-git add docs/v1/.dev-completed
+touch knowledge/doc/v1/.dev-completed
+git add knowledge/doc/v1/.dev-completed
 git commit -m "v1: 标记为已开发"
 ```
 
@@ -295,7 +295,7 @@ AI 会怎么处理?
 - [ ] 看到逐份立即评审(4.5/6b.6/8.5,每份问是否评审)
 - [ ] 看到一致性矩阵(全部 ✅)
 - [ ] 看到自检报告
-- [ ] 8 项交付物(5 必出 + 3 条件出)都在 `docs/v1/`
+- [ ] 8 项交付物(5 必出 + 3 条件出)都在 `knowledge/doc/v1/`
 - [ ] 模拟开发接手验证全部 ✅
 
 **全勾了** → 试用成功!可以正式用了。
@@ -312,7 +312,7 @@ AI 会怎么处理?
 2. **产品段不改代码** — 这是铁律
 3. **逐份立即评审是默认** — 每份文档产出后当场问是否评审,简单需求可全跳过
 4. **版本目录自动建** — 不需要你操心
-5. **交付物在 docs/v{ver}/** — 8 项(5 必出 + 3 条件出)交给开发
+5. **交付物在 knowledge/doc/v{ver}/** — 8 项(5 必出 + 3 条件出)交给开发
 
 后续:
 - 想正式用 → [`README.md`](./README.md)

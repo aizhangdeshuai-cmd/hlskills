@@ -2,8 +2,8 @@
 
 > 复制本文件, 重命名为 `{module}.md` 放到 `knowledge/tests/`。
 > 一个模块一个文件,是该模块的**总测试库**:验收用例(黑盒)+ 代码层用例(白盒)+ 交叉追溯,累计当前状态,标注引入版本。
-> - 验收用例:hlpm 步骤 8 产出(`docs/{ver}/test-cases.md` 为版本快照),hldev 步骤 10 沉淀到本文件
-> - 代码层用例:hldev 步骤 10 基于本次 code diff 编写,双写:`docs/{ver}/test-cases.md`(版本快照,与验收用例同文件)+ 本文件(总库累计)
+> - 验收用例:hlpm 步骤 8 产出(`knowledge/doc/{ver}/test-cases.md` 为版本快照),hldev 步骤 10 沉淀到本文件
+> - 代码层用例:hldev 步骤 10 基于本次 code diff 编写,双写:`knowledge/doc/{ver}/test-cases.md`(版本快照,与验收用例同文件)+ 本文件(总库累计)
 > - 与代码同 commit 维护,跨版本持续更新(同 `knowledge/api/`、`knowledge/db/`)
 
 ## 模块基本信息
@@ -17,7 +17,7 @@
 | 测试代码路径 | `src/test/java/.../BlacklistServiceTest.java`(按项目语言约定,不写死) |
 | 关联接口知识库 | `knowledge/api/blacklist.md` |
 | 关联数据库知识库 | `knowledge/db/blacklist.md` |
-| 版本快照 | `docs/v{N}/test-cases.md`(验收用例 hlpm 产出 + 白盒用例 hldev 追加,固定不变) |
+| 版本快照 | `knowledge/doc/v{N}/test-cases.md`(验收用例 hlpm 产出 + 白盒用例 hldev 追加,固定不变) |
 
 ## 一、验收用例(黑盒,hlpm 产出)
 
@@ -67,7 +67,7 @@
 
 ## 关联
 
-- 版本快照: `docs/{ver}/test-cases.md`(验收用例 + 白盒用例,固定不变)
-- 一致性矩阵 §1: `docs/{ver}/consistency-matrix.md`("实现覆盖"列指向本文件测试点 ID)
+- 版本快照: `knowledge/doc/{ver}/test-cases.md`(验收用例 + 白盒用例,固定不变)
+- 一致性矩阵 §1: `knowledge/doc/{ver}/consistency-matrix.md`("实现覆盖"列指向本文件测试点 ID)
 - 涉及决策: `knowledge/adr/{NNNN}-{slug}.md`
 - 状态机: `knowledge/state-machines/{entity}.md`

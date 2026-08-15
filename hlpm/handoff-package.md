@@ -1,20 +1,20 @@
 # 8 项产品交付物打包模板（产品段 → 开发段）
 
 > 属于 `hlpm` 技能第 11-12 步骤。
-> 产品段完成后，按本模板打包 8 项交付物(5 必出 + 3 条件出)到版本目录 `docs/vN/`，交付给开发段（`hldev`）。
+> 产品段完成后，按本模板打包 8 项交付物(5 必出 + 3 条件出)到版本目录 `knowledge/doc/vN/`，交付给开发段（`hldev`）。
 
 ## 交付清单（8 项，5 必出 + 3 条件出）
 
 | # | 交付物 | 路径模板 | 必出/条件 | 负责 Agent |
 |---|--------|---------|-----------|-----------|
-| 1 | 竞品分析报告 | `docs/{ver}/analysis/competitive-analysis.md` | 条件(新项目/品类调研) | `analyst` 生成 → 写入文件 |
-| 2 | PRD 文档 | `docs/{ver}/prd.md` | **必出** | `analyst` 生成 → 写入文件 |
-| 3 | 设计稿 | `docs/{ver}/design/*.html` | 条件(涉及 UI) | `designer` |
-| 4 | 设计稿截图 | `docs/{ver}/design/screenshot-<page-name>.png` | 条件(6b.5 触发) | `designer` 调 `hlbrowse` |
-| 5 | 测试用例 | `docs/{ver}/test-cases.md` | **必出** | `test-engineer` |
-| 6 | 非功能需求 | `docs/{ver}/non-functional-requirements.md` | **必出** | `analyst` 生成 → 写入文件 |
-| 7 | 一致性矩阵(含验收标准) | `docs/{ver}/consistency-matrix.md` | **必出**（v5） | `analyst` 生成 + `verifier` 验证 → 写入文件 |
-| 8 | **自检报告** | `docs/{ver}/handoff-self-check.md` | **必出**（v6） | `analyst` 生成 → 写入文件 |
+| 1 | 竞品分析报告 | `knowledge/doc/{ver}/analysis/competitive-analysis.md` | 条件(新项目/品类调研) | `analyst` 生成 → 写入文件 |
+| 2 | PRD 文档 | `knowledge/doc/{ver}/prd.md` | **必出** | `analyst` 生成 → 写入文件 |
+| 3 | 设计稿 | `knowledge/doc/{ver}/design/*.html` | 条件(涉及 UI) | `designer` |
+| 4 | 设计稿截图 | `knowledge/doc/{ver}/design/screenshot-<page-name>.png` | 条件(6b.5 触发) | `designer` 调 `hlbrowse` |
+| 5 | 测试用例 | `knowledge/doc/{ver}/test-cases.md` | **必出** | `test-engineer` |
+| 6 | 非功能需求 | `knowledge/doc/{ver}/non-functional-requirements.md` | **必出** | `analyst` 生成 → 写入文件 |
+| 7 | 一致性矩阵(含验收标准) | `knowledge/doc/{ver}/consistency-matrix.md` | **必出**（v5） | `analyst` 生成 + `verifier` 验证 → 写入文件 |
+| 8 | **自检报告** | `knowledge/doc/{ver}/handoff-self-check.md` | **必出**（v6） | `analyst` 生成 → 写入文件 |
 
 ---
 
@@ -40,7 +40,7 @@
 
 ### 1. PRD 自检
 
-- [ ] §0 + BL-N 卡片 15 字段齐全 + 附录 A-G 按需齐全（附录 G 豁免需显式标注）
+- [ ] §0 + BL-N 卡片 15 字段齐全（涉及 UI 的卡片另需含 9.5 字段与控件行为表, v30) + 附录 A-H 按需齐全（附录 G/H 豁免需显式标注）
 - [ ] 跨 BL 业务流程总图（附录 G）：Mermaid + 文字双轨齐全（无跨 BL 流转可豁免：PRD 仅 1 个 BL 或各 BL 相互独立；豁免需在 PRD 显式标注）
 - [ ] 无模糊字眼（"暂定" / "待确认" / "或者" / "大致" / "大概" / "类似" / "TBD" / "TODO" / "FIXME" / "XXX" / 行尾省略号 / 行尾"等"）
 - [ ] 字段级定义（类型 / 必填 / 校验 / 默认值 / 示例）
@@ -101,7 +101,7 @@
 - [ ] 不一致清单为空或已注明处理方式
 - [ ] 全部 ✅ 通过（或不一致项已闭环）
 - [ ] 记录当前版本号（vX）
-- [ ] **代码实现追踪矩阵自检（§6.5，与 `docs/{ver}/consistency-matrix.md` §5 矩阵对齐）**：
+- [ ] **代码实现追踪矩阵自检（§6.5，与 `knowledge/doc/{ver}/consistency-matrix.md` §5 矩阵对齐）**：
   - [ ] 第 5 矩阵存在，列齐全（# / PRD 条款 / 设计页面 / 测试用例 / 代码提交 SHA / 实现状态 / 偏离说明）
   - [ ] 每行已填代码提交 SHA（开发完成后回填）
   - [ ] 实现状态全部为 ✅ / N/A（本节关注矩阵填写完整性；❌/⚠️/➕ 闭环情况见 §9 拒收单）
@@ -117,7 +117,7 @@
 > **防漂移设计**：自检报告**直接复制**"## 自检清单"（第 40-109 行）的 7 项勾选结果（含 §6.5），不另行维护清单
 > 与"## 交付包总览"的关系：自检报告 = 自检结果；总览 = 交付摘要。两者**不重叠**。
 
-`docs/{ver}/handoff-self-check.md` 应包含：
+`knowledge/doc/{ver}/handoff-self-check.md` 应包含：
 
 ```markdown
 ## 交付物自检报告
@@ -128,7 +128,7 @@
 **对应交付包版本**：vX（与 PRD / 设计 / 用例 一致）
 
 ### 1. PRD 自检结果
-- [✅/❌] §0 + BL-N 卡片 15 字段齐全 + 附录 A-G 按需齐全（附录 G 豁免需显式标注）
+- [✅/❌] §0 + BL-N 卡片 15 字段齐全（涉及 UI 的卡片另需含 9.5 字段与控件行为表, v30) + 附录 A-H 按需齐全（附录 G/H 豁免需显式标注）
 - [✅/❌] 跨 BL 业务流程总图（附录 G）双轨齐全（无跨 BL 流转可豁免：PRD 仅 1 个 BL 或各 BL 相互独立；豁免需显式标注）
 - [✅/❌] 无模糊字眼（"暂定" / "待确认" / "或者" / "大致" / "大概" / "类似" / "TBD" / "TODO" / "FIXME" / "XXX" / 行尾省略号 / 行尾"等"）
 - [✅/❌] 字段级定义（类型 / 必填 / 校验 / 默认值 / 示例）
@@ -176,7 +176,7 @@
 - [✅/❌] 不一致清单为空或已闭环
 - [✅/❌] 全部 ✅ 通过
 
-### 6.5 代码实现追踪矩阵自检结果(与 `docs/{ver}/consistency-matrix.md` §5 对齐）
+### 6.5 代码实现追踪矩阵自检结果(与 `knowledge/doc/{ver}/consistency-matrix.md` §5 对齐）
 - [✅/❌] 第 5 矩阵存在，列齐全
 - [✅/❌] 每行已填代码提交 SHA
 - [✅/❌] 实现状态全部为 ✅ / N/A（矩阵填写完整性）
@@ -213,14 +213,14 @@
 ### 交付物清单
 | # | 交付物 | 路径 | 版本 | 评审状态 | 签字方 |
 |---|--------|------|------|---------|--------|
-| 1 | 竞品分析 | docs/{ver}/analysis/competitive-analysis.md | vX | 条件出 | — |
-| 2 | PRD | docs/{ver}/prd.md | vX | ✅ 通过 | 5/5 |
-| 3 | 设计稿 | docs/{ver}/design/*.html | vX | ✅ 通过 | 5/5 |
-| 4 | 设计稿截图 | docs/{ver}/design/screenshot-<page>.png | — | 条件出 | — |
-| 5 | 测试用例 | docs/{ver}/test-cases.md | vX | ✅ 通过 | 5/5（逐份立即评审） |
-| 6 | 非功能需求 | docs/{ver}/non-functional-requirements.md | — | — | — |
-| 7 | 一致性矩阵(含验收标准) | docs/{ver}/consistency-matrix.md | vX | ✅ 通过 | — |
-| 8 | **自检报告** | **docs/{ver}/handoff-self-check.md** | **—** | **✅ 通过** | **—** |
+| 1 | 竞品分析 | knowledge/doc/{ver}/analysis/competitive-analysis.md | vX | 条件出 | — |
+| 2 | PRD | knowledge/doc/{ver}/prd.md | vX | ✅ 通过 | 5/5 |
+| 3 | 设计稿 | knowledge/doc/{ver}/design/*.html | vX | ✅ 通过 | 5/5 |
+| 4 | 设计稿截图 | knowledge/doc/{ver}/design/screenshot-<page>.png | — | 条件出 | — |
+| 5 | 测试用例 | knowledge/doc/{ver}/test-cases.md | vX | ✅ 通过 | 5/5（逐份立即评审） |
+| 6 | 非功能需求 | knowledge/doc/{ver}/non-functional-requirements.md | — | — | — |
+| 7 | 一致性矩阵(含验收标准) | knowledge/doc/{ver}/consistency-matrix.md | vX | ✅ 通过 | — |
+| 8 | **自检报告** | **knowledge/doc/{ver}/handoff-self-check.md** | **—** | **✅ 通过** | **—** |
 
 ### 版本对齐
 - PRD vX = 设计 vX = 用例 vX ✅
