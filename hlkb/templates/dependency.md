@@ -83,4 +83,4 @@
 
 - API 接口: `knowledge/api/`
 - 环境变量: `knowledge/env-vars/`
-- 技术栈: 项目根 `CLAUDE.md` §技术栈
+- 技术栈概述：`{项目约束文件实际路径}` 的项目定位

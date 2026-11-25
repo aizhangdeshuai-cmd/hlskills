@@ -1,18 +1,18 @@
 # hlskills
 
-> HL 项目开发技能合集 — 26 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
+> HL 项目开发技能合集 — 33 项子技能 + 19 个 Agent,覆盖产品→开发→测试→发布→部署全流程
 
 ## 5 分钟快速上手
 
-**第一次用?** 先跑 `Skill hlquickstart` —— 5 分钟内用 2 个 mock 场景让你**实际看到** AI 按文档一步步做事是什么体验,而不是读 26 项 SKILL.md 想象。详见 [`hlquickstart/SKILL.md`](./hlquickstart/SKILL.md)。
+**第一次用?** 先跑 `Skill hlquickstart` —— 5 分钟内用 2 个 mock 场景让你**实际看到** AI 按文档一步步做事是什么体验,而不是读 33 项 SKILL.md 想象。详见 [`hlquickstart/SKILL.md`](./hlquickstart/SKILL.md)。
 
 ### 我该用哪个? — 5 字口诀
 
 | 场景 | 用什么 |
 |------|--------|
 | 演示/学习 hlskills 怎么用 | `Skill hlquickstart` (5 分钟) |
-| 单人/小团队, 想自己跑完一条需求 | `Skill hl-flow` (28 步一气呵成, 已含发布部署) |
-| 产品+开发分工, 先产品段产 PRD/设计 | `Skill hlpm` (27 步), 完事交给 `Skill hldev` |
+| 单人/小团队, 想自己跑完一条需求 | `Skill hl-flow` (按范围执行，UI 变更核对设计与浏览器行为，CLI/API 验证命令或接口，含发布部署) |
+| 产品+开发分工, 先产品段产 PRD/设计 | `Skill hlpm`（可只写 PRD、增加可演示原型或准备完整交接包），完整包由 `Skill hldev` 接手 |
 | 一次跑完需求→开发→测试→发布→部署 | `Skill hlchain` (编排 6 阶段, Agent 按顺序自觉加载) |
 | 改代码/修 bug | `Skill hldev` (接手 knowledge/) 或 `Skill hlbug` (14 步排查) |
 
@@ -32,7 +32,7 @@
 
 **新三件套**:
 - **`hl-flow`**:单人/小团队自跑全流程(28 步)
-- **`hlpm`**:产品段(多角色,27 步,产出 PRD/设计/用例给开发)
+- **`hlpm`**:产品段（按本次目标交付 PRD、可演示原型或开发测试交接包）
 - **`hldev`**:开发段(15 步,从产品段接手到部署上线)
 
 **典型调用示例**:
@@ -44,10 +44,13 @@ Skill hl-flow "为登录功能加短信验证码"
 # 产品+开发分工
 Skill hlpm "为订单列表加导出 CSV"
 # 评审通过后,产品段产物交接给开发段:
-Skill hldev "开始开发 knowledge/doc/v1/ 里的 8 项交付物"
+Skill hldev "开始开发 knowledge/doc/v1/ 里的适用交付物（5 项必出，3 项按条件）"
 
 # 一次跑完全链路 (由 Agent 按文档顺序自觉加载 hlpm→hldev→hlrelease→hldeploy, 中间可调 hlbug/hltest)
 Skill hlchain "为订单列表加导出 CSV"
+
+# 跨会话查项目知识
+Skill hlkb "上次为什么调整退款重试？找出现行规则和证据位置"
 ```
 
 **如果有团队已有引用旧名的脚本/AGENTS.md**:把 `/hlpm` → `/hl-flow`、`/hlpm-product` → `/hlpm`、`/hlpm-dev` → `/hldev` 即可。`/hlpmnew` 和 `/hlnew` 没有对应新名,删掉。
@@ -56,16 +59,16 @@ Skill hlchain "为订单列表加导出 CSV"
 
 `hlskills` **本质是一份写得扎实的开发工作流 SOP 手册(以 Markdown 文本形式存在),而不是一套带 hook / runtime / 编排器的运行时**。了解这一点对正确使用本库至关重要:
 
-- ✅ **流程纪律是文本**:28/23/15/14 步流程、"硬性关卡"、"三项强同步"、"角色边界铁律"——这些都是 Markdown 文档,**Claude Code 不会机械地强制执行**。它们靠 Agent 加载后**自觉遵守**。
-- ✅ **角色工具隔离靠 frontmatter 字段**:只读 agent 的 `disallowedTools: Write, Edit` 字段是 Claude Code 原生支持的,会被 harness 强制执行——这是仓库**真实生效**的工具隔离。
-- ❌ **"会签""门禁""阶段门禁"等是文档语言**:仓库没有 hook / 状态机 / 编排器强制 Agent 走完某一步才能进入下一步。"5 角色会签"是 5 个 Agent 角色**在同一个 LLM 会话里被 prompt 提示**(你看到的"5 方评审意见"实际是同一个 LLM 在扮演)。
-- ❌ **代码覆盖率审计靠一致性矩阵**:靠人工对照 `knowledge/doc/v1/consistency-matrix.md` 第 5 矩阵逐行核对实现状态(已在前次 v15 修复 grep 正则审计方案)。
+- ✅ **流程纪律是文本**:产品、开发与缺陷修复流程、"硬性关卡"、"三项强同步"、"角色边界铁律"——这些都是 Markdown 文档,**Claude Code 不会机械地强制执行**。它们靠 Agent 加载后**自觉遵守**。
+- **角色权限**。Claude 原生角色声明的 `disallowedTools: Write, Edit` 限制这两种工具。Bash 构建或测试仍可能写入文件，执行只读评审时应使用隔离副本或临时输出目录。其他宿主遵循其实际工具权限。
+- **评审记录**。按实际参与者写明独立委派、人工签核或同一会话的多个视角。只有实际发生的独立审查才能登记为独立签核。
+- **需求验收**：产品交接核对已确认约束、AC、TC 和适用原型；开发从同一计划核对候选测试报告。有指定竞品时，可从参考画面或实际操作建立基线，把采用的交互及品牌差异关联到原型和候选测试。[竞品 UI 还原](hlpm/competitor-ui.md)
 - ⚠️ **hooks 模板需自测**:`hlhooks/SKILL.md` 提供的 hook 模板已对齐 Claude Code 真实协议,但启用后请按模板"验证"段实测一次,确认真的生效。
 
 **对你的实际影响**:
 - 你能让 Agent **照着文档一步步做**,但 Agent 不会因为漏一步就"无法进入下一步"
-- 你能用 `hl-permission` **真实放宽**项目目录权限,这是唯一操作 Claude Code 真实 API 的子技能
-- 你的"角色隔离"在只读类 agent(analyst/architect 等)是**真生效**,在写类 agent(executor/designer 等)**靠自觉**
+- `hl-permission` 写入项目权限；安装 `hlkb-hooks` 后，Claude Code 可在提交前按暂存路径检查知识库同步。内容质量仍需评审。
+- 单独调用产品、开发或测试技能时，按本次 checkout 加载所需角色，角色出处可在交接中复核。[角色加载方式](SKILL.md#agent-使用方式)
 - 多角色协作(`hlpm` + `hldev`)适合流程引导,**不适合把多 Agent 协作当流水线调度器**
 
 ## 简介
@@ -74,11 +77,11 @@ Skill hlchain "为订单列表加导出 CSV"
 
 ## 核心特性
 
-- **26 项子技能**(含 `hlquickstart` 快速上手 + `hlchain` 全流程编排 + `hlkb` 项目知识库):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
+- **33 项子技能**(含 `hlquickstart` 快速上手 + `hlchain` 全流程编排 + `hlkb` 项目知识库):需求分析、PRD、设计、开发、测试、发布、部署、Git 规范、API 设计、数据库迁移、错误处理、编码标准、无障碍、ADR 等
 - **19 个 Agent**:analyst / executor / code-reviewer / security-reviewer / verifier / designer / test-engineer 等专业角色
-- **多角色协作**:`hlpm` (产品段 27 步) + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
+- **多角色协作**:`hlpm` （产品段，含交付后复盘） + `hldev` (开发段 15 步),支持"产品+开发"分工 + 重量评审会签 + 三项强同步 + 拒收机制
 - **全流程编排**:`hlchain` 由 Agent 按文档顺序自觉加载 hlpm → hldev → hlrelease → hldeploy 全链路(中间可调 hlbug/hltest), 不必手动一次次调各技能(无真编排器 runtime, 靠 Agent 自觉 + 用户手动打断)
-- **一体化保障**:8 项产品交付物 + 7 个一致性矩阵(业务规则 / 状态机 / 权限 / 非功能 / 代码实现追踪),确保 PRD 100% 实现
+- **一体化保障**:按条件核对产品交付物，通过一致性矩阵追踪业务规则、状态机、权限、非功能要求与代码实现
 
 ## 子技能速览
 
@@ -92,14 +95,20 @@ Skill hlchain "为订单列表加导出 CSV"
 |------|------|------|
 | 全流程编排（Agent 按文档顺序自觉加载 6 阶段） | `hlchain` | `Skill hlchain` (编排 hlpm→hldev→hlrelease→hldeploy + hlbug/hltest) |
 | 新功能/新项目开发（单人跑, 28 步自含发布部署） | `hl-flow` | `Skill hl-flow` (28 步) |
-| 多角色协作-产品段 | `hlpm` | `Skill hlpm` (27 步, 含 5 角色评审) |
+| 多角色协作-产品段 | `hlpm` | `Skill hlpm` （各文档分别询问是否进行 5 角色评审） |
 | 多角色协作-开发段 | `hldev` | `Skill hldev` (15 步, 含 4 维防御) |
 | 旧项目分析/重构/Bug 修复 | `hllegacy` / `hlrefactor` / `hlbug` | — |
-| 设计/审查/无障碍 | `hldesign` / `hlreview` / `hla11y` | — |
+| UI 设计与指定竞品还原 | [hldesign](./hldesign/SKILL.md) | `/hldesign` |
+| 审查/无障碍 | `hlreview` / `hla11y` | — |
+| 代码质量与性能专项审查 | [hlquality](./hlquality/SKILL.md) | `Skill hlquality` |
+| 硬编码凭证专项扫描 | [hlsecrets](./hlsecrets/SKILL.md) | `Skill hlsecrets` |
 | 测试/发布/部署 | `hltest` / `hlrelease` / `hldeploy` | — |
 | Git/API/DB/错误/编码 | `hlgit` / `hlapi` / `hldb` / `hlerror` / `hlcode` | — |
 | 基础设施 | `hlsetup` / `hlhooks` / `hl-permission` / `hlmemory` / `hlkb` | — |
-| 浏览器实时 QA | `hlbrowse` | `/hlbrowse` (70+ 命令) |
+| 浏览器实时 QA | [hlbrowse](./hlbrowse/SKILL.md) | 仓库内命令行工具，支持页面交互、证据截图与性能检查 |
+| 市场与竞品调研 | [hlresearch](./hlresearch/SKILL.md) | `Skill hlresearch` |
+| 录屏分析与演示交付 | [hlmedia](./hlmedia/SKILL.md) | `Skill hlmedia` |
+| 规划、基准测试与文档等 16 项专项流程 | [hltoolbox](./hltoolbox/SKILL.md) | `Skill hltoolbox` |
 | 架构决策记录 | `hladr` | — |
 
 ## 详细说明
@@ -118,98 +127,26 @@ Skill hlchain "为订单列表加导出 CSV"
 - **v13**:评审模式可选(分阶段评审 / 集中评审)
 - **v14**:设计规范硬性约束 + 已有页面微调 diff 规范
 - **v15**:多平台诚实声明 + 清理断链外部依赖 + agent 字段健康化(面向公开发布)
-- **v16**(当前):评审模式改名(联合评审 → 分阶段评审 / 3 合 1 → 集中评审) + 集中评审补全 5 角色(补回 architect/executor 视角)
+- **v16**:评审模式改名(联合评审 → 分阶段评审 / 3 合 1 → 集中评审) + 集中评审补全 5 角色(补回 architect/executor 视角)
 
-## 平台支持分级
+- **hlpm v31**：该版引入信息架构附录。当前版本的 PRD 选型和启动分工见[产品段入口](./hlpm/SKILL.md#启动与选版)。
 
-> ⚠️ **三平台能力不对等**。本合集在不同平台下支持范围不同，请按所用平台对号入座：
+- **hlpm v32–v33**：增加踩坑记录、版本复盘和跨需求的全局约束去重。五项必交、三项按条件交付的校验规则见 [hlpm](./hlpm/handoff-package.md)。
 
-### Claude Code(完整支持)
+本库内含各项流程、19 份角色定义和浏览器工具。浏览器自动化需要 Playwright 和 Chromium，本地视频抽帧和剪辑需要 FFmpeg。上游及采用范围见[升级记录](./docs/upstreams.md)。
 
-支持全部能力：26 项子技能 + 19 个 role agent(含 `disallowedTools` 工具隔离、`model` 模型分级、role-only 行为约束写入 agent 正文) + Skill 工具调用(如 `Skill hlpm`) + 可选外部技能(`videodb` / `market-research`)调用。
+## 平台支持分级与安装
 
-### Codex CLI(降级支持)
+在要使用的 **hlskills 仓库根目录** 运行对应命令。安装器从自身所在的 checkout 建立链接，并打印实际来源；修改这个 checkout 后链接随之更新。
 
-> ⚠️ **Codex 用户注意**: 你**不能**直接调用 `Skill hlpm` 等子技能——Codex 没有 Skill 工具也没有 slash 命令入口。实际使用方式: **手动复制 `hlpm/SKILL.md` 全文到 `~/.codex/AGENTS.md` 或项目 `AGENTS.md` 当提示词**,然后在对话中"指明调用某子技能名"让 Codex 按提示词行事。**这是降级路径,不是同等待遇**。**`hlchain` 全流程编排在 Codex 下不可用**(需手动按顺序提示 Codex 跑各技能)。
+| 平台 | 安装命令 | 入口与能力 |
+|------|----------|------------|
+| Claude Code | `python3 hlsetup/install.py claude` | 安装技能、命令文件和角色定义。项目权限与知识库 hook 单独启用。 |
+| Codex | `python3 hlsetup/install.py codex` | 安装到 `~/.agents/skills/`，从同一 checkout 读取所需角色。旧版专属目录的同源安装会迁移。 |
+| Cursor | `python3 hlsetup/install.py cursor` | 从链接的技能目录读取同源角色。项目规则可写入 `.cursor/rules/`。 |
 
-Codex 没有 per-agent 文件 + frontmatter 机制,定制方式是 `AGENTS.md` 纯 markdown 提示词拼进上下文,模型在 `~/.codex/config.toml` 全局配置。
-
-- ✅ **可用**:全部子技能的流程纪律、步骤、产出物规范 → 合并进 `~/.codex/AGENTS.md` 或项目 `AGENTS.md` 使用;agent 角色设定(`agents/*.md` 正文) → 作为提示词内容粘贴进 `AGENTS.md` 使用
-- ❌ **不生效**:agent frontmatter 中的 `disallowedTools` / `model` / `level` 字段(Codex 不解析);角色工具隔离改由"提示词自觉 + 主调用方负责写文件"实现
-- ❌ **无入口**:`/hlpm` 等 slash 命令(改用"在对话中指明调用某子技能名称"触发);`Skill` 工具调用外部技能(如 `videodb`)
-
-### Cursor(降级支持)
-
-> ⚠️ **Cursor 用户注意**: 与 Codex 类似,你**不能**用 `Skill hlpm` 启动流程或用 Skill 工具调用外部技能。实际使用方式: **将所需子技能 SKILL.md 转为 `.cursor/rules/*.mdc` 规则文件**,通过文件触发(`globs` 匹配)或常驻(`alwaysApply`)挂载。**功能大幅缩水**,不适合完整跑 27/28 步流程。**`hlchain` 全流程编排在 Cursor 下不可用**(依赖 Skill 工具链路),需手动按顺序调各技能。
-
-Cursor rules(`.cursor/rules/*.mdc`)frontmatter 只认 `description` / `alwaysApply` / `globs`,控制"何时挂载",不认工具/模型限制;模型和工具开关在 Cursor app 设置里配置。
-
-- ✅ **可用**:子技能作为 `.mdc` 规则挂载(按 `globs` 匹配文件触发或 `alwaysApply`);流程纪律 + 产出物规范作为规则内容使用
-- ❌ **不生效**:agent frontmatter 的工具/模型/level 字段;per-agent 文件机制
-- ❌ **无入口**:slash 命令、`Skill` 工具
-
-## 安装
-
-### Claude Code
-
-```bash
-cp -r hlskills ~/.claude/skills/
-```
-
-安装后通过 `Skill hlskills` 调用主入口,或在对话中提"开发流程 / PRD / Bug 修复"等关键词自动路由到对应子技能。各 role agent 位于 `hlskills/agents/`,Claude Code 会按 `disallowedTools` / `model` frontmatter 强制执行工具隔离与模型分级。
-
-**调用语法示例**:
-
-```text
-# 加载主入口(SKILL.md 的 description 触发自动路由)
-Skill hlskills
-
-# 直接调用某个子技能(Skill 工具传 args)
-Skill hlpm "为登录功能启动 27 步流程"
-
-# 子技能内部按 frontmatter 描述自动派发 role agent(无需你手动调)
-# 例如 analyst (Opus, 只读) / executor (Sonnet, 可改) / verifier (Sonnet) 等
-```
-
-> **Claude Code 入口**:
-> - **slash 命令**(推荐): `/hlpm` `/hldev` `/hlchain` `/hlquickstart` `/hlbug` `/hltest` `/hldesign` `/hlwrite-skill` `/hl-flow` — 命令薄壳文件在 `.claude/commands/`,`hlsetup` 自动 cp 到 `~/.claude/commands/`
-> - **Skill 工具**:`Skill hlpm "<需求>"` `Skill hlkb-hooks` 等(完整技能名调用)
-> - **隐式触发**: 在对话里说"按 hlpm 流程给我做登录加短信验证码",harness 自动路由
->
-> **Codex CLI / Cursor**: 都无 Skill 工具和 slash 命令入口,走 `AGENTS.md` 提示词降级路径(详见各平台章节)。本仓库提供的 `.claude/commands/` 薄壳**仅对 Claude Code 有效**。
-
-### Codex CLI
-
-```bash
-# Codex 无 per-agent 机制,请将主入口与所需子技能合并进 AGENTS.md
-# 1) 复制子技能正文
-cp -r hlskills ~/.codex/skills/   # 作为参考文档留存
-# 2) 在 ~/.codex/AGENTS.md(全局) 或项目 AGENTS.md 中引用你需要的流程:
-#    将 ~/.codex/skills/hlskills/SKILL.md 与各 hl*/SKILL.md 内容直接粘贴/引入到 AGENTS.md
-# 3) 全局模型在 ~/.codex/config.toml 设置: model = "..."
-```
-
-> Codex 下 agent 的工具限制、模型分级、level 字段不生效,角色隔离靠提示词自觉;`/hlpm` 等命令改用对话中指明子技能名触发。
-
-### Cursor
-
-```bash
-# 将所需子技能的 SKILL.md 转为 .cursor/rules/*.mdc 规则文件
-# 示例:把 hlskills/hlpm/SKILL.md 内容放进 .cursor/rules/hlpm.mdc
-```
-
-```yaml
-# .cursor/rules/*.mdc frontmatter 仅支持以下字段:
----
-description: 新需求开发流程
-alwaysApply: false
-globs: "src/**"   # 匹配到这些文件时挂载
----
-(此处粘贴对应子技能 SKILL.md 正文)
-```
-
-> Cursor 下 per-agent 工具/模型限制、slash 命令、Skill 工具均不适用。
+安装后用同一命令加 `--check` 核对入口的来源、缺失和退役情况。更新后重跑安装会补齐新入口并清理本库旧链接。来源冲突、卸载及候选归档验证步骤见 [hlsetup](./hlsetup/SKILL.md)。
 
 ## 许可证
 
-私有项目,未授权不得复制或商用。
+本项目自有内容沿用原授权限制。第三方角色文件及其衍生内容保留[上游 MIT 许可](./agents/LICENSE-OMC)。

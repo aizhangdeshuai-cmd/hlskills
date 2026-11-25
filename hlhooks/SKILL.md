@@ -55,96 +55,14 @@ description: Claude Code hooks 配置模板，提供推荐的安全/质量/自�
 
 ## 推荐配置
 
-### 1. 危险命令拦截(Bash)
+按事件从下面的完整模板选取所需处理器，合并到已有设置。命令从标准输入读取 JSON，需要安装 `jq`。
 
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r '.tool_input.command' | grep -qE 'rm -rf /|rm -rf ~|git push --force origin (main|master)|DROP TABLE|DROP DATABASE|shutdown|reboot|chmod 777 /|> /dev/sda|mkfs|dd if=/dev/zero' && { echo '🚨 危险命令已拦截:不允许执行 rm -rf /, force push main, DROP TABLE 等' >&2; exit 2; } || exit 0"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**协议说明**:
-- `jq -r '.tool_input.command'` 从 stdin JSON 提取 Bash 命令内容
-- 命中危险模式 → exit 2 + stderr → Claude 收到拦截反馈
-- 不命中 → exit 0 → Claude 正常执行
-
-### 2. 环境变量保护(Write)
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r '.tool_input.file_path' | grep -qE '\\.(env|secret|pem|key|p12|pfx|credentials)$|credentials\\.json$|secrets\\.yaml$' && { echo '🚨 禁止写入敏感文件' >&2; exit 2; } || exit 0"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**协议说明**:与上面相同,jq 从 `tool_input.file_path` 提取路径。
-
-### 3. 提交前提醒(Bash,仅提示,不阻断)
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r '.tool_input.command' | grep -qE '^git commit' && { echo '⚠️ 提交前请确认:1. 测试通过? 2. 代码审查通过? 3. 提交信息符合规范?'; exit 0; } || exit 0"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**协议说明**:仅 stdout 提示,exit 0 不阻断——提交仍然执行,用户自行确认。
-
-### 4. Bash 错误关键词提醒(PostToolUse,仅提示)
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r '.tool_response' | grep -q 'error\\|Error\\|fatal\\|FATAL\\|permission denied' && echo '⚠️ 输出中发现错误关键词,请检查' || exit 0"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
----
+| 用途 | 事件与匹配器 | 判断与结果 |
+|---|---|---|
+| 危险命令拦截 | PreToolUse / Bash，第一个 Bash 处理器 | 检查 `tool_input.command`，命中模式后向 stderr 报告并返回 2 |
+| 敏感文件写入保护 | PreToolUse / Write | 检查 `tool_input.file_path`，命中模式后返回 2 |
+| 提交前提醒 | PreToolUse / Bash，第二个 Bash 处理器 | 匹配提交命令后提示测试、审查及提交信息，返回 0 |
+| 执行后错误提示 | PostToolUse / Bash | 检查 `tool_response` 中的错误关键词，输出提示 |
 
 ## 完整模板(防御型,推荐直接使用)
 
@@ -210,7 +128,7 @@ description: Claude Code hooks 配置模板，提供推荐的安全/质量/自�
 | `hldeploy` | 部署前检查 CI 通过 | 提示 |
 | `hlkb` / `hlkb-hooks` | PreToolUse git commit 检查 knowledge/ 同步 + PostToolUse 改完提示 | **阻断**(`git commit` 漏同步真 exit 2) |
 
-> **想直接装现成的知识库同步 hooks?** 参考 [`hlkb-hooks/SKILL.md`](./hlkb-hooks/SKILL.md),提供 `--preset=default|java` 一键安装,把"代码+knowledge 同 commit"机械化兜底;本文件的"推荐配置"段适合**手写单条 hook 用的场景**(单条规则,无需装脚本)。
+> **想直接装现成的知识库同步 hooks?** 参考 [`hlkb-hooks/SKILL.md`](../hlkb-hooks/SKILL.md),提供 `--preset=default|java` 一键安装,把"代码+knowledge 同 commit"机械化兜底;本文件的"推荐配置"段适合**手写单条 hook 用的场景**(单条规则,无需装脚本)。
 
 ---
 

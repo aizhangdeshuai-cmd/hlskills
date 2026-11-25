@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-bl-mode="demo">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BL 钉点系统模板 · hlpm 设计稿样板</title>
+<title>订单导出</title>
+<script>
+  const blParams = new URLSearchParams(location.search);
+  window.__BL_TEST__ = blParams.get('bl-test') === '1';
+  if (window.__BL_TEST__ || blParams.get('bl-review') === '1') {
+    document.documentElement.dataset.blMode = 'review';
+  }
+</script>
 <!--
   ============================================================
   BL Marker System 模板 · hlpm 设计稿样板
@@ -21,7 +28,7 @@
       钉点 hover 摘要由 JS 自动取"一句话"首行,无需手填 title;
       场景段 state 字段: 点"▶ 查看该状态"→ 优先派 bl:state 事件,页面监听并 e.preventDefault() 自切;
       页面未监听 → URL ?state= 兜底重载并自动重开抽屉)
-  5. (可选) ?bl-test=1 调出 10 个 TC 调试面板
+  5. 普通链接演示业务，?bl-review=1 显示需求标注，?bl-test=1 实测标注控件
 
   注意: 本模板引用的 bl-marker.css / bl-marker.js 在同目录。
   实际产出设计稿时,把这两个文件复制到 knowledge/doc/v{N}/design/ 下,或改用相对路径。
@@ -29,31 +36,40 @@
 -->
 <link rel="stylesheet" href="bl-marker.css">
 <style>
-  /* 页面自身样式 — 与 BL 系统无关, 按你的设计稿主题调整 */
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff; color: #111827; font-size: 14px; line-height: 1.6; margin: 0; padding: 32px; }
-  .demo-card { position: relative; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 16px; max-width: 600px; }
-  .demo-card h2 { font-size: 16px; margin: 0 0 8px; }
-  .demo-card p { color: #6b7280; margin: 0; }
+  body { margin: 0; padding: 24px; color: #182638; background: #fff; font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 44rem; margin: auto; }
+  h1 { margin: 0 0 24px; font-size: 1.75rem; }
+  .orders-section { position: relative; margin-bottom: 22px; }
+  table { width: 100%; margin: 16px 0; border-collapse: collapse; text-align: left; }
+  th, td { padding: 10px 8px; border-bottom: 1px solid #dde2e7; }
+  th { color: #475569; }
+  #order-state, #export { font: inherit; padding: 6px 12px; }
+  #export { color: white; background: #2156a4; border: 0; border-radius: 4px; }
+  #export:disabled { color: #475569; background: #e2e8f0; }
 </style>
 </head>
 <body>
-
-<h1>设计稿样板页</h1>
-<p>下面的卡片演示如何钉 BL 标记。点击任一蓝圆 → 右侧抽屉显示该 BL 的 PRD 摘录。</p>
-
-<!-- ===== 示例: 在卡片上钉 BL-1 标记 ===== -->
-<div class="demo-card">
-  <button class="bl-pin" data-bl="bl1" aria-label="查看 BL-1: 示例需求点">1</button>
-  <h2>功能区块 A</h2>
-  <p>这里是被标注的 UI 元素。钉位是 absolute 定位,父元素(demo-card)需 position:relative。</p>
-</div>
-
-<!-- ===== 示例: 第二个卡片钉 BL-2 ===== -->
-<div class="demo-card">
-  <button class="bl-pin" data-bl="bl2" aria-label="查看 BL-2: 第二个示例">2</button>
-  <h2>功能区块 B</h2>
-  <p>同一页面可钉多个 BL。REQUIREMENTS 里每个 BL 各自独立。</p>
-</div>
+<main>
+  <h1>订单导出</h1>
+  <section class="orders-section" aria-label="筛选订单">
+    <label for="order-state">订单状态</label>
+    <select id="order-state">
+      <option value="all">全部状态</option><option value="done">已完成</option><option value="pending">待处理</option><option value="cancelled">已取消</option>
+    </select>
+    <button type="button" class="bl-pin" data-bl="bl2" aria-label="查看 BL-2 筛选订单">2</button>
+    <table>
+      <thead><tr><th>订单号</th><th>状态</th></tr></thead>
+      <tbody><tr data-status="done"><td>O-1024</td><td>已完成</td></tr>
+        <tr data-status="pending"><td>O-1025</td><td>待处理</td></tr></tbody>
+    </table>
+    <p id="no-orders" hidden>没有符合条件的订单</p>
+  </section>
+  <section class="orders-section" aria-label="导出结果">
+    <button class="bl-pin" type="button" data-bl="bl1" aria-label="查看 BL-1 导出订单">1</button>
+    <button type="button" id="export">导出 CSV</button>
+    <p id="export-status" role="status">可导出当前筛选结果</p>
+  </section>
+</main>
 
 <!-- ===== 抽屉(必须, ID 不可改) ===== -->
 <aside id="bl-drawer" class="bl-drawer" role="complementary" aria-label="需求点详情" tabindex="-1">
@@ -69,8 +85,43 @@
 <button id="bl-toggle" class="bl-toggle" type="button"
         aria-label="切换需求标记显示" aria-pressed="true" title="点击切换 / 长按复位">⇆</button>
 
-<!-- ===== 调试模式触发: URL 加 ?bl-test=1 显示 10 个 TC 面板 ===== -->
-<script>window.__BL_TEST__ = /[?&]bl-test=1\b/.test(location.search);</script>
+<script>
+  const filter = document.getElementById('order-state');
+  const rows = Array.from(document.querySelectorAll('tbody tr[data-status]'));
+  const exportButton = document.getElementById('export');
+  const statusText = document.getElementById('export-status');
+
+  function applyFilter() {
+    rows.forEach(row => { row.hidden = filter.value !== 'all' && row.dataset.status !== filter.value; });
+    const empty = rows.every(row => row.hidden);
+    document.getElementById('no-orders').hidden = !empty;
+    exportButton.disabled = empty;
+    statusText.textContent = empty ? '无数据可导出' : '可导出当前筛选结果';
+  }
+  filter.addEventListener('change', applyFilter);
+  exportButton.addEventListener('click', function () {
+    const selected = rows.filter(row => !row.hidden);
+    const csv = ['订单号,状态', ...selected.map(row => Array.from(row.cells, cell => cell.textContent).join(','))];
+    const url = URL.createObjectURL(new Blob(['\uFEFF' + csv.join('\r\n')], {type: 'text/csv;charset=utf-8'}));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'orders.csv';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    statusText.textContent = '已导出 ' + selected.length + ' 笔订单';
+  });
+  function showEmptyOrders() {
+    filter.value = 'cancelled';
+    applyFilter();
+  }
+  if (new URLSearchParams(location.search).get('state') === 'error') showEmptyOrders();
+  document.addEventListener('bl:state', function (event) {
+    if (event.detail.state === 'error') {
+      event.preventDefault();
+      showEmptyOrders();
+    }
+  });
+</script>
 <script src="bl-marker.js"></script>
 </body>
 </html>

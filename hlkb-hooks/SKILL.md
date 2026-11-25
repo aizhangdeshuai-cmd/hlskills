@@ -47,34 +47,31 @@ bash hlkb-hooks/install.sh --preset=java
 ```
 
 **做了什么**:
-1. 放 `.hlskills` 哨兵(空文件)
-2. 备份 `<项目>/.claude/settings.local.json` 到 `.claude/settings.local.json.hlkb-hooks.bak`
-3. 注入 hooks(具体正则见 `presets.json` 当前选中的 preset,本节只列 default):
+1. 缺少哨兵时创建带安装器标记的 `.hlskills`；保留原有哨兵
+2. 已有设置首次改写前备份为 `.claude/settings.local.json.hlkb-hooks.bak`，已有备份保留
+3. 保留原事件和处理器，追加带归属标记的 hooks(具体正则见 `presets.json` 当前选中的 preset,本节只列 default):
    - **PreToolUse(Bash)** ── `git commit` 时检查 `git diff --cached --name-only`,若有 src/api|controllers|routes|endpoints|hlpm|hldev|hlapi|hl-flow 改动但没对应 `knowledge/api|tests` 条目 → exit 2 阻断
    - **PostToolUse(Write|Edit|MultiEdit)** ── 改完文件立即 stdout 提示「🔔 接口/数据库/枚举/错误码/测试 请同步 knowledge/」
 
 ### 第 2 步:验证
 
-装完会自动跑 6 项验证:
-- ✅ JSON 格式合法
-- ✅ PreToolUse matcher = `Bash`
-- ✅ PostToolUse matcher = `Write|Edit|MultiEdit`
-- ✅ 两条 command 字节数合理(1381 + 500)
-- ✅ `.hlskills` 哨兵已放
-- ✅ 备份存在
+检查 `.claude/settings.local.json`。PreToolUse / Bash 与 PostToolUse / Write|Edit|MultiEdit 各有一个以 `# hlkb-hooks managed command` 开头的处理器。已有处理器保留；重复安装或切换 preset 更新本技能的两条规则。
+
+旧版内置 preset 的原始命令会在升级或卸载时识别；若旧版曾覆盖同事件配置，安装器从尚存的首次备份补回原有分组。已被旧版重复安装覆盖的备份、手动改写过的旧命令，需要与自己的配置历史核对。卸载保留备份与来源不明的旧哨兵。
 
 **真实拦截测试**(强烈建议跑一次):
 
 ```bash
-echo stub > hlpm/_tmp_kb_test.md
-git add hlpm/_tmp_kb_test.md
+mkdir -p src/api
+echo stub > src/api/_tmp_kb_test.md
+git add src/api/_tmp_kb_test.md
 git commit -m "test"
-# 预期:Claude Code harness 输出 🚨 知识库未同步: api:hlpm/_tmp_kb_test.md
+# 预期:Claude Code harness 输出 🚨 知识库未同步: api:src/api/_tmp_kb_test.md
 # commit 失败
 
 # 清理
-git reset HEAD hlpm/_tmp_kb_test.md
-rm hlpm/_tmp_kb_test.md
+git reset HEAD src/api/_tmp_kb_test.md
+rm src/api/_tmp_kb_test.md
 ```
 
 ### 第 3 步:日常使用
@@ -111,50 +108,9 @@ bash hlkb-hooks/install.sh --dry-run
 
 ## 模式匹配规则(可调)
 
-**单一可信源**:`install.sh` 同目录的 `presets.json`。当前内置 2 个 preset(default + java),表格仅供快速参考:
+选择 `default`（通用）、`java`（Spring Boot）或 `ehr`（项目专用）。具体规则读取 [presets.json](presets.json) 中所选预设的 `patterns`：`root_dirs` 定义目录范围，分类的 `*_globs` 匹配代码路径，对应的 `sync_*_dir` 指定应同步的知识目录。
 
-| 改动模式(default preset) | 期望同步 |
-|---|---|
-| `src/api/**`、`**/controllers/**`、`**/routes/**`、`**/endpoints/**` | `knowledge/api/` |
-| `**/schema.sql`、`**/migrations/**`、`**/models/**`、`**/entities/**` | `knowledge/db/` |
-| `**/Enum*`、`**/enums/**` | `knowledge/enums/` |
-| `**/ErrorCode*`、`**/errors.*`、`hlerror/**` | `knowledge/error-codes/` |
-| `*.test.*`、`**/__tests__/**`、`hltest/**` | `knowledge/tests/` |
-| `hlpm/**`、`hldev/**`、`hlapi/**`、`hl-flow/**` | `knowledge/{api,tests,adr}`(产品/开发/接口段交文档) |
-| `hldb/**`、`hladr/**` | `knowledge/{db,adr}`(数据库/架构决策) |
-| 架构决策 / 术语新增 / 状态机变化 | hook 模式匹配不到,靠 `CLAUDE.md` 铁律 + 人工把关 |
-
-**java preset** 见 `presets.json` → `java` 节点,核心差异:
-- `*/controller/*Controller.java` 识别 Spring Boot Controller
-- `*Mapper.java` / `*Repository.java` 触发 db 同步检查
-- `*Test.java` / `*/test/**` 替代 `*.test.*` 触发 tests 同步检查
-
-### Preset 选择
-
-`install.sh` 支持 `--preset={default|java|路径}`,覆盖不同项目类型:
-
-| Preset | 适用项目 | 关键差异 |
-|---|---|---|
-| **default**(默认) | 通用 Web:`src/api/**`、`controllers/**`、`routes/**` | 默认推荐,大部分前端/全栈项目 |
-| **java** | Spring Boot / Java EE:`{module}/**/Controller.java`、`{module}/**/Mapper.java`、`migrations/*.sql` | 加 java 特定文件类型识别 |
-| **ehr** | ehr 项目专用 | java preset + `ehr-report` / `report-admin-ui` 项目特定根目录 |
-
-> **不要把项目特定目录名加进 `java` preset** —— 应该新建 `xxx` preset 复用 java 的 patterns。`ehr` preset 即为此模式:用 `--preset=ehr` 而不是污染通用 java。
-
-```bash
-# 通用项目
-bash hlkb-hooks/install.sh
-
-# Java/Spring Boot 项目
-bash hlkb-hooks/install.sh --preset=java
-
-# 自定义 preset(传 JSON 文件路径)
-bash hlkb-hooks/install.sh --preset=/path/to/my-preset.json
-```
-
-**调正则**:编辑 `install.sh` 同目录下的 `presets.json`,增加自定义 preset,改完重跑 `bash hlkb-hooks/install.sh`(幂等)。
-
----
+项目特有匹配放入专用预设。可用 `bash hlkb-hooks/install.sh --preset=/path/to/my-preset.json` 安装自定义配置。修改预设后以同一选项重新运行安装器。
 
 ## 路径验证工具:verify-paths.sh
 
@@ -168,18 +124,18 @@ bash hlkb-hooks/verify-paths.sh
 bash hlkb-hooks/verify-paths.sh /path/to/project
 
 # CI / PR 检查:任何违规就失败
-bash hlkb-hooks/verify-paths.sh --strict
+bash hlkb-hooks/verify-paths.sh . --strict
 ```
 
-**检查 6 项**:
+默认模式列出路径笔误，扫描完成后返回 0。严格模式下，前四项任一命中即返回 1。参数、目录访问或扫描错误返回 2。
 
 | # | 检查项 | 不通过时 |
 |---|---|---|
-| 1 | `.hl/knowledge/` 笔误(经典 ehr ADR-0002 案例) | exit 1 |
-| 2 | `src/knowledge/` 笔误(知识库塞 src) | exit 1 |
-| 3 | `docs/knowledge/` 笔误(迁到 docs 子目录) | exit 1 |
-| 4 | `.knowledge/` 笔误(npm 风格误用) | 仅警告 |
-| 5 | `knowledge/` 真路径存在(11 类知识库归处) | 仅警告 |
+| 1 | `.hl/knowledge/` 笔误(经典 ehr ADR-0002 案例) | 默认警告，严格模式失败 |
+| 2 | `src/knowledge/` 笔误(知识库塞 src) | 默认警告，严格模式失败 |
+| 3 | `docs/knowledge/` 笔误(迁到 docs 子目录) | 默认警告，严格模式失败 |
+| 4 | `.knowledge/` 笔误(npm 风格误用) | 默认警告，严格模式失败 |
+| 5 | `knowledge/` 真路径存在(13 类知识库归处) | 仅警告 |
 | 6 | `.hl/memory/` 项目记忆保留(避免误伤真路径) | 仅信息 |
 
 **排除规则**(避免误报):
@@ -205,7 +161,7 @@ bash hlkb-hooks/verify-paths.sh --strict
 ## 验收 checklist(自己装完跑一遍)
 
 - [ ] `.hlskills` 文件在项目根
-- [ ] `.claude/settings.local.json` 备份存在(`.bak`)
+- [ ] 原先有设置文件时，确认首次备份仍存在
 - [ ] `.claude/settings.local.json` 的 `hooks` 节含 `PreToolUse` + `PostToolUse`
 - [ ] 真实跑漏同步 commit,**harness 真输出** `🚨 知识库未同步`
 - [ ] 同步后 commit 成功
@@ -219,7 +175,7 @@ bash hlkb-hooks/verify-paths.sh --strict
 
 | 项 | `hlkb`(项目知识库 SOP) | `hlkb-hooks`(本技能) |
 |---|---|---|
-| 职责 | 定义 11 类知识库 / 同步触发矩阵 / 模板 | 把触发矩阵**机械化**进 hooks |
+| 职责 | 定义 13 类知识库 / 同步触发矩阵 / 模板 | 把触发矩阵**机械化**进 hooks |
 | 形式 | Markdown 文档 | `install.sh` + 真实 hooks |
 | 调用 | `Skill hlkb` | `Skill hlkb-hooks` + `bash install.sh` |
 | 配套 | 自己 | 引用 hlkb 的同步触发矩阵 |

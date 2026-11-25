@@ -9,7 +9,8 @@
    (无变量时 fallback 到默认主题)
    ============================================================ */
 
-:root {
+/* 兼容早期依赖标注样式表默认变量的页面。 */
+:root:not([data-bl-mode]) {
   --bg: #ffffff;
   --surface: #fafafa;
   --border: #e5e7eb;
@@ -22,12 +23,16 @@
   --radius: 8px;
 }
 
+/* 演示和评审共用同一份业务 DOM。旧版无 data-bl-mode 时沿用原标注行为。 */
+html[data-bl-mode="demo"] :is(.bl-pin, #bl-toggle, #bl-drawer, .bl-test-panel,
+    [data-bl-review-only], [data-diff-mode="baseline"], [data-diff-summary]) { display: none !important; }
+
 /* ===== 钉位 ===== */
 .bl-pin {
   position: absolute; top: -8px; right: -8px;
   width: 22px; height: 22px; border-radius: 50%;
-  background: var(--accent); color: #fff;
-  border: 2px solid var(--bg);
+  background: var(--accent, #2563eb); color: #fff;
+  border: 2px solid var(--bg, #ffffff);
   font-size: 11px; font-weight: 600; line-height: 1;
   cursor: pointer; padding: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,.15);
@@ -43,11 +48,11 @@ body.bl-pins-hidden .bl-pin { opacity: 0; pointer-events: none; transition: opac
   cursor: ew-resize; background: transparent;
   transition: background .15s;
 }
-.bl-drawer-resize:hover { background: var(--accent-bg); }
-.bl-drawer-resize.dragging { background: var(--accent-bg); }
+.bl-drawer-resize:hover { background: var(--accent-bg, #eff6ff); }
+.bl-drawer-resize.dragging { background: var(--accent-bg, #eff6ff); }
 .bl-drawer {
   position: fixed; top: 0; right: 0; height: 100vh; width: 360px;
-  background: var(--bg); border-left: 1px solid var(--border);
+  background: var(--bg, #ffffff); border-left: 1px solid var(--border, #e5e7eb);
   box-shadow: -4px 0 16px rgba(0,0,0,.06);
   transform: translateX(100%); transition: transform .2s ease-out;
   z-index: 1500; display: flex; flex-direction: column;
@@ -56,20 +61,20 @@ body.bl-pins-hidden .bl-pin { opacity: 0; pointer-events: none; transition: opac
 .bl-drawer.open { transform: translateX(0); }
 body.drawer-open { overflow: hidden; }
 .bl-drawer-head {
-  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  padding: 12px 20px; border-bottom: 1px solid var(--border, #e5e7eb);
   display: flex; align-items: center; justify-content: space-between;
   flex-shrink: 0; min-height: 44px;
 }
 .bl-drawer-head .title { font-size: 14px; font-weight: 600; }
-.bl-drawer-head .title .badge { color: var(--accent); margin-right: 8px; }
+.bl-drawer-head .title .badge { color: var(--accent, #2563eb); margin-right: 8px; }
 .bl-drawer-close {
   border: none; background: none; font-size: 20px; cursor: pointer;
-  color: var(--text-2); padding: 0 4px; line-height: 1;
+  color: var(--text-2, #6b7280); padding: 0 4px; line-height: 1;
 }
 .bl-drawer-body { overflow-y: auto; flex: 1; }
-.bl-section { border-top: 1px solid var(--border); }
+.bl-section { border-top: 1px solid var(--border, #e5e7eb); }
 .bl-section:first-child { border-top: none; }
-.bl-section-title { padding: 12px 20px 4px; font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+.bl-section-title { padding: 12px 20px 4px; font-size: 12px; font-weight: 600; color: var(--text-2, #6b7280); text-transform: uppercase; letter-spacing: .05em; }
 .bl-section-body { padding: 4px 20px 12px; font-size: 13px; line-height: 1.7; }
 .bl-section-body p { margin: 0 0 6px; }
 .bl-section-body ol { margin: 0; padding-left: 20px; }
@@ -79,26 +84,26 @@ body.drawer-open { overflow: hidden; }
 .bl-table {
   border-collapse: collapse; width: 100%; margin: 6px 0;
   font-size: 12.5px; font-variant-numeric: tabular-nums;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border, #e5e7eb);
 }
 .bl-table th, .bl-table td {
-  border: 1px solid var(--border); padding: 6px 10px; vertical-align: top;
+  border: 1px solid var(--border, #e5e7eb); padding: 6px 10px; vertical-align: top;
   word-break: break-word;
 }
 .bl-table th {
-  background: var(--surface); font-weight: 600; color: var(--text-2);
+  background: var(--surface, #fafafa); font-weight: 600; color: var(--text-2, #6b7280);
   text-transform: uppercase; font-size: 11px; letter-spacing: .03em;
 }
-.bl-table tbody tr:nth-child(even) td { background: var(--surface); }
-.bl-table tbody tr:hover td { background: var(--accent-bg); }
+.bl-table tbody tr:nth-child(even) td { background: var(--surface, #fafafa); }
+.bl-table tbody tr:hover td { background: var(--accent-bg, #eff6ff); }
 
-.bl-warn { padding: 20px; color: var(--red); font-size: 13px; }
+.bl-warn { padding: 20px; color: var(--red, #dc2626); font-size: 13px; }
 
 /* ===== 悬浮开关 ===== */
 .bl-toggle {
   position: fixed; right: 20px; bottom: 20px;
   width: 44px; height: 44px; border-radius: 50%;
-  background: var(--bg); border: 1px solid var(--border);
+  background: var(--bg, #ffffff); border: 1px solid var(--border, #e5e7eb);
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
   font-size: 18px; cursor: pointer; padding: 0;
   z-index: 1000; display: flex; align-items: center; justify-content: center;
@@ -110,16 +115,17 @@ body.drawer-open { overflow: hidden; }
 .bl-test-panel {
   display: none;
   position: fixed; top: 20px; right: 20px; width: 260px;
-  background: rgba(255,255,255,.96); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 12px;
+  background: rgba(255,255,255,.96); border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 8px); padding: 12px;
   font-size: 12px; z-index: 2000;
   box-shadow: 0 2px 12px rgba(0,0,0,.1);
 }
 .bl-test-panel.visible { display: block; }
 .bl-test-panel h4 { margin: 0 0 8px; font-size: 12px; font-weight: 600; }
 .bl-test-panel .tc { display: flex; justify-content: space-between; padding: 2px 0; }
-.bl-test-panel .pass { color: var(--green); }
-.bl-test-panel .fail { color: var(--red); }
+.bl-test-panel .pass { color: var(--green, #059669); }
+.bl-test-panel .skip { color: var(--text-2, #6b7280); }
+.bl-test-panel .fail { color: var(--red, #dc2626); }
 
 @media (max-width: 1024px) {
   .bl-drawer { width: calc(100vw - 40px); min-width: 320px; }
@@ -127,19 +133,19 @@ body.drawer-open { overflow: hidden; }
 /* ===== 场景流程链 (v28, [flow] 语法渲染) ===== */
 .bl-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 4px 0; }
 .bl-flow-step {
-  background: var(--accent-bg); color: var(--accent);
+  background: var(--accent-bg, #eff6ff); color: var(--accent, #2563eb);
   border-radius: 10px; padding: 2px 8px; font-size: 12px; line-height: 1.6;
 }
 .bl-flow-step.branch {
-  background: transparent; color: var(--red);
-  border: 1px dashed var(--red);
+  background: transparent; color: var(--red, #dc2626);
+  border: 1px dashed var(--red, #dc2626);
 }
-.bl-flow-arrow { color: var(--text-2); font-size: 12px; }
+.bl-flow-arrow { color: var(--text-2, #6b7280); font-size: 12px; }
 
 /* ===== 场景联动按钮 (v28, sections[].state) ===== */
 .bl-state-btn {
-  margin: 2px 0 4px; border: 1px solid var(--border); background: var(--surface);
-  color: var(--accent); border-radius: var(--radius); padding: 3px 10px;
+  margin: 2px 0 4px; border: 1px solid var(--border, #e5e7eb); background: var(--surface, #fafafa);
+  color: var(--accent, #2563eb); border-radius: var(--radius, 8px); padding: 3px 10px;
   font-size: 12px; cursor: pointer;
 }
-.bl-state-btn:hover { background: var(--accent-bg); }
+.bl-state-btn:hover { background: var(--accent-bg, #eff6ff); }

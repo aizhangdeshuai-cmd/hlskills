@@ -39,6 +39,9 @@ venv/
 # hlkb-hooks 本地哨兵文件(每个开发者本地一份,不入库)
 .hlskills
 
+# 项目本地授权记录
+.claude/.hl-permission.json
+
 # hlkb-hooks 装/卸过程的中间产物
 .claude/.hlkb-hooks-data.json
 
@@ -51,3 +54,22 @@ venv/
 docs/*/.dev-rejected
 docs/*/.product-archived
 .gstack/
+
+# 本地交付试跑、回归和评审记录
+/deliverables/
+/tests/
+/hlbrowse/test_browse.py
+/hlpm/examples/appointment-reschedule/
+/hlkb/examples/blacklist-api.md
+/hlkb/examples/blacklist-state-machine.md
+/hlwrite-skill/evals/cases.json
+/docs/review/20??-??-??-*.md
+/docs/review/evals/
+/docs/review/local-index.md
+/.github/workflows/verify-skills.yml
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/

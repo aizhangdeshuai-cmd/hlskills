@@ -1,6 +1,7 @@
 ---
 name: hlpm-path-conventions
-description: 交付文档目录规范中央文档（版本管理）。定义 14 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。**v18 变更**: 产品段交付物由 8 项扩为 9 项(新增"设计稿截图"),6 必出 + 3 条件出。**v19 变更**: 验收标准合并入一致性矩阵 §1"验收方法"列,产品段交付物由 9 项减为 8 项(5 必出 + 3 条件出),交付物总数 15 → 14。**v29 变更**: 生成文档根 `docs/` → `knowledge/`,版本快照 `docs/vN/` → `knowledge/doc/vN/`,扫描双读兼容老 `docs/v*/`。被 SKILL.md / hlpm / hldev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
+description: >-
+  交付文档目录规范中央文档（版本管理）。定义 14 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。**v18 变更**: 产品段交付物由 8 项扩为 9 项(新增"设计稿截图"),6 必出 + 3 条件出。**v19 变更**: 验收标准合并入一致性矩阵 §1"验收方法"列,产品段交付物由 9 项减为 8 项(5 必出 + 3 条件出),交付物总数 15 → 14。**v29 变更**: 生成文档根 `docs/` → `knowledge/`,版本快照 `docs/vN/` → `knowledge/doc/vN/`,扫描双读兼容老 `docs/v*/`。被 SKILL.md / hlpm / hldev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
 ---
 
 # 交付文档完整目录规范
@@ -8,97 +9,72 @@ description: 交付文档目录规范中央文档（版本管理）。定义 14 
 > 属于 `hlskills` 技能系统的**中央规范文档**。
 > 被以下 3 个文件共同引用：
 > - 主入口 `SKILL.md`（通用规则：文件输出路径）
-> - `hlpm/SKILL.md`（产品段 8 项交付物）
+> - `hlpm/SKILL.md`（完整交接的 8 类产物。仅交 PRD 或原型时按选定终点使用相应路径）
 > - `hldev/SKILL.md`（开发段 6 项补充交付物）
 >
 > **目的**：解决"路径规范散落 3 个文件 + 不完整（5 个问题）"的现状，作为单一可信源（single source of truth）。
 
 ---
 
-## 零、版本目录管理(核心）
+## 零、版本目录与状态
 
-### 0.1 核心规则
+### 0.1 发现版本
 
-> **每次产品段流程产出 8 项交付物(5 必出 + 3 条件出)到独立版本目录** `knowledge/doc/vN/`，目录名直接显示版本号
+从目标项目根运行随技能分发的 [version.py](version.py)。`HLPM_DIR` 指向本次加载的 hlpm 目录。`list` 只读扫描新根 `knowledge/doc/` 与旧根 `docs/` 的 `vN` 子目录，N 是从 1 起的整数。输出 JSON 的 `versions` 按数值排序，每项有 `version`、相对于项目的 `path` 和 `state`；`next` 是尚未创建的新根建议路径。
 
-- **版本号格式**：`vN`（N 为 1, 2, 3 ... 整数递增，从 v1 开始）
-- **目录位置**：`knowledge/doc/v1/` `knowledge/doc/v2/` `knowledge/doc/v3/` ...(v29 起;老项目为 `docs/v1/` 等)
-- **目录内容**：8 项产品交付物(5 必出 + 3 条件出)**全部**放入版本目录
-- **目录间关系**：版本目录之间**完全独立**，不共享文件，不软链
-
-### 0.2 启动时版本扫描（阻塞点）
-
-启动产品段时，**`analyst` 必须先扫描历史版本**：
-
-```bash
-# 扫描命令(v29 起双读兼容:同时看 knowledge/doc/v*/ 和老 docs/v*/)
-ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
+```sh
+python3 "$HLPM_DIR/version.py" list .
+# 继续现有包时使用选定的编号或路径；同号须指定路径
+VERSION_DIR=$(python3 "$HLPM_DIR/version.py" resolve . docs/v7) || exit 1
 ```
 
-**扫描结果 3 种情况**：
+### 0.2 选择版本
 
-#### 情况 A: 没有历史版本
-- 直接创建 `knowledge/doc/v1/`，所有 8 项交付物放 `knowledge/doc/v1/`
-- 不询问用户
+- 已指定版本目录时优先解析该目录。只给编号且两个根均有同号时，脚本列出两个实际目录并返回非零，待选定后继续。
+- 创建产品版本时，有 ready 或 rejected 包就列出实际目录，让用户选续写或新建；accepted 表示开发正在使用，completed 和 archived 作为历史保留。若没有待续写包，或用户已选新建，运行 `python3 "$HLPM_DIR/version.py" new .` 创建并取得绝对路径。编号取两根中的最大编号加 1，无历史版本时为 v1。
+- 开发段接收已交接的明确路径。缺少路径时选本次任务对应的可接收包，如有歧义先核对。accepted 版本可续办开发。conflict 表示已有互斥标记并存，应保留现场并核实记录后再继续。
+### 0.2.1 旧版本原地续写
 
-#### 情况 B: 有历史版本，全部"已开发"
-- 历史版本目录中存在 `.dev-completed` 标记文件(如 `knowledge/doc/vN/.dev-completed`,老项目 `docs/vN/.dev-completed`)
-- 视为"该版本已交付且开发段已接手/发布"
-- **直接创建新版本**（如 `knowledge/doc/v3/`），不询问用户
-- 命名规则：上一个版本号 + 1
+在交付摘要写明版本目录和适用条件。后文用 `{version_dir}` 表示这一实际目录，`{ver}` 仅表示如 v7 的编号。新包创建在 `knowledge/doc/`，续修的文档、拒收单和标记全部写回选定目录。跨版本共享文档仍在 `knowledge/`。
 
-#### 情况 C: 有"未开发"的历史版本（阻塞点）
-- 历史版本目录中**没有** `.dev-completed` 标记文件
-- 即"产品已交付但开发段未接手"
-- **必须用 `AskUserQuestion` 询问用户**：
+### 0.2.2 包身份与复盘
 
-  ```
-  问题：检测到以下未开发版本，请选择处理方式：
-    - v1（[2026-06-20] PRD 8 条业务规则 / 3 页面 / 1 一致性矩阵未通过）
-    - v2（[2026-06-24] PRD 3 条业务规则 / 1 页面 / 1 一致性矩阵未通过）
+从项目根运行 `python3 "$HLPM_DIR/version.py" retro . "$VERSION_DIR"`。输出 `packages[0].package` 是包相对项目的路径，`report` 是该包唯一的复盘位置。例如 `docs/v7` 写到 `knowledge/retro/docs/v7.md`，`knowledge/doc/v7` 写到 `knowledge/retro/knowledge/doc/v7.md`。创建父目录后在报告首部登记实际包路径，各阶段按同一包和章节更新。阶段结论关联本次修订、验证日期，开发完成时记录候选 SHA 与完成日期。
 
-  选项:
-    A. 在 [v1] 基础上修改（保留 v1 已有内容，叠加新需求，版本号仍为 v1）
-    B. 在 [v2] 基础上修改
-    C. 新建版本（v3 / v4...，与历史版本完全独立）
-  ```
+早期的 `knowledge/retro/v7.md` 保存在原处。命令在 `legacy` 中列出旧文件及其可能对应的包。首次续办时依据旧记录中的包路径、交接记录或提交确认归属，再把该包已有的阶段结果和旧文件引用记入对应 `report`。同号旧文件归属不明或混有多包时，只采用能确认来源的部分，其余列入待核。统计按 `package` 去重，产品和开发的同包记录算一期。
 
-- 用户选择后：
-  - 选 A/B → 当前版本号仍为选中的旧版本，**所有交付物更新到该旧版本目录**
-  - 选 C → 新建版本目录，独立的 8 项交付物
+### 0.3 接收、拒收与复验
 
-### 0.2.1 迁移规则(v29)
+状态脚本只记录已经做出的决定。文件检查与人工内容验收见[产品交接清单](handoff-package.md)。
 
-- **双读兼容**:扫描/读取时同时看 `knowledge/doc/v*/` 与老 `docs/v*/`,老项目历史版本照常可读
-- **新写入只进 knowledge/**:新建版本一律写 `knowledge/doc/vN/`;全局文档(`design/` `adr/` `user/` `qa/` `tech-design.md` `rollback.md`)一律写 `knowledge/` 下
-- **老版本原地修改**:在老项目只有 `docs/v*/` 的情况下,情况 C 选择"在旧版本上修改"时,该旧版本仍写回原 `docs/vN/` 目录(保持版本完整性,不拆散历史版本)
-- **技能不主动迁移**:技能**不主动执行** `git mv`。建议用户自行一次性迁移:
+| list 输出 | 空标记 | 可做的工作 |
+|---|---|---|
+| ready | 无 | 待产品打包或开发接收，按条件继续。 |
+| rejected | `.dev-rejected` | 开发在 `{version_dir}/handoff-rejection.md` 追加问题、定位与日期，再执行 `mark "$VERSION_DIR" reject`。产品追加修订证据，重新执行步骤 9.5 和 11，将原包交回复验。 |
+| accepted | `.dev-accepted` | 开发第 0 步对文件与适用内容均验收通过后执行 `mark "$VERSION_DIR" accept`。复验通过时替换拒收标记，拒收单和修订历史保留。 |
+| completed | `.dev-completed` | 第 13 步验证开发成果后，由写入角色根据 verifier 结论执行 `mark "$VERSION_DIR" complete`。发布与部署有各自的证据。 |
+| archived | `.product-archived` | 产品决定归档待接收或已拒收的包时执行 `mark "$VERSION_DIR" archive`。之后的发现操作仍展示历史状态。 |
 
-  ```bash
-  mkdir -p knowledge/doc && git mv docs/v* knowledge/doc/ && git mv docs/design docs/adr docs/user docs/qa knowledge/
-  ```
+```sh
+# 命令格式。动作只选本次实际决定的一项。
+python3 "$HLPM_DIR/version.py" mark "$VERSION_DIR" accept
+```
 
-### 0.3 标记文件约定
-
-| 文件 | 位置 | 含义 | 何时创建 |
-|------|------|------|---------|
-| `.dev-completed` | `knowledge/doc/vN/.dev-completed` | 该版本已交付 + 开发段已接手/发布 | `hldev` 步骤 13 "交付验证"通过时由 `verifier` 创建 |
-| `.dev-rejected` | `knowledge/doc/vN/.dev-rejected` | 该版本已被开发段拒收 | `hldev` 步骤 0 拒收时由 `executor` 创建（"未开发"状态保留,产品段需补齐后重发） |
-| `.product-archived` | `knowledge/doc/vN/.product-archived` | 产品段已主动归档该版本（不再开发） | 产品经理 `analyst` 主动创建 |
-
-**重要**：标记文件是空文件（0 字节），仅作存在性检查。老项目的同名标记文件在 `docs/vN/` 下,同样有效(双读兼容)。
+重复同一动作可安全重试。无标记的新旧包均按 ready 处理。旧 `.dev-rejected` 可走同一复验流程，旧 `.dev-completed` 和 `.product-archived` 可直接识别。迁移前已进入开发但无 accepted 标记的版本，沿用原接收记录或复验后登记 accept。状态冲突、并发争用或目录错误会返回非零并说明原因。
 
 ### 0.4 完整目录结构（含版本目录）
 
 ```
 {项目根目录}/
 ├── knowledge/                              # 生成文档根(v29 起;原 docs/)
-│   ├── doc/                                # 版本快照区(hlpm 管,不属 hlkb 10 类总库)
+│   ├── doc/                                # 版本快照区(hlpm 管,不属 hlkb 13 类总库)
 │   │   ├── v1/                                 # 版本 1
 │   │   │   ├── prd.md
 │   │   │   ├── test-cases.md
 │   │   │   ├── non-functional-requirements.md
 │   │   │   ├── consistency-matrix.md          # 含验收标准(§1 业务规则覆盖矩阵"验收方法"列)
+│   │   │   ├── acceptance-plan.json            # 已确认来源、AC 和必测 TC，供交接与候选测试读取
+│   │   │   ├── acceptance-sources.sha256       # 需求澄清时冻结的来源清单摘要
 │   │   │   ├── handoff-self-check.md
 │   │   │   ├── design/
 │   │   │   │   ├── *.html
@@ -106,9 +82,7 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 │   │   │   │   └── bl-marker.js                    # bl-marker 钉点资产(v23 起随设计稿复制)
 │   │   │   ├── analysis/
 │   │   │   │   └── competitive-analysis.md
-│   │   │   ├── .dev-completed                  # 标记文件(空文件）
-│   │   │   ├── .dev-rejected                   # 标记文件(空文件）
-│   │   │   └── .product-archived               # 标记文件(空文件）
+│   │   │   └── .dev-accepted                   # 当前状态示例；其余状态见 §0.3
 │   │   └── v2/                                 # 版本 2（独立）
 │   │       └── ... （同 v1 结构）
 │   ├── design/                             # 全局设计规范（与版本无关）
@@ -124,9 +98,9 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 │   ├── rollback.md                         # 全局回滚方案
 │   ├── qa/                                 # 全局测试报告
 │   │   └── *.md
-│   ├── prd.md                              # hlkb 总 PRD(跨版本累计,hlpm 步骤 11 追加)
+│   ├── prd.md                              # hlkb 总 PRD(跨版本累计,hlpm 步骤 12 追加)
 │   ├── glossary.md                         # hlkb 术语表(通用语言,hlpm 步骤 1 梳理)
-│   ├── api/ db/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/   # hlkb 各类总库
+│   ├── api/ db/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/ pitfalls/ retro/   # hlkb 各类总库
 │   └── README.md                           # hlkb 知识库总目录
 ├── CHANGELOG.md                            # 根目录（业界惯例）
 ├── DESIGN.md                               # 根目录（跨目录兜底）
@@ -137,7 +111,7 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 
 ### 0.5 与"文档深度 ≤ 4 层"规则的关系
 
-**版本目录只增加一层深度**：
+**标准路径的目录深度**：
 
 - 旧路径(v12-v28)：`docs/v1/prd.md`（深度 2)
 - 新路径(v29 起)：`knowledge/doc/v1/prd.md`（深度 3,**符合 ≤ 4 限制**）
@@ -171,7 +145,7 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 |------|------|------|
 | `CHANGELOG.md` | 项目根目录 | 业界惯例（GitHub / npm / Cargo 等放根目录） |
 | `DESIGN.md` | 项目根目录 | 6a.1 步骤的跨目录兜底（项目级而非文档级） |
-| `knowledge/` | 项目根目录 | hlskills 生成文档根(v29 起):含 hlpm 版本快照区 `doc/vN/` + 全局文档(design/adr/user/qa/tech-design.md/rollback.md) + hlkb 项目总文件库(10 类跨版本累计:PRD/接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/总测试库)。放根目录可见,与 src/ 同 commit |
+| `knowledge/` | 项目根目录 | hlskills 生成文档根(v29 起):含 hlpm 版本快照区 `doc/vN/` + 全局文档(design/adr/user/qa/tech-design.md/rollback.md) + hlkb 项目总文件库(13 类跨版本累计:PRD/术语表/接口/数据库/ADR/状态机/枚举/错误码/依赖/环境变量/总测试库/踩坑记录/版本复盘)。放根目录可见,与 src/ 同 commit |
 | `.hl/memory/` | 项目根目录 | hlskills 体系约定的 AI 跨会话工作记忆目录(hlmemory 维护)。点开头隐藏,因属工具内部状态非正式交付 |
 
 ---
@@ -200,7 +174,7 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 │   │   └── *.md                             # 测试报告、健康评分、审计报告
 │   ├── prd.md                               # hlkb 总 PRD(跨版本累计)
 │   ├── glossary.md                          # hlkb 术语表
-│   ├── api/ db/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/   # hlkb 各类总库
+│   ├── api/ db/ state-machines/ enums/ error-codes/ dependencies/ env-vars/ tests/ pitfalls/ retro/   # hlkb 各类总库
 │   └── README.md                            # hlkb 知识库总目录
 ├── CHANGELOG.md                             # 开发段：变更日志（根目录特例）
 ├── DESIGN.md                                # 项目设计规范（6a.1 跨目录兜底 #4）
@@ -216,23 +190,24 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 
 ## 三、14 项交付物完整路径映射
 
-### 3.1 产品段交付物（8 项，v19 起验收标准并入一致性矩阵，全部进版本目录 `knowledge/doc/vN/`）
+### 3.1 产品段交付物（5 必出 + 3 条件出，验收标准并入一致性矩阵，适用项进实际 `{version_dir}`）
 
 | # | 交付物 | 路径 | Agent | 步骤 |
 |---|--------|------|-------|------|
-| 1 | 竞品分析报告 | `knowledge/doc/{ver}/analysis/competitive-analysis.md` | `analyst` 生成 → 写入文件 | 2b/2c |
-| 2 | PRD 文档 | `knowledge/doc/{ver}/prd.md` | `analyst` 生成 → 写入文件 | 4 |
-| 3 | 设计稿 | `knowledge/doc/{ver}/design/<page-name>.html` | `designer` | 6b |
-| 4 | 设计稿截图 | `knowledge/doc/{ver}/design/screenshot-<page-name>.png` | `designer` 调 `hlbrowse` | 6b.5 |
-| 5 | 测试用例快照 | `knowledge/doc/{ver}/test-cases.md` | `test-engineer`(hlpm 验收 + hldev 白盒) | 8 / 10 |
-| 6 | 非功能需求 | `knowledge/doc/{ver}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 10 |
-| 7 | 一致性矩阵(含验收标准) | `knowledge/doc/{ver}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
-| 8 | 自检报告 | `knowledge/doc/{ver}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |
+| 1 | 竞品分析报告 | `{version_dir}/analysis/competitive-analysis.md` | `analyst` 核证，主代理形成建议并写入 | 2b/2c |
+| 2 | PRD 文档 | `{version_dir}/prd.md` | `analyst` 生成 → 写入文件 | 4 |
+| 3 | 设计稿 | `{version_dir}/design/<相对页面路径>.html` | `designer` | 6b |
+| 4 | 设计稿截图 | 与 HTML 同目录的 `screenshot-<文件主名>.png` | `designer` 调 `hlbrowse` | 6b.5 |
+| 5 | 测试用例快照 | `{version_dir}/test-cases.md` | `test-engineer`（产品验收用例） | 8 |
+| 6 | 非功能需求 | `{version_dir}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 10 |
+| 7 | 一致性矩阵(含验收标准) | `{version_dir}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
+| 8 | 自检报告 | `{version_dir}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |
 
-> **`{ver}` = 当前版本号**（如 `v1` / `v2` / `v3`），由 0.6 步骤的版本扫描决定
-> 例：当前产品段流程在 v2，则 PRD 写到 `knowledge/doc/v2/prd.md`
+一致性矩阵的机器可读附件是同目录的 `acceptance-plan.json` 和来源摘要 `acceptance-sources.sha256`。自检报告保存本次交接输出的 `plan_sha256`（验收计划）与 `spec_sha256`（PRD、用例和非功能需求正文）。涉及 UI 时，交接同包的 `design/interaction-check.md` 及其引用的实际运行证据。[交接格式](handoff-package.md)
 
-### 3.2 开发段交付物（6 项，hldev 步骤 13 输出）
+每个适用页面保留一张默认态截图。例：`design/components/cart.html` 对应 `design/components/screenshot-cart.png`，`design/orders.diff.html` 对应 `design/screenshot-orders.diff.png`。旧包将截图集中在 design/ 时，仅在文件主名全包唯一时可以匹配。附加状态图按验收条款补充。
+
+### 3.2 开发段交付物（6 项，hldev 步骤 13 验收）
 
 | # | 文档 | 路径 | 负责 Agent | 步骤 |
 |---|------|------|-----------|------|
@@ -240,8 +215,10 @@ ls -d knowledge/doc/v*/ docs/v*/ 2>/dev/null | sort -V
 | 10 | 架构决策记录 | `knowledge/adr/NNNN-<slug>.md` | `architect` | 3 |
 | 11 | 用户操作手册 | `knowledge/user/manual.md` | `writer` | 13 |
 | 12 | 帮助文档 | `knowledge/user/help.md` | `writer` | 13 |
-| 13 | 变更日志 | `CHANGELOG.md`（根目录） | `planner` | 13 |
+| 13 | 变更日志 | `CHANGELOG.md`（根目录） | `executor` | 13 |
 | 14 | 回滚方案 | `knowledge/rollback.md` | `architect` | 13 |
+
+开发段步骤 10 另行更新跨版本的总测试库 `knowledge/tests/{module}.md`，其内容按 hlkb 的总测试库规范验收。
 
 ### 3.3 项目记忆（1 项，可选，由 hlmemory 技能管理）
 
@@ -279,6 +256,7 @@ knowledge/doc/{ver}/design/login.html
 2. knowledge/design/SKILL.md      ← 次规范
 3. knowledge/design/ 下任意 .md    ← 兜底
 4. 项目根目录 DESIGN.md            ← 跨目录兜底
+5. hlkb 搜索 hllegacy:ui          ← 已归档在其他知识条目中的前端规范章节，回读适用范围与核验状态
 ```
 
 如全部未找到，输出"未发现设计规范"报告，继续后续步骤。
@@ -305,11 +283,11 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 
 | 引用方 | 引用内容 | 引用位置 |
 |--------|---------|---------|
-| `SKILL.md`（主入口） | "所有产出文件路径详见 `hlpm/path-conventions.md`" | 第 112-127 行"通用规则：文件输出路径" |
-| `hlpm/SKILL.md` | 8 项交付物路径表 | "交付文档清单（产品段 8 项）"段 |
+| `SKILL.md`（主入口） | "所有产出文件路径详见 `hlpm/path-conventions.md`" | 「通用规则：文件输出路径」 |
+| `hlpm/SKILL.md` | 引用产品交接清单 | 「11、12. 自检与打包」 |
 | `hlpm/handoff-package.md` | 8 项交付清单 + 交付包总览 | 顶部交付清单 + 交付包总览段 |
-| `hlpm/consistency-rules.md` | 设计稿 HTML 路径示例 | 第 48-67 行 |
-| `hldev/SKILL.md` | 6 项补充交付物路径 | 第 204-211 行 |
+| `hlpm/consistency-rules.md` | 设计稿 HTML 路径示例 | 「业务规则覆盖矩阵」 |
+| `hldev/SKILL.md` | 6 项补充交付物路径 | 「交付文档清单（开发段补充）」 |
 
 **维护原则**：本规范是**单一可信源**。如其他文件的路径与本规范冲突，**以本规范为准**；其他文件应在评审时同步更新。
 
@@ -332,5 +310,6 @@ PRD v2 / 设计 v2 / 用例 v2  → 一致性矩阵 v2
 - v23：设计稿单文件化（单文件 .html + bl-marker 钉点）；接入时 `cp hlpm/templates/bl-marker/bl-marker.{css,js} docs/{ver}/design/`，`docs/{ver}/design/` 目录新增 `bl-marker.css` / `bl-marker.js` 两个资产文件
 - v24：PRD 附录 A-G；附录 G 在 `prd.md` 内部，无新增文件，无路径影响
 - v25：取消需求规模（轻量/标准/复杂）选择，一律按复杂需求标准；无路径影响
-- v29：生成文档根 `docs/` → `knowledge/`,版本快照 `docs/vN/` → `knowledge/doc/vN/`;全局文档 `docs/{design,adr,user,qa}` → `knowledge/` 同名目录,`docs/tech-design.md` / `docs/rollback.md` → `knowledge/` 下;深度规则 ≤ 3 → ≤ 4(快照区多一层);0.2 扫描双读兼容老 `docs/v*/`,新写入只进 `knowledge/`;技能不主动 `git mv`,建议用户自行一次性迁移(§0.2.1)
+- v29：生成文档根 `docs/` → `knowledge/`,版本快照 `docs/vN/` → `knowledge/doc/vN/`;全局文档 `docs/{design,adr,user,qa}` → `knowledge/` 同名目录,`docs/tech-design.md` / `docs/rollback.md` → `knowledge/` 下;深度规则 ≤ 3 → ≤ 4(快照区多一层);0.2 扫描双读兼容老 `docs/v*/`,新写入只进 `knowledge/`;既有版本按原目录续写(§0.2.1)
 - v31：PRD 附录 A-H;附录 H 信息架构在 `prd.md` 内部,无新增文件,无路径影响
+- v32：知识库新增 `knowledge/pitfalls/`(踩坑记录,hlbug 步骤 14 强制)与 `knowledge/retro/v{N}.md`(版本复盘,hlpm 12.5 + hldev 15.5);两者归 hlkb 13 类总库,目录树同步

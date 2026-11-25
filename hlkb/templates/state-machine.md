@@ -1,59 +1,21 @@
-# 状态机模板
+# {实体名} 的状态机
 
-> 复制本文件, 重命名为 `{entity}.md` 放到 `knowledge/state-machines/`
-
-## 实体信息
-
-| 项 | 值 |
-|---|---|
-| 实体名 | `blacklist` (黑名单记录) |
-| 字段 | `status` ENUM |
-| 引入版本 | v1 初始 / v3 扩展 |
-| 当前版本 | v3 |
+将本页复制到 `knowledge/state-machines/{entity}.md`。填写实体、状态字段、实际版本和定义来源。仅从本期需求、实现或测试提取状态和转移。已约定但尚未验证的行为记“待核”，相互冲突的描述写明各自出处。
 
 ## 状态列表
 
-| 状态 | 含义 | 列表可见 | 终态? | 引入版本 |
+| 状态值 | 业务含义 | 初态或终态 | 对用户或调用方的影响 | 版本及依据 |
 |---|---|---|---|---|
-| `ACTIVE` | 活跃状态, 默认显示 | ✅ | ❌ | v1 |
-| `REMOVED` | 已软删除, 需"显示已移除"开关才可见 | ✅ | ❌ | v1 |
-| `SUPERSEDED` | 被合并取代(同证件号恢复时级联) | ❌ | ✅ | v3 |
-| `HISTORICAL` | 归档终态(本期 v3 不实现, 预留) | ❌ | ✅ | v3 |
 
-## 流转图
+## 转移条件
 
-```mermaid
-stateDiagram-v2
-  [*] --> ACTIVE: BL-7 新增 / BL-8 导入 / 上游推送
-  ACTIVE --> REMOVED: BL-10 移除
-  REMOVED --> ACTIVE: BL-12 恢复 (v3 新增)
-  ACTIVE --> SUPERSEDED: BL-12 恢复时 (同证件号 ACTIVE 存在, 方案 C)
-  REMOVED --> SUPERSEDED: 暂未实现(v4 评估)
-  SUPERSEDED --> [*]: 终态
-  HISTORICAL --> [*]: 终态(本期不实现)
-```
+| 起始状态 | 触发事件及前置条件 | 权限 | 目标状态 | 副作用或拒绝结果 | 关联规则、测试及证据 |
+|---|---|---|---|---|---|
 
-## 转移条件(总表)
+## 流转图及终态
 
-| From | To | 触发 | 关联 BL | 权限 |
-|---|---|---|---|---|
-| (无) | ACTIVE | 表单新增 | BL-7 | `blacklist:create` |
-| (无) | ACTIVE | Excel 导入 | BL-8 | `blacklist:import` |
-| (无) | ACTIVE | 上游推送 | (约定接口, 本项目不实现) | 系统 |
-| ACTIVE | REMOVED | 操作列"移除" | BL-10 | `blacklist:remove` |
-| REMOVED | ACTIVE | 操作列"恢复" | BL-12 | `blacklist:restore` |
-| ACTIVE | SUPERSEDED | BL-12 恢复时(同证件号 ACTIVE 存在) | BL-12 | `blacklist:restore`(级联) |
-
-## 终态规则
-
-| 终态 | 列表可见 | DB 保留 | 审计可查 |
-|---|---|---|---|
-| SUPERSEDED | ❌ 永不显示 | ✅ | ✅ |
-| HISTORICAL | ❌ 永不显示(本期不触发) | ✅ | ✅ |
+依据上表的本期转移绘制 Mermaid 图。记录可到达的终态、允许的后续操作及已约定的保留策略。预留状态或未实现的转移单独列出。
 
 ## 关联
 
-- 业务规则: `knowledge/doc/v3/prd.md §12 BL-12`(恢复 + 合并)
-- 数据库: `knowledge/db/blacklist.md §状态枚举扩展历史`
-- ADR: `knowledge/adr/0001-bl12-restore-strategy.md`
-- 枚举: `knowledge/enums/blacklist-status.md`
+填写本实体实际使用的需求版本路径、条款编号、数据定义和决策记录。只引用可定位到的资料。

@@ -1,55 +1,24 @@
-# 版本基线表的 commit 流程
+# 交付物基线登记
 
-> 本文件: `hlpm/disciplines/baseline-commit.md`
-> 适用范围: hlpm 流程(版本交付物管理)
+仅交 PRD 或 PRD 与原型时，在已交文档记录版本、确认范围和实际评审状态。完整交接复用这些记录，在步骤 0.6 选定的版本目录创建或更新 `{version_dir}/consistency-rules.md`，从[一致性规则](../consistency-rules.md)取“版本基线表”表头。PRD、设计和用例首次定稿分别登记基线 v1，修订记录关联交付物、基线版本、步骤与证据。
 
----
+## 项目使用 Git 时
 
-## 触发位置
+完整交接中，主代理或指定执行者按项目授权为每个交付物基线单独提交一次。提交本次定稿的文档及项目基线表，设计基线包含页面及实际依赖的本地资源。步骤 11 的自检已生成且属于同次变更时也可附上。提交仅包含本基线的文件。
 
-PRD / 设计 / 测试用例任一基线版本 v1 登记到 `consistency-rules.md` 的版本基线表时,**必须 commit**。
-
----
-
-## Commit 规范
-
-- **提交方**: 主 agent 或 `planner` 执行(由 hldev/git-master 协作)
-- **Commit 格式**: `docs(vX): baseline {PRD|design|test-cases} v1` (例:`docs(v1): baseline PRD v1`)
-- **提交粒度**: 每个基线版本单独 commit, 不合并
-- **附带内容**:
-  - PRD 文档本身(`prd.md` / `design/*.html` / `test-cases.md`)
-  - `consistency-rules.md` 版本基线表的对应行
-  - 可选: `handoff-self-check.md` (步骤 11 才生成)
-- **不应包含**: `.ts` / `.js` 等源代码(角色边界铁律)
-
----
-
-## 示例
-
-> 注: 项目侧基线表 = `knowledge/doc/{ver}/consistency-rules.md`(首次从技能模板 `hlpm/consistency-rules.md` 复制创建,之后随基线登记更新)
+以下为 PRD 首次定稿的示例，`PROJECT` 为业务项目根目录，`VERSION_DIR` 为本次所选版本的绝对路径。示例同样适用于旧目录 `docs/v7`。
 
 ```bash
-git add knowledge/doc/v1/prd.md knowledge/doc/v1/consistency-rules.md
-git commit -m "docs(v1): baseline PRD v1" -m "由 analyst 主导生成,产品段第一阶段(PRD 定稿后)登记基线版本 v1。"
+git -C "$PROJECT" add -- "$VERSION_DIR/prd.md" "$VERSION_DIR/consistency-rules.md"
+git -C "$PROJECT" commit --only -m "docs(${VERSION_DIR##*/}): baseline PRD v1" -- "$VERSION_DIR/prd.md" "$VERSION_DIR/consistency-rules.md"
 ```
 
----
+设计和用例基线使用同样的方式，明确列出本次提交的文件，标题项分别为 `design` 和 `test-cases`。重复执行前先核对表中同一交付物、基线和提交，已有记录直接复用。
 
-## 失败处理
+## 未能登记或提交
 
-- `consistency-rules.md` 缺失 → 阻塞 9.5 通过
-- commit 失败(如 git 未初始化) → 警告但不阻塞(允许在交付物阶段手动补 commit)
+- 基线表缺失或与交付物不一致时，修复记录再通过步骤 9.5。
+- 项目明确在 Git 之外管理时只登记项目表，备注管理方式。
+- 项目使用 Git 但提交失败时，记录错误及待补动作，保留文档基线和实际提交状态。
 
----
-
-## 项目级覆盖
-
-如项目明确表示"ehr 本身不进 git" 等特殊情况,**允许跳过 commit**, 仅登记 `consistency-rules.md` 版本基线表(基线表本身作为流程记录), 不实际 commit。
-
----
-
-## 关联
-
-- SKILL.md: `./SKILL.md`
-- 角色边界铁律: `./role-boundary.md`
-- 完成前验证: `./completion-validation.md`
+[产品流程](../SKILL.md) · [角色边界](role-boundary.md) · [完成前验证](completion-validation.md)

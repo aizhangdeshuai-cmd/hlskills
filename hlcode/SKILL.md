@@ -1,6 +1,6 @@
 ---
 name: hlcode
-description: 编码标准规范，覆盖命名规范（camelCase/PascalCase/UPPER_SNAKE）、不可变性与类型安全（禁止any/展开运算符）、文件组织（功能模块/单文件<=300行）、代码味道清单（魔法数字/复杂三元/重复代码/未处理错误）。Use when 用户需要遵循编码标准（命名/不可变性/文件组织/代码味道）时调用。
+description: 开发或审查代码时，根据项目规范检查命名、类型、可变状态、重复的业务逻辑和错误处理。
 ---
 
 # 编码标准
@@ -8,6 +8,8 @@ description: 编码标准规范，覆盖命名规范（camelCase/PascalCase/UPPE
 ---
 
 ## 命名与可读性
+
+遵循目标语言和项目的 lint 配置、命名及组织惯例。下表为 JavaScript / TypeScript 示例。
 
 | 类型 | 规范 | 示例 |
 |------|------|------|

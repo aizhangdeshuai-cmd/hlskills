@@ -21,7 +21,7 @@
      ------------------------------------------------------------
      1. 这是模板数据 — 在你自己的设计稿里替换成实际 PRD 章节
      2. 每个 BL 必须有 title (含 "BL-N 名称" 前缀) + sections[] 数组
-     3. 叙事结构(v28 起固定, 对齐 PRD 15 字段卡片):
+     3. 从本版 PRD 功能卡摘录以下展示内容（含历史 15 字段卡）:
         一句话 → 主场景 → 替代/异常场景 → 业务规则 → 状态机变化 → AC 验收表
         (缺场景/规则/AC 任一段 → hlpm 6b.6 评审驳回)
      4. sections[].body 支持四种语法:
@@ -38,18 +38,28 @@
      7. ⚠️ 同步源: 同步 knowledge/doc/{ver}/prd.md §N 时, 这里也要改
      ============================================================ */
   var REQUIREMENTS = {
-    bl1: { title: 'BL-1 示例需求点', sections: [
-      { title: '一句话', body: '替换成你的 PRD §1 一句话描述(本节首行会被 JS 自动用作钉点 hover 摘要).' },
-      { title: '主场景', body: '[flow]\n1. 用户点击"导出" → 2. 系统校验筛选条件 → 3. 生成并下载文件' },
-      { title: '替代/异常场景', body: '[flow]\n3a. 筛选结果为空:提示"无数据可导出"\n3b. 无权限:按钮置灰 + hover 提示原因', state: 'error' },
-      { title: '业务规则', body: '1. 业务规则 1(摘自 PRD §1.9 原文)\n2. 业务规则 2\n3. 业务规则 3' },
-      { title: '状态机变化', body: '导出任务: 无 → 生成中 → 已完成/失败(不涉及状态机则写"不涉及")' },
-      { title: 'AC 验收', body: '| AC | 验收点 | 优先级 |\n|---|---|---|\n| AC-1 | 示例验收 1 | P0 |\n| AC-2 | 示例验收 2 | P0 |' }
+    bl1: { title: 'BL-1 导出订单', sections: [
+      { title: '一句话', body: '将当前筛选出的订单下载为 CSV。' },
+      { title: '主场景', body: '[flow]\n1. 选择“已完成” → 2. 点击“导出 CSV” → 3. 下载一笔订单，页面显示“已导出 1 笔订单”' },
+      { title: '异常场景', body: '[flow]\n1. 选择“已取消” → 2. 显示“无数据可导出”，导出按钮置灰', state: 'error' },
+      { title: '业务规则', body: 'CSV 包含订单号和状态，仅列出当前可见订单。' },
+      { title: '状态机变化', body: '导出成功后订单状态保持原值。' },
+      { title: 'AC 验收', body: '| AC | 验收点 |\n|---|---|\n| AC-1 | “已完成”导出 O-1024，不含待处理订单 |\n| AC-2 | 无匹配订单时不能导出 |' }
     ]},
-    bl2: { title: 'BL-2 第二个示例', sections: [
-      { title: '一句话', body: '复制上面 BL-1 的叙事结构(一句话/主场景/替代异常/规则/状态机/AC), 替换内容即可.' }
+    bl2: { title: 'BL-2 筛选订单', sections: [
+      { title: '一句话', body: '选择状态可缩小列表，选回“全部状态”可恢复全部订单。' },
+      { title: '主场景', body: '[flow]\n1. 打开页面 → 2. 选择“已完成” → 3. 列表仅显示 O-1024' },
+      { title: '替代场景', body: '[flow]\n1. 切回“全部状态” → 2. 两笔订单重新可见' },
+      { title: '业务规则', body: '初始显示全部订单，空结果时可切换到其他状态。' },
+      { title: '状态机变化', body: '切换仅更新展示范围，订单状态保持原值。' },
+      { title: 'AC 验收', body: '| AC | 验收点 |\n|---|---|\n| AC-3 | 切换筛选立即更新订单列表 |' }
     ]}
   };
+
+  document.addEventListener('bl:check-pins', function(event) {
+    event.detail.issues = pinCoverage();
+  });
+  if (document.documentElement.dataset.blMode === 'demo') return;
 
   // ===== 抽屉 =====
   var drawer = document.getElementById('bl-drawer');
@@ -377,14 +387,35 @@
   });
 
   // ===== 调试面板 =====
+  function pinCoverage() {
+    var defined = Object.keys(REQUIREMENTS);
+    var marked = new Set(Array.from(document.querySelectorAll('.bl-pin'), function(pin) {
+      return pin.dataset.bl || '(空)';
+    }));
+    var missing = defined.filter(function(id) { return !marked.has(id); });
+    var unknown = Array.from(marked).filter(function(id) { return !defined.includes(id); });
+    var issues = [];
+    if (!defined.length) issues.push('无需求定义');
+    if (missing.length) issues.push('缺钉位 ' + missing.join(', '));
+    if (unknown.length) issues.push('未定义 ' + unknown.join(', '));
+    return issues;
+  }
   function isTestMode() { return !!window.__BL_TEST__; }
   function showTestPanel(results) {
     var panel = document.createElement('div');
     panel.className = 'bl-test-panel visible';
-    panel.innerHTML = '<h4>BL TC 调试面板 (?bl-test=1)</h4>' +
+    var checks = Object.values(results);
+    var passed = checks.filter(function(check){ return check.pass === true; }).length;
+    var skipped = checks.filter(function(check){ return check.skipReason; }).length;
+    var executed = checks.length - skipped;
+    panel.innerHTML = '<h4>钉点自测：已执行 ' + executed + ' 项，通过 ' + passed +
+      ' 项，失败 ' + (executed - passed) + ' 项，跳过 ' + skipped + ' 项</h4>' +
       Object.keys(results).map(function(k){
         var r = results[k];
-        return '<div class="tc"><span>' + k + ' ' + r.name + '</span>' +
+        if (r.skipReason) {
+          return '<div class="tc" data-check="' + k + '"><span>' + k + ' ' + r.name + '</span><span class="skip">跳过：' + r.skipReason + '</span></div>';
+        }
+        return '<div class="tc" data-check="' + k + '"><span>' + k + ' ' + r.name + '</span>' +
                '<span class="' + (r.pass ? 'pass' : 'fail') + '">' + (r.pass ? '✓' : '✗') + '</span></div>';
       }).join('');
     document.body.appendChild(panel);
@@ -392,15 +423,16 @@
   function runAllTC() {
     var results = {};
     results.TC01 = { name: '所有 BL 抽屉有内容', pass: false };
-    var checked = [];
-    Object.keys(REQUIREMENTS).forEach(function(blId){
-      var pin = document.querySelector('.bl-pin[data-bl="' + blId + '"]');
-      if (!pin) return;
+    var allPins = Array.from(document.querySelectorAll('.bl-pin'));
+    results.TC01.pass = allPins.length > 0 && allPins.every(function(pin){
+      var blId = pin.dataset.bl;
+      if (!Object.prototype.hasOwnProperty.call(REQUIREMENTS, blId)) return false;
+      closeDrawer();
       pin.click();
       var t = document.getElementById('bl-drawer-title').textContent;
-      if (currentBl === blId && t && t.length > 0) checked.push(blId);
+      return currentBl === blId && t && drawerBody.querySelector('.bl-section-body');
     });
-    results.TC01.pass = checked.length === Object.keys(REQUIREMENTS).length;
+    closeDrawer();
 
     results.TC02 = { name: '同 BL 双击 关闭再开', pass: false };
     var p = document.querySelector('.bl-pin[data-bl="bl3"]') || document.querySelector('.bl-pin');
@@ -415,6 +447,7 @@
     results.TC03 = { name: '× / ESC / 外部 都能关', pass: false };
     var p3 = document.querySelector('.bl-pin[data-bl="bl1"]') || document.querySelector('.bl-pin');
     if (p3) {
+      closeDrawer();
       p3.click();
       document.getElementById('bl-drawer-close').click();
       var afterX = !currentBl;
@@ -454,37 +487,20 @@
     var rect = toggleBtn.getBoundingClientRect();
     results.TC07.pass = rect.left >= 0 && rect.top >= 0 && rect.left <= maxX && rect.top <= maxY;
 
-    results.TC08 = { name: '每 BL 各有钉位', pass: false };
-    var counts = {};
-    document.querySelectorAll('.bl-pin').forEach(function(p){
-      counts[p.dataset.bl] = (counts[p.dataset.bl] || 0) + 1;
-    });
-    var allCovered = Object.keys(REQUIREMENTS).every(function(k){ return (counts[k]||0) >= 1; });
-    results.TC08.pass = allCovered;
+    results.TC08 = { name: '需求和钉位双向对应', pass: false };
+    var issues = pinCoverage();
+    results.TC08.pass = !issues.length;
+    if (issues.length) results.TC08.name += ' · ' + escapeHtml(issues.join(' · '));
 
     results.TC09 = { name: '钉位 button 可 focus', pass: false };
     var pins = document.querySelectorAll('.bl-pin');
     var allFocusable = Array.from(pins).every(function(p){ return p.tagName === 'BUTTON'; });
     var toggleFocusable = toggleBtn.tagName === 'BUTTON';
-    results.TC09.pass = allFocusable && toggleFocusable;
+    results.TC09.pass = pins.length > 0 && allFocusable && toggleFocusable;
 
-    results.TC10 = { name: '切页关闭抽屉', pass: false };
-    var anyPin = document.querySelector('.bl-pin');
-    if (anyPin) {
-      anyPin.click();
-      var navItem = document.querySelector('.nav-item');
-      if (navItem) {
-        navItem.click();
-        results.TC10.pass = !currentBl;
-      } else {
-        // 无 nav 时跳过：复位抽屉后判通过
-        document.getElementById('bl-drawer-close').click();
-        results.TC10.name = '切页关闭抽屉（无 nav，跳过）';
-        results.TC10.pass = true;
-      }
-    } else {
-      results.TC10.pass = true;  // 无钉位时跳过
-    }
+    results.TC10 = { name: '业务页面导航' };
+    var navigation = document.querySelector('a[href], .nav-item, [role="link"]');
+    results.TC10.skipReason = navigation ? '使用交互用例实测导航' : '页面无导航';
 
     showTestPanel(results);
   }

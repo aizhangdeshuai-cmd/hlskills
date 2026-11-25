@@ -59,7 +59,7 @@ description: 一句话定位 + Use when 触发条件 + 通过 /hlxxx 调用。
 | user-invoked | 用户显式 `/hlxxx` | 编排(调其他技能/agent) | hlchain / hlpm / hldev |
 | model-invoked | 用户或 Agent 自动调 | 可复用纪律(单一职责) | hlcode / hlapi / hldesign |
 
-- user-invoked 可调 model-invoked,**不可调另一个 user-invoked**(避免编排嵌套混乱)
+- 显式启动 `hlchain` 后，可按用户选定的范围调用 `hlpm`、`hldev` 等阶段技能。阶段完成后交回当前链路；单独启动阶段技能时由用户选择下一步。
 - model-invoked 是"纪律载体",任何技能可引用
 
 ## 写作反模式(避免)
@@ -71,7 +71,7 @@ description: 一句话定位 + Use when 触发条件 + 通过 /hlxxx 调用。
 | 不可验证 | 纯叙事无检查项 | 加 grep/文件存在/退出码检查 |
 | 重复定义 | 同一规则多处写 | 单一可信源,各处引用 |
 | 绝对化措辞 | "必须阻塞"但无机制 | 加"靠 Agent 自觉"(能力边界声明) |
-| 角色混淆 | user-invoked 调 user-invoked | model-invoked 才可被任意调 |
+| 角色混淆 | 阶段技能自行启动另一条链路 | 在已有链路内交还控制，独立调用时由用户选择下一步 |
 
 ## 评审 checklist(写完技能自检)
 
@@ -83,8 +83,13 @@ description: 一句话定位 + Use when 触发条件 + 通过 /hlxxx 调用。
 - [ ] 交接段(若被 hlchain 编排)
 - [ ] 完成前自检(可机械验证)
 - [ ] 无重复定义(引用单一源)
+- [ ] 可执行的技能依赖指向本库文件。引入上游流程时，在 [来源记录](../docs/upstreams.md) 标注固定版本、采用范围与许可；在没有其他技能库的环境中检验主入口。
 - [ ] 措辞可预测(无"视情况")
 - [ ] user/model-invoked 归类清晰
+
+## 验证路由和实际交付
+
+改动触发描述、任务流程或验收条件时，用项目自己的同一批题在独立会话比较旧版与新版。路由覆盖直接命中、相邻意图和无需调用，交付题选可观察结果的实际任务。运行 `python3 hlwrite-skill/evals/evaluate.py --cases "$SUITE" blind routing` 取得无答案题面，交付题将 `routing` 换成 `delivery`。只给答题者本次题面和对应版本的技能。题集格式、评分与真实用量登记见[盲测运行说明](evals/README.md)。
 
 ## 关联
 

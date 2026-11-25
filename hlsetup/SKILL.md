@@ -9,196 +9,38 @@ description: hlskills 一键安装与部署，支持 Claude Code / Codex / Curso
 
 ---
 
-## 安装流程
+## 从指定 checkout 安装
+
+从用户选定的 hlskills 仓库根运行 `python3 hlsetup/install.py <平台>`，平台取 `claude`、`codex`、`cursor` 或 `all`。安装器以自身所在 checkout 为来源。Claude 的技能、命令、角色分别链接到 `~/.claude/{skills,commands,agents}`。Codex 使用用户技能目录 `~/.agents/skills/`。Cursor 使用 `~/.cursor/skills/`。[Codex 官方技能目录](https://developers.openai.com/codex/skills/)
 
 ```bash
-# 1. 检测当前环境
-echo "=== 检测环境 ==="
-echo "OS: $(uname -s)"
-echo "Shell: $SHELL"
-
-# 2. 检测已安装的 AI 工具
-CLAUDE_SKILLS=""
-CODEX_SKILLS=""
-CURSOR_SKILLS=""
-[ -d ~/.claude/skills ] && CLAUDE_SKILLS=~/.claude/skills && echo "✅ Claude Code"
-[ -d ~/.codex/skills ] && CODEX_SKILLS=~/.codex/skills && echo "✅ Codex CLI"
-[ -d ~/.cursor/skills ] && CURSOR_SKILLS=~/.cursor/skills && echo "✅ Cursor"
+python3 hlsetup/install.py claude
+python3 hlsetup/install.py claude --check
 ```
 
----
+`--check` 检查缺失、来源冲突和随版本退役的已安装入口，发现问题即返回非零。更新本 checkout 后再次安装即可补新入口并清理旧名。旧版若在宿主专属目录同时保留了指向本 checkout 的总链接与子技能链接，安装器可以接管同名、同源的旧链接。Codex 迁移时先建立共享入口，再撤下 `~/.codex/skills/` 中原属本库的链接。发现其他 checkout 的同名副本时先核对其本地修改，需保留的副本移出发现目录再重试。
 
-## 项目级 hooks 一键安装(知识库强同步)
-
-**`hlskills` 安装到工具** ≠ **项目用上 hooks**。要把"代码改动→knowledge/ 同步"机械化,需要在目标项目里跑:
-
-```bash
-cd <目标项目根>          # 比如 ~/work/my-app
-bash <hlskills 仓库>/hlkb-hooks/install.sh              # 通用 Web 项目
-# 或
-bash <hlskills 仓库>/hlkb-hooks/install.sh --preset=java  # Java/Spring Boot 项目
-```
-
-详见 `hlkb-hooks/SKILL.md`。安装后:
-
-- **PreToolUse**: `git commit` 漏同步时 harness 真实 exit 2 阻断
-- **PostToolUse**: 改完接口/db/枚举/错误码/测试立即 stdout 提示
-- **哨兵 `.hlskills`**: 只对 hlskills 涉及的项目生效(其他项目零干扰)
-- **可绕过**: `git commit --no-verify` 或 commit message 加 `[skip-kb-sync]`
-
-> 注:本节先于"Claude Code 安装"展示,是因为**装到项目**比**装到 IDE** 优先级更高 ── 没有 hooks 强行同步,`hlkb` 知识库很易漂。
-
----
-
-## Claude Code 安装
-
-```bash
-# 创建 hlskills 技能符号链接
-HL_SRC=~/.agents/skills/hlskills
-
-for skill_dir in "$HL_SRC"/hl*/; do
-  name=$(basename "$skill_dir")
-  [ -f "$skill_dir/SKILL.md" ] && \
-    ln -sf "$skill_dir" ~/.claude/skills/"$name"
-done
-
-# 总入口
-ln -sf "$HL_SRC" ~/.claude/skills/hlskills
-
-# slash commands(让 /hlpm /hldev /hlchain 等真能用)
-mkdir -p ~/.claude/commands
-if [ -d "$HL_SRC/.claude/commands" ]; then
-  cp "$HL_SRC"/.claude/commands/*.md ~/.claude/commands/ 2>/dev/null && \
-    echo "✅ slash commands: $(ls ~/.claude/commands/hl*.md 2>/dev/null | wc -l) 个(/hlpm /hldev /hlchain /hlquickstart /hlbug ...)"
-fi
-
-echo "✅ Claude Code 安装完成: $(ls ~/.claude/skills/hl* | wc -l) 个技能"
-```
-
----
-
-## Codex CLI 安装
-
-```bash
-# Codex 使用相同技能目录格式
-HL_SRC=~/.agents/skills/hlskills
-
-mkdir -p ~/.codex/skills
-
-for skill_dir in "$HL_SRC"/hl*/; do
-  name=$(basename "$skill_dir")
-  [ -f "$skill_dir/SKILL.md" ] && \
-    ln -sf "$skill_dir" ~/.codex/skills/"$name"
-done
-
-ln -sf "$HL_SRC" ~/.codex/skills/hlskills
-echo "✅ Codex CLI 安装完成"
-```
-
----
-
-## Cursor 安装
-
-```bash
-# Cursor 使用 .cursorrules 和 .cursor/skills/
-HL_SRC=~/.agents/skills/hlskills
-
-mkdir -p ~/.cursor/skills
-
-for skill_dir in "$HL_SRC"/hl*/; do
-  name=$(basename "$skill_dir")
-  [ -f "$skill_dir/SKILL.md" ] && \
-    ln -sf "$skill_dir" ~/.cursor/skills/"$name"
-done
-
-ln -sf "$HL_SRC" ~/.cursor/skills/hlskills
-echo "✅ Cursor 安装完成"
-```
-
----
-
-## 一键全部安装
-
-```bash
-#!/bin/bash
-HL_SRC=~/.agents/skills/hlskills
-
-# Claude Code
-if [ -d ~/.claude/skills ]; then
-  for d in "$HL_SRC"/hl*/; do
-    n=$(basename "$d")
-    [ -f "$d/SKILL.md" ] && ln -sf "$d" ~/.claude/skills/"$n"
-  done
-  ln -sf "$HL_SRC" ~/.claude/skills/hlskills
-  echo "✅ Claude Code: $(ls ~/.claude/skills/hl* 2>/dev/null | wc -l) skills"
-fi
-
-# Codex
-if [ -d ~/.codex ]; then
-  mkdir -p ~/.codex/skills
-  for d in "$HL_SRC"/hl*/; do
-    n=$(basename "$d")
-    [ -f "$d/SKILL.md" ] && ln -sf "$d" ~/.codex/skills/"$n"
-  done
-  ln -sf "$HL_SRC" ~/.codex/skills/hlskills
-  echo "✅ Codex: $(ls ~/.codex/skills/hl* 2>/dev/null | wc -l) skills"
-fi
-```
-
----
+运行记录按宿主和 checkout 存于 `~/.local/state/hlskills/`。安装前已有的同源共享入口可直接复用。重新打开宿主的技能列表，核对 `hlpm` 和总入口的实际来源，再按需读取同一 checkout 的角色。
 
 ## 卸载
 
 ```bash
-for dir in ~/.claude/skills/hl* ~/.codex/skills/hl* ~/.cursor/skills/hl*; do
-  rm -f "$dir" 2>/dev/null
-done
-echo "✅ hlskills 已卸载"
+python3 hlsetup/install.py claude --uninstall
 ```
 
----
+卸载会复核归属并移除该宿主已登记且仍指向本 checkout 的链接，包含源文件已删除的旧名。用户替换的文件和借用的共享入口保留。卸载其他平台时替换平台参数。
 
-## 验证
+## 候选包验收
 
-安装后执行：
+维护者可将候选归档解到空目录，在独立的宿主账户中从解包目录执行上面的安装和 `--check`。检查输出的“技能来源”是否为该解包目录，再重开宿主，核对 `hlskills` 和 `hlpm` 的来源路径。任一入口缺失或指向其他副本时，记录宿主、候选路径和安装器诊断后复验。
+
+## 启用项目知识库 hook
+
+在业务项目目录运行所选 checkout 中的安装脚本：
 
 ```bash
-# 确保 hlskills 总入口可用
-ls ~/.claude/skills/hlskills/SKILL.md && echo "✅ 总入口就绪"
-
-# 确保至少核心技能可用
-for skill in hlpm hldev hlbug hllegacy hlrefactor hltest; do
-  [ -L ~/.claude/skills/$skill ] && echo "✅ $skill" || echo "❌ $skill"
-done
-
-# 确保 Agent 目录存在
-ls ~/.agents/skills/hlskills/agents/ | wc -l | xargs echo "Agent 数量:"
+bash "/实际仓库路径/hlkb-hooks/install.sh" --dry-run
+bash "/实际仓库路径/hlkb-hooks/install.sh" --preset=default
 ```
 
----
-
-## 一键安装(Claude Code)实际效果
-
-```bash
-$ cd <目标项目根>
-$ bash <hlskills 仓库>/hlkb-hooks/install.sh --preset=java
-📁 项目根: <目标项目根>
-  ✓ 放 .hlskills 哨兵
-  ✓ 备份原 settings 到 settings.local.json.hlkb-hooks.bak
-  · preset: java
-  ✓ 渲染 hook command 完成 (1731 + 861 字节)
-  ✓ hooks 已写入 settings.local.json
-🔍 验证...
-  ✓ JSON 格式合法
-  ✓ PreToolUse matcher : Bash
-  ✓ PostToolUse matcher: Write|Edit|MultiEdit
-  ✓ PreToolUse cmd     : 1731 字节
-  ✓ PostToolUse cmd    : 861 字节
-  ✓ .hlskills 哨兵已放
-  ✓ 备份存在: settings.local.json.hlkb-hooks.bak
-✅ 安装完成。
-```
-
----
-
-> **路径规范**：本文件涉及的 `knowledge/` 路径命名遵循 `hlpm/path-conventions.md` 中央规范。
+安装器按条目合并到项目的 `.claude/settings.local.json`。撤销方法、旧版备份和提交检查范围见 [hlkb-hooks](../hlkb-hooks/SKILL.md)。

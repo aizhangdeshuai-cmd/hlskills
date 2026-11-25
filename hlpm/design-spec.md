@@ -3,15 +3,17 @@ name: hlpm-design-spec
 description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v23 起 DEPRECATED,仅供历史追溯,不得用于新设计稿)。原含 6a.1 规范遵循、6a.2 两档保真度定义、6b 微调/全新页面产出规则、6b.5 截图策略、6b.5.1 交互验证、6b.6 评审把关 + 档二活文档 5 区块扩展(悬浮框/角标/logic-data/联动脚本/框架场景 mounted 绑定/sticky header)。v23 前曾被 SKILL.md §第二阶段步骤 6a-6b.6 引用;v23 起档二活文档(5 区块悬浮框)已被 `templates/bl-marker/` 钉点系统取代。Use when 仅历史追溯——查询旧档二活文档/悬浮框写法的历史规范时;新设计稿一律使用 `templates/bl-marker/` 钉点系统。
 ---
 
-# hlpm 设计阶段实施规范
+# 设计规范存档（v18 档二）
 
 > ⚠️ **v23 起 DEPRECATED**:5 区块悬浮框/档二活文档已被 `templates/bl-marker/` 钉点系统取代,本文件仅供历史追溯,不得用于新设计稿。
 
-> 本文件从 `SKILL.md` 第二阶段拆出,承载设计稿产出的**实施细节**(尤其档二活文档的 HTML/JS/CSS 模板)。
-> SKILL.md 第二阶段只保留**流程关卡 + 触发条件 + 指向本文件**;具体怎么写见此。
-> 配套示例:`examples/order-list-with-export-csv.html`(v21 起已被 `templates/bl-marker/bl-marker-template.html` 取代,冻结存档)
+当前设计稿从[产品段步骤 6a.2–6b.6](design-stage.md)和[本地钉点模板](templates/bl-marker/bl-marker-template.html)进入。每个页面交付一份带钉点的 HTML。浏览器验证使用页面本身，检查 BL 抽屉、场景流程与异常状态联动。
 
-   ### 🆕 5 区块扩展（仅当 6a.2 选"档二:高保真 + 逻辑说明活文档"时强制）
+## 历史实现与示例
+
+以下内容仅供维护既有 v18 档二双文件归档时核对。配套的[订单列表示例](examples/order-list-with-export-csv.html)保留当时的悬浮框实现。
+
+   ### v18 档二历史结构
 
    > **触发条件**：6a.2 选了"档二:高保真 + 逻辑说明活文档" → 3 区块扩为 5 区块；选"档一:高保真 HTML(生产态)"维持 3 区块原结构。
    >
@@ -184,7 +186,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
 
    **任一检查失败** → 标 🔴 + 阻塞 6b.5 截图 + 必须补齐,**不得"先截图后补脚本"**(脚本未生效时截图无法反映交互能力)。
 
-   **`verifier` 二次验证**: 设计评审时(默认模式 6b.6 立即评审 / 旧分阶段模式步骤 7),`verifier` 调 `Skill hlbrowse` 打开设计稿(档二用 `.demo.html`),**实际点击 1 个角标**(选最大块的 PR-XXX),**必须看到悬浮框展开 + 切到 tab 7 + 对应 logic-item 高亮**。否则评审不通过。
+   **v18 归档样例的预期表现**：旧版 `.demo.html` 中点 PR 角标会展开悬浮框的第 7 个标签页，并高亮对应条目。当前页面的验收动作以产品段 6b.5.1 为准。
 
    #### 🚨 框架场景: 脚本必须在 mounted 回调内执行(高频坑)
 
@@ -374,7 +376,7 @@ description: hlpm 设计阶段实施规范(档一/档二设计稿产出细则,v2
    
      详情: docs/review/v15-multi-angle-audit.md "设计稿元信息不进生产代码" 段
 
-     **🚨 与 hldev 端对齐(白名单镜像)**: 本节列出的白名单同步写入 `hldev/SKILL.md` 第 0 步"设计稿搬移白名单"段。任何开发与产品对搬移范围有分歧 → 以 `hldev/SKILL.md` 第 0 步为准(开发段有最终裁定权,因为它负责落地)。
+     产品与开发按同一份[历史原型搬移规范](../hldesign/legacy-prototype.md)复核真实界面及评审标记。
    -->
    ```
 

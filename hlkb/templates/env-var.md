@@ -112,4 +112,4 @@
 - 数据库: `knowledge/db/`
 - API 接口: `knowledge/api/`
 - 依赖: `knowledge/dependencies/`
-- 项目元信息: 项目根 `CLAUDE.md`
+- 项目元信息：`{项目约束文件实际路径}`

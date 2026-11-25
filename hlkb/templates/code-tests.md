@@ -2,8 +2,9 @@
 
 > 复制本文件, 重命名为 `{module}.md` 放到 `knowledge/tests/`。
 > 一个模块一个文件,是该模块的**总测试库**:验收用例(黑盒)+ 代码层用例(白盒)+ 交叉追溯,累计当前状态,标注引入版本。
-> - 验收用例:hlpm 步骤 8 产出(`knowledge/doc/{ver}/test-cases.md` 为版本快照),hldev 步骤 10 沉淀到本文件
-> - 代码层用例:hldev 步骤 10 基于本次 code diff 编写,双写:`knowledge/doc/{ver}/test-cases.md`(版本快照,与验收用例同文件)+ 本文件(总库累计)
+> `{version_dir}` 使用本次收到的实际版本目录，包括旧项目的 `docs/vN/`。
+> - 验收用例:hlpm 步骤 8 产出(`{version_dir}/test-cases.md` 为版本快照),hldev 步骤 10 沉淀到本文件
+> - 代码层用例由 hldev 步骤 10 编写，按稳定 ID 关联本文件、实际测试代码及对应候选的 QA 报告。
 > - 与代码同 commit 维护,跨版本持续更新(同 `knowledge/api/`、`knowledge/db/`)
 
 ## 模块基本信息
@@ -17,42 +18,32 @@
 | 测试代码路径 | `src/test/java/.../BlacklistServiceTest.java`(按项目语言约定,不写死) |
 | 关联接口知识库 | `knowledge/api/blacklist.md` |
 | 关联数据库知识库 | `knowledge/db/blacklist.md` |
-| 版本快照 | `knowledge/doc/v{N}/test-cases.md`(验收用例 hlpm 产出 + 白盒用例 hldev 追加,固定不变) |
+| 版本快照 | `{version_dir}/test-cases.md`（产品定稿的验收用例） |
 
-## 一、验收用例(黑盒,hlpm 产出)
+## 一、验收用例（产品段）
 
-> 业务黑盒视角,基于 PRD + 设计双源编写。每个验收用例编号 `AC-NNN`,可反推 PRD 验收标准。
+以下黑名单恢复样例仅说明引用方式。复制时替换为实际 PRD、矩阵与测试位置。BL 指需求点，AC 指矩阵 §1 的验收条件，TC 指有输入和预期结果的用例。一个 AC 可有多个 TC。
 
-| AC ID | 标题 | 对应 PRD 规则 | 验收方法 | 引入版本 |
+| PRD 需求点 | 矩阵验收条件 | 测试用例 | 前置条件与预期结果 | 引入版本 |
 |---|---|---|---|---|
-| AC-001 | 列表展示 10 字段 | BL-1 | 实际渲染对比 | v1 |
-| AC-011 | 权限细粒度(view/create/import/remove) | BL-11 | 4 角色 × 4 权限点 | v1 |
-| AC-012 | 恢复已移除黑名单 | BL-12 | 恢复操作 + 状态对比 | v3 |
+| BL-12 恢复黑名单 | AC-012 可恢复已移除记录，且同一证件只保留一条有效记录 | TC-021 | 记录已移除，恢复后列表可见且状态有效 | v3 |
+| BL-12 | AC-012 | TC-022 | 同一证件并发恢复两次，最终只有一条有效记录 | v3 |
 
-## 二、代码层用例(白盒,hldev 产出)
+## 二、代码层用例（开发段）
 
-> 覆盖验收用例写不出的代码层修改点:内部 API 异常分支 / DB 约束 / 缓存 / 并发 / 实现选型边界 / 重构回归点。
-
-| 测试点 ID | 类型 | 覆盖的代码分支/修改点 | 对应 AC | 测试代码位置 | 引入版本 |
-|---|---|---|---|---|---|
-| UT-BL-001 | 内部分支 | `restore()` 的 null 入参分支 | AC-012 | `BlacklistServiceTest#restore_nullInput` | v3 |
-| UT-BL-002 | DB 约束 | 软唯一索引 `uniq_blacklist_active` 冲突 | AC-007 | `BlacklistServiceTest#create_duplicateActive` | v3 |
-| UT-BL-003 | 并发竞态 | 两人同时恢复同证件号(supersede 事务原子性) | AC-012 | `BlacklistServiceTest#restore_concurrent` | v3 |
-| IT-BL-001 | 集成 | restore API 全链路(鉴权→service→DB→审计) | AC-012 | `BlacklistAPIIT#restore_fullChain` | v3 |
+| 测试点 ID | 对应 TC | 对应 AC | 核对行为 | 测试代码位置（示例） |
+|---|---|---|---|---|
+| IT-BL-001 | TC-021 | AC-012 | 恢复接口至列表读取 | BlacklistAPIIT#restore_fullChain |
+| UT-BL-003 | TC-022 | AC-012 | 并发恢复的唯一性 | BlacklistServiceTest#restore_concurrent |
 
 ## 三、交叉追溯
 
-| AC ID(验收) | 代码层覆盖(UT/IT) | 覆盖状态 |
-|---|---|---|
-| AC-001 | UT-BL-Display / IT-BL-List | ✅ |
-| AC-011 | UT-BL-Permission | ✅ |
-| AC-012 | UT-BL-001/003 + IT-BL-001 | ✅ |
-| AC-XXX | (待补) | ⚠️ 待补 |
+| AC | TC | 代码层用例 | 当前提交与运行证据 | 结果 |
+|---|---|---|---|---|
+| AC-012 | TC-021 | IT-BL-001 | | 待验证 |
+| AC-012 | TC-022 | UT-BL-003 | | 待验证 |
 
-**规则**:
-- 每个验收用例(AC-NNN)须在"代码层覆盖"列出现至少一次,或显式标注"由 xx 覆盖"
-- 未覆盖的 AC 标 `⚠️ 待补`,不得遗漏
-- **反模式禁止**:不得"照着实现写用例"——预期以 PRD 验收标准为准,代码偏离 PRD 时改代码不改用例
+新增需求保留稳定的 BL、AC、TC 及测试点编号。当前文档引用的每个编号应能在定义表、版本矩阵或显式标注的测试位置查到。代码层用例可被多个 TC 复用；人工验证项记录步骤、执行人和证据。缺定义、缺真实测试或缺本次运行证据时标明缺口。填“通过”前核对对应版本、测试与实际结果。
 
 ## 四、代码层用例类型说明
 
@@ -67,7 +58,7 @@
 
 ## 关联
 
-- 版本快照: `knowledge/doc/{ver}/test-cases.md`(验收用例 + 白盒用例,固定不变)
-- 一致性矩阵 §1: `knowledge/doc/{ver}/consistency-matrix.md`("实现覆盖"列指向本文件测试点 ID)
+- 版本快照: `{version_dir}/test-cases.md`（产品定稿的验收用例）
+- 一致性矩阵 §1: `{version_dir}/consistency-matrix.md`("实现覆盖"列指向本文件测试点 ID)
 - 涉及决策: `knowledge/adr/{NNNN}-{slug}.md`
 - 状态机: `knowledge/state-machines/{entity}.md`

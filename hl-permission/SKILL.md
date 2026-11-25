@@ -9,7 +9,7 @@ description: 一键授权当前项目目录下所有文件改动（Edit/Write/Ba
 
 > ## ⚠️ 安全警告
 >
-> **`hl-permission` 等效于 Claude Code 项目级的 `--dangerously-skip-permissions`**。启用后,Agent 在你整个项目里**任意操作不再询问**:
+> 本技能向项目配置写入 Edit、Write、Bash、Read 的 allow 匹配规则。实际免确认范围由宿主的规则匹配、拒绝规则和运行环境决定。宽泛授权涉及以下操作：
 > - 可删除任意文件(包括 `git rm`/`rm`/`rm -rf`)
 > - 可改写任意文件(包括 `.env` / 凭据 / 配置文件)
 > - 可推送任意 commit / tag(包括 force push 到 main)
@@ -28,101 +28,21 @@ description: 一键授权当前项目目录下所有文件改动（Edit/Write/Ba
 
 ---
 
-## 执行
+## 开启与撤销
+
+从目标项目（含子目录）调用本技能同目录的 `permissions.py`。使用加载的技能文件所在目录解析脚本路径。两次调用均从 Git 查询根目录，非 Git 目录使用当前工作目录。
 
 ```bash
-# 检测项目根目录
-_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")
-echo "PROJECT_ROOT=$_ROOT"
-
-# 确认 settings.local.json 存在
-mkdir -p "$_ROOT/.claude"
-[ ! -f "$_ROOT/.claude/settings.local.json" ] && echo '{}' > "$_ROOT/.claude/settings.local.json"
+python3 "/实际技能目录/hl-permission/permissions.py"
+python3 "/实际技能目录/hl-permission/permissions.py" --off
 ```
 
-然后使用 Python 将权限追加到 `$_ROOT/.claude/settings.local.json`：
-
-```python
-import json, os, sys
-
-root = os.environ.get('PROJECT_ROOT', os.getcwd())
-
-settings_path = os.path.join(root, '.claude', 'settings.local.json')
-
-with open(settings_path, 'r') as f:
-    settings = json.load(f)
-
-permissions = settings.setdefault('permissions', {})
-allow = permissions.setdefault('allow', [])
-
-new_allows = [
-    f"Edit({root}/**)",
-    f"Write({root}/**)",
-    f"Bash(*:{root}*)",
-    f"Read({root}/**)"
-]
-
-added = 0
-for a in new_allows:
-    if a not in allow:
-        allow.append(a)
-        added += 1
-        print(f"+ {a}")
-
-if added == 0:
-    print("全部权限已存在，无需添加")
-
-with open(settings_path, 'w') as f:
-    json.dump(settings, f, indent=2, ensure_ascii=False)
-
-print(f"\n已授权 {added} 项权限 → {root}")
-print("⚠️ 此权限写入 settings.local.json 持久保留(不被 git 追踪),不会随窗口关闭失效。")
-print("   完成任务后请执行 /hl-permission --off 撤销。")
-```
-
----
-
-## 关闭
-
-```bash
-_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")
-echo "PROJECT_ROOT=$_ROOT"
-```
-
-```python
-import json, os
-
-root = os.environ['PROJECT_ROOT']
-settings_path = os.path.join(root, '.claude', 'settings.local.json')
-
-with open(settings_path, 'r') as f:
-    settings = json.load(f)
-
-allow = settings.get('permissions', {}).get('allow', [])
-to_remove = [
-    f"Edit({root}/**)", f"Write({root}/**)", f"Bash(*:{root}*)", f"Read({root}/**)"
-]
-
-removed = 0
-for item in to_remove:
-    if item in allow:
-        allow.remove(item)
-        removed += 1
-        print(f"- {item}")
-
-settings['permissions']['allow'] = allow
-with open(settings_path, 'w') as f:
-    json.dump(settings, f, indent=2, ensure_ascii=False)
-
-print(f"\n已移除 {removed} 项权限")
-```
-
----
+第一条开启项目的四条匹配规则，第二条撤销。状态保存在项目的 `.claude/.hl-permission.json`，用于保留启用前已有的同名权限。旧版没有该记录，直接执行 `--off` 时沿用旧版行为，移除本项目的四条精确匹配规则。
 
 ## 说明
 
 - **权限范围**：当前 git 仓库根目录（或当前目录）下的所有文件 Edit / Write / Read + 目录相关的 Bash 命令
-- **持久性**：写入项目 `.claude/settings.local.json`，该文件不会被 git 追踪
+- **持久性**：写入项目 `.claude/settings.local.json`，建议将本地设置和授权状态文件加入项目的 Git 忽略规则
 - **恢复**：执行 `/hl-permission --off` 或直接删除 `.claude/settings.local.json` 中的相应条目
 - **安全**：仅授权当前项目，不影响其他项目的权限策略
 
