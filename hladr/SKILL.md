@@ -1,12 +1,12 @@
 ---
 name: hladr
-description: 架构决策记录（ADR）规范，定义何时记录、ADR格式（标题/上下文/备选方案/决策/后果）、取代规则。Use when 关键技术选型、架构设计决策。通过 /hladr 调用。
+description: 架构决策记录（ADR）规范，定义何时记录、必填字段、取代与归档规则。Use when 关键技术选型、架构设计决策。通过 /hladr 调用。
 ---
 
 # 架构决策记录（ADR）
 
 > **🚨 与 hlkb 合并**: hladr 产出的 ADR 文件直接写入项目的 `knowledge/adr/` 目录(不独立存放在 `docs/adr/`)。
-> 模板/编号/维护规则详见 `hlkb` 技能 + `hlkb/templates/adr.md` + 项目级 `knowledge/adr/README.md`。
+> 模板、编号与维护规则详见 [ADR 模板](../hlkb/templates/adr.md) 和项目级 `knowledge/adr/README.md`。
 
 ---
 
@@ -19,36 +19,19 @@ description: 架构决策记录（ADR）规范，定义何时记录、ADR格式�
 - **基础设施** — 数据库选型、消息队列、缓存方案
 - **关键约定** — API版本策略、鉴权方式、部署策略
 
+项目已有 ADR 目录或格式时沿用项目约定；与本技能默认值冲突时，在首个 ADR 中注明采用的格式及原因。
+
 ---
 
 ## ADR 格式
 
-每个 ADR 文件存储在 `knowledge/adr/` 目录下,文件名格式:`NNNN-<slug>.md`(详见 `hlkb` 技能 + `hlkb/templates/adr.md`)
+文件存放在 `knowledge/adr/`，命名为 `NNNN-<slug>.md`，NNNN 为四位连续编号，永不重置。**格式以 [ADR 模板](../hlkb/templates/adr.md) 为唯一来源**，复制模板后至少保留以下内容：
 
-```markdown
-# ADR-NNNN: <标题>
-
-## 上下文
-<描述当前技术背景、面临的问题、约束条件>
-
-## 备选方案
-1. <方案A> — <优缺点>
-2. <方案B> — <优缺点>
-3. <方案C> — <优缺点>
-
-## 决策
-<选择的方案及理由>
-
-## 后果
-### 正面影响
-- <带来的好处>
-
-### 负面影响
-- <引入的限制或风险>
-
-### 迁移计划
-<如需迁移，描述步骤>
-```
+- 标题：`# {NNNN}. {决策标题}`；
+- 状态块：状态（Proposed / Accepted / Deprecated / Superseded by [NNNN]）、日期、决策者；
+- 上下文、决策与后果；
+- 备选方案：每项写优点、缺点和不选原因；
+- 实施细节与关联条目。
 
 ---
 
@@ -56,19 +39,15 @@ description: 架构决策记录（ADR）规范，定义何时记录、ADR格式�
 
 当架构决策被新的决策取代时：
 - 原 ADR 文件**不删除**，保留历史上下文
-- 在原 ADR 状态中添加 "**已取代**"，并链接到替代者
-- 新 ADR 中引用被取代的 ADR
-
-```
-## 状态
-已取代 — 见 [ADR-0002: 采用 PostgreSQL 替代 MySQL](0002-postgresql.md)
-```
+- 在原 ADR 状态中写入 `Superseded by [NNNN](NNNN-slug.md)`，链接实际的后继文件
+- 新 ADR 引用被取代的 ADR
 
 ---
 
 ## 关联
 
 - 交付文档清单中包含 ADR 文档
+- 写入、归档与检索见 [hlkb](../hlkb/SKILL.md)
 
 ---
 

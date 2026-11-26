@@ -1,6 +1,6 @@
 ---
 name: hl-permission
-description: 一键授权当前项目目录下所有文件改动（Edit/Write/Bash），免去逐条确认。权限写入项目 .claude/settings.local.json 持久保留，不随窗口关闭失效，需手动执行 /hl-permission --off 或删除对应条目才能撤销。Use when 不想每次文件改动都被询问授权、需要临时提升操作效率。通过 /hl-permission 调用。
+description: 一键授权当前项目目录下所有文件改动（Edit/Write/Read/Bash），免去逐条确认。权限写入项目 .claude/settings.local.json 持久保留，不随窗口关闭失效，需手动执行 /hl-permission --off 或删除对应条目才能撤销。Use when 不想每次文件改动都被询问授权、需要临时提升操作效率。通过 /hl-permission 调用。
 ---
 
 # 一键项目授权

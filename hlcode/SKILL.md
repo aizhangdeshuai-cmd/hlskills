@@ -1,6 +1,6 @@
 ---
 name: hlcode
-description: 开发或审查代码时，根据项目规范检查命名、类型、可变状态、重复的业务逻辑和错误处理。
+description: 编码约定，检查命名、类型、可变状态、重复业务逻辑和错误处理。Use when 编写、修改或审查代码，需要按项目规范核对实现时。
 ---
 
 # 编码标准
@@ -80,9 +80,9 @@ src/
 
 ---
 
-## 关联命令
-- `/hlreview` — 代码审查规范
-- `/hlerror` — 错误处理规范
+## 相关技能
+- [hlreview](../hlreview/SKILL.md) — 代码审查规范
+- [hlerror](../hlerror/SKILL.md) — 错误处理规范
 
 ---
 

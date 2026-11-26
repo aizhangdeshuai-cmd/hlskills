@@ -16,9 +16,9 @@
 
 比较 [OMC 4.15.0 源码提交 542b7a4](https://github.com/Yeachan-Heo/oh-my-claudecode/tree/542b7a4cf56fb1618d3b397603cca93bfdaa1df5/agents) 与 [OMC v5.8.4 正式发布的角色目录](https://github.com/Yeachan-Heo/oh-my-claudecode/tree/v5.8.4/agents) 中以下同名文件。旧版使用包内 package.json 标注的版本。本表用两份上游原文比较正文，最后一列说明本库的处理。上游 19 份角色均移除了 frontmatter 的 level 字段，此字段在 hlskills 原有角色中已经省略。仅 debugger、explore、scientist 的上游正文变化。
 
-校验列取 v5.8.4 原始 `agents/<角色>.md` 完整字节的 SHA-256 前 12 位。在上游克隆中运行 `git show v5.8.4:agents/scientist.md | shasum -a 256` 可复核单项。已有衍生角色随仓保留 [OMC 的 MIT 版权与许可全文](../../agents/LICENSE-OMC)。
+校验列取 v5.8.4 原始 `agents/<角色>.md` 完整字节的 SHA-256 前 12 位。在上游克隆中运行 `git show v5.8.4:agents/scientist.md | shasum -a 256` 可复核单项。衍生角色保留[上游许可](../../agents/LICENSE-OMC)。日常委派使用[本库当前角色与交接说明](../../docs/roles.md)。
 
-| 本地角色 | 上游文件 SHA-256 前缀 | 两版本上游正文 | 本库处理 |
+| 本地角色 | 上游文件 SHA-256 前缀 | 两版本上游正文 | 引入时的本库处理 |
 |---|---|---|---|
 | `analyst` | `4a2b6437fcca` | 相同 | 区分起草、缺口评审和一致性提取，版本 PRD 集中登记未确认需求、外部依赖和后续优化。 |
 | `architect` | `3f5b0f6a97d7` | 相同 | 新建设计引用业务约束和契约，已有系统诊断核对源码及运行证据。 |

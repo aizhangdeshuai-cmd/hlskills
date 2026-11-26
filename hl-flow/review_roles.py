@@ -11,7 +11,7 @@ def review(impacts):
         reviewers.append("designer")
     if impacts & {"architecture", "migration", "accounting"}:
         reviewers.append("architect")
-    if "authorization" in impacts:
+    if impacts & {"authorization", "credentials"}:
         reviewers.append("security-reviewer")
     return {"reviewers": reviewers,
             "formal_handoff": bool(impacts & {"accounting", "cross-team"})}
@@ -19,7 +19,7 @@ def review(impacts):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    supported = {"ui", "architecture", "migration", "accounting", "authorization", "cross-team"}
+    supported = {"ui", "architecture", "migration", "accounting", "authorization", "credentials", "cross-team"}
     parser.add_argument("impact", nargs="*", help="本次已确认的影响项，可选 " + ", ".join(sorted(supported)))
     impacts = set(parser.parse_args().impact)
     unknown = impacts - supported

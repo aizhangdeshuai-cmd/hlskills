@@ -8,43 +8,43 @@ description: hlskills 技能导航。用于了解本库有哪些技能、选择�
 
 ## 子技能索引
 
-下表列出 33 项子技能。点击名称读取工作流；随库提供的斜杠命令见[命令目录](.claude/commands)。
+下表列出 33 项子技能，类型列区分流程/编排、纪律/参考与工具。点击名称读取工作流；随库提供的斜杠命令见[命令目录](.claude/commands)。
 
-| 技能 | 适用任务 |
-|---|---|
-| [hl-flow](hl-flow/SKILL.md) | 单人或小团队从需求到交付，按 UI、API、CLI 选择验收方式 |
-| [hlpm](hlpm/SKILL.md) | 按请求交付 PRD、可操作原型或正式开发测试交接包 |
-| [hldev](hldev/SKILL.md) | 接收产品包，复用已有实现，交付可追溯的候选和验证记录 |
-| [hlchain](hlchain/SKILL.md) | 编排产品、开发、发布与部署，按需接入缺陷修复和独立验收 |
-| [hllegacy](hllegacy/SKILL.md) | 从源码梳理九类交付物、改动路径和验证方法，由 hlkb 归档 |
-| [hlrefactor](hlrefactor/SKILL.md) | 先建立回归基线，再分模块重构和交付 |
-| [hlbug](hlbug/SKILL.md) | 定位并复现缺陷，实施修复和回归验证 |
-| [hlreview](hlreview/SKILL.md) | 综合审查 PRD、设计、代码、安全与生产准备度 |
-| [hlquality](hlquality/SKILL.md) | 按规则专项核对代码质量与性能，给出位置及修复依据 |
-| [hlsecrets](hlsecrets/SKILL.md) | 扫描代码与配置中的硬编码凭证，报告脱敏 |
-| [hlresearch](hlresearch/SKILL.md) | 基于一手资料做市场与竞品比较 |
-| [hlmedia](hlmedia/SKILL.md) | 从本地录屏提取片段、画面及可复现的演示步骤 |
-| [hltoolbox](hltoolbox/SKILL.md) | 选择方案评审、性能基线、文档等专项流程 |
-| [hldesign](hldesign/SKILL.md) | 设计或还原指定界面、组件状态与交互 |
-| [hla11y](hla11y/SKILL.md) | 核对设计、开发与测试中的 WCAG 2.2 AA 无障碍要求 |
-| [hlwrite-skill](hlwrite-skill/SKILL.md) | 编写、评审和评测本库技能 |
-| [hladr](hladr/SKILL.md) | 记录架构决策、备选方案和取代关系 |
-| [hltest](hltest/SKILL.md) | 编制用例；按计划、候选和原始报告给出正式 QA 结论 |
-| [hlbrowse](hlbrowse/SKILL.md) | 在浏览器中操作页面、检查视口、采集截图和性能证据 |
-| [hlrelease](hlrelease/SKILL.md) | 核对版本、变更日志、CI 与发布标签 |
-| [hldeploy](hldeploy/SKILL.md) | 部署已确认版本，执行健康检查、观察及回滚 |
-| [hlgit](hlgit/SKILL.md) | 分支、提交与协作约定 |
-| [hlapi](hlapi/SKILL.md) | 设计 API 的资源路径、状态码、分页与错误格式 |
-| [hldb](hldb/SKILL.md) | 数据库迁移、兼容与回滚 |
-| [hlerror](hlerror/SKILL.md) | 错误类型、重试、断路器和错误边界 |
-| [hlcode](hlcode/SKILL.md) | 编码约定、命名、文件组织与代码异味 |
-| [hlmemory](hlmemory/SKILL.md) | 保存任务进度和证据位置，接续上次工作 |
-| [hlkb](hlkb/SKILL.md) | 在现有 knowledge/ 中长期保存并检索项目知识 |
-| [hlkb-hooks](hlkb-hooks/SKILL.md) | 安装、验证或卸载 Claude Code 的知识同步 hook |
-| [hlsetup](hlsetup/SKILL.md) | 将本库安装到 Claude Code、Codex 或 Cursor |
-| [hlhooks](hlhooks/SKILL.md) | 配置 Claude Code 的提交提醒、操作拦截及工具结果检查 |
-| [hl-permission](hl-permission/SKILL.md) | 设置或恢复当前项目的工具授权 |
-| [hlquickstart](hlquickstart/SKILL.md) | 用演示需求或缺陷快速熟悉技能 |
+| 技能 | 类型 | 适用任务 |
+|---|---|---|
+| [hl-flow](hl-flow/SKILL.md) | 流程 | 单人或小团队从需求到交付，按 UI、API、CLI 选择验收方式 |
+| [hlpm](hlpm/SKILL.md) | 流程 | 按请求交付 PRD、可操作原型或正式开发测试交接包 |
+| [hldev](hldev/SKILL.md) | 流程 | 接收产品包，复用已有实现，交付可追溯的候选和验证记录 |
+| [hlchain](hlchain/SKILL.md) | 编排 | 编排产品、开发、发布与部署，按需接入缺陷修复和独立验收 |
+| [hllegacy](hllegacy/SKILL.md) | 流程 | 从源码梳理九类交付物、改动路径和验证方法，由 hlkb 归档 |
+| [hlrefactor](hlrefactor/SKILL.md) | 流程 | 先建立回归基线，再分模块重构和交付 |
+| [hlbug](hlbug/SKILL.md) | 流程 | 定位并复现缺陷，实施修复和回归验证 |
+| [hlreview](hlreview/SKILL.md) | 质量 | 综合审查 PRD、设计、代码、安全与生产准备度 |
+| [hlquality](hlquality/SKILL.md) | 质量 | 按规则专项核对代码质量与性能，给出位置及修复依据 |
+| [hlsecrets](hlsecrets/SKILL.md) | 质量 | 扫描代码与配置中的硬编码凭证，报告脱敏 |
+| [hlresearch](hlresearch/SKILL.md) | 调研 | 基于一手资料做市场与竞品比较 |
+| [hlmedia](hlmedia/SKILL.md) | 取证 | 从本地录屏提取片段、画面及可复现的演示步骤 |
+| [hltoolbox](hltoolbox/SKILL.md) | 工具 | 选择方案评审、性能基线、文档等专项流程 |
+| [hldesign](hldesign/SKILL.md) | 设计 | 设计或还原指定界面、组件状态与交互 |
+| [hla11y](hla11y/SKILL.md) | 设计 | 核对设计、开发与测试中的 WCAG 2.2 AA 无障碍要求 |
+| [hlwrite-skill](hlwrite-skill/SKILL.md) | 规范 | 编写、评审和评测本库技能 |
+| [hladr](hladr/SKILL.md) | 规范 | 记录架构决策、备选方案和取代关系 |
+| [hltest](hltest/SKILL.md) | 质量 | 编制用例；按计划、候选和原始报告给出正式 QA 结论 |
+| [hlbrowse](hlbrowse/SKILL.md) | 质量 | 在浏览器中操作页面、检查视口、采集截图和性能证据 |
+| [hlrelease](hlrelease/SKILL.md) | 发布 | 核对版本、变更日志、CI 与发布标签 |
+| [hldeploy](hldeploy/SKILL.md) | 发布 | 部署已确认版本，执行健康检查、观察及回滚 |
+| [hlgit](hlgit/SKILL.md) | 规范 | 分支、提交与协作约定 |
+| [hlapi](hlapi/SKILL.md) | 规范 | 设计 API 的资源路径、状态码、分页与错误格式 |
+| [hldb](hldb/SKILL.md) | 规范 | 数据库迁移、兼容与回滚 |
+| [hlerror](hlerror/SKILL.md) | 规范 | 错误类型、重试、断路器和错误边界 |
+| [hlcode](hlcode/SKILL.md) | 规范 | 编码约定、命名、文件组织与代码异味 |
+| [hlmemory](hlmemory/SKILL.md) | 知识 | 保存任务进度和证据位置，接续上次工作 |
+| [hlkb](hlkb/SKILL.md) | 知识 | 在现有 knowledge/ 中长期保存并检索项目知识 |
+| [hlkb-hooks](hlkb-hooks/SKILL.md) | 工具 | 安装、验证或卸载 Claude Code 的知识同步 hook |
+| [hlsetup](hlsetup/SKILL.md) | 工具 | 将本库安装到 Claude Code、Codex 或 Cursor |
+| [hlhooks](hlhooks/SKILL.md) | 工具 | 配置 Claude Code 的提交提醒、操作拦截及工具结果检查 |
+| [hl-permission](hl-permission/SKILL.md) | 工具 | 设置或恢复当前项目的工具授权 |
+| [hlquickstart](hlquickstart/SKILL.md) | 引导 | 用演示需求或缺陷快速熟悉技能 |
 
 ## 使用场景选择
 
@@ -56,9 +56,9 @@ description: hlskills 技能导航。用于了解本库有哪些技能、选择�
 
 ### Agent 使用方式
 
-从当前技能文件的**真实路径**定位本 checkout，按任务只加载所用的 `agents/<角色名>.md`。Claude 已注册且来源一致时可直接委派。Codex、Cursor 或没有同源注册的宿主，读取该文件，把本阶段的任务、授权范围和所需证据一并传给实际执行者。记录本次角色定义的来源路径及参与方式，同一会话采用多个视角时如实注明。独立签核记录实际参与者和结论。
+从当前技能或角色文件的**真实路径**定位本 checkout；角色中的相对链接基于真实文件所在目录。Claude 同源注册的角色可直接委派。Codex、Cursor 或没有同源注册的宿主只读取本次需要的角色。把业务目标、基线、可操作范围和接手人要验的结果一并交给执行者。有已确认的 AC、版本或证据时直接传其位置。记录角色来源与实际参与方式，独立签核记录实际参与者和结论。
 
-只读角色把建议和判定交给调用方写入。宿主禁用的工具以实际配置为准。需执行可能生成文件的构建或测试时，使用隔离副本或临时输出目录，保护受审工作区。
+只读角色把建议和判定交给调用方写入。按宿主实际能力授予工具和目录权限；只需查资料时使用只读工具，需要构建或测试时使用隔离副本或临时输出目录。交接有缺口时指出哪项已证实、哪项受阻、接手人取得什么证据后可继续。
 
 ## 通用纪律：完成前验证
 

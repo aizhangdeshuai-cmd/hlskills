@@ -129,9 +129,9 @@ Compose 沿用部署时的 Docker context、项目名、Compose 文件组合及�
 
 ---
 
-## 关联命令
-- `/hlrelease` — 发布流程
-- `/hldb` — 数据库迁移规范
+## 相关技能
+- [hlrelease](../hlrelease/SKILL.md) — 发布流程
+- [hldb](../hldb/SKILL.md) — 数据库迁移规范
 
 ---
 

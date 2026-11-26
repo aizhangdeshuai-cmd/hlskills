@@ -104,7 +104,6 @@ python3 hlsetup/install.py claude --check
 
 `hlquickstart` 故意**不**演示的内容(避免新用户误以为 hlskills 能做):
 
-- 评审记录注明实际参与者。同一会话使用多个角色视角时，按实际方式记录。
 - ❌ 不演示"自动部署"——Claude Code 不能 SSH 到生产环境
 - ❌ 不演示"硬性关卡 = Claude Code runtime hook"——实际靠 Agent 自觉
 - ❌ 不演示"覆盖率 100% = 自动化校验"——核心模块靠 verifier + 人工签字

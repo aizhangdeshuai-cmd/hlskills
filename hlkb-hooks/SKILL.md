@@ -9,7 +9,7 @@ description: 一键把"代码改动→knowledge/ 同步"的 PreToolUse+PostToolU
 
 > ## ⚠️ 能力边界声明(先读)
 >
-> 本技能**只在 Claude Code 真生效** —— PreToolUse 阻断靠 harness 真实执行 `exit 2 + stderr`,PostToolUse 提示靠 harness 真实执行 stdout。Codex CLI / Cursor **不解析 hooks**(根 README 第 137-144 行原话),需要走 `AGENTS.md` 铁律。
+> 本技能**只在 Claude Code 真生效** —— PreToolUse 阻断靠 harness 真实执行 `exit 2 + stderr`,PostToolUse 提示靠 harness 真实执行 stdout。Codex CLI / Cursor **不解析 hooks**（见根 README「平台支持分级」小节）,需要走 `AGENTS.md` 铁律。
 >
 > 配套项目内 `<项目>/CLAUDE.md` 写铁律才能提升 Agent 自觉率,否则 hook 兜底兜不住漏掉的(架构决策/术语新增/状态机变化,这些 hook 模式匹配不到)。
 
@@ -154,7 +154,7 @@ bash hlkb-hooks/verify-paths.sh . --strict
 - ❌ **不接管 hlpm / hldev / hlchain 流程** —— 本技能只装 hooks,不调其他子技能
 - ❌ **不改 `hlhooks/SKILL.md`** —— hooks 协议说明单一可信源在根 `hlhooks/SKILL.md`,本文件只引用不重复
 - ❌ **不替你写 knowledge 条目** —— hook 只检查"改 src/** 有没有同时改 knowledge/**",内容质量靠 executor / analyst / architect 各自负责
-- ❌ **不做 Codex / Cursor 适配** —— 那些平台没 hooks,需用 `AGENTS.md` 铁律(README 第 137-144 行)
+- ❌ **不做 Codex / Cursor 适配** —— 那些平台没 hooks,需用 `AGENTS.md` 铁律（见 README「平台支持分级」）
 
 ---
 

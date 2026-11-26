@@ -75,9 +75,9 @@ AppError
 
 ---
 
-## 关联命令
-- `/hlapi` — API设计规范
-- `/hlcode` — 编码标准
+## 相关技能
+- [hlapi](../hlapi/SKILL.md) — API设计规范
+- [hlcode](../hlcode/SKILL.md) — 编码标准
 
 ---
 

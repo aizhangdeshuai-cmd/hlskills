@@ -8,6 +8,8 @@ description: 数据库迁移规范，覆盖安全清单（UP/DOWN/默认值/分�
 > **🚨 同步项目知识库**: 任何 DDL 变更(CREATE / ALTER / DROP)完成后, 必须同步更新 `knowledge/db/{table}.md` + `db/er-diagram.md`, 与迁移 SQL **同 commit 提交**。
 > 详见 `hlkb` 技能 SKILL.md §同步触发表。
 
+项目已有的迁移工具、回滚策略或命名约定优先；与本技能默认值冲突时，沿用项目约定并注明差异。
+
 ---
 
 ## 安全清单（每次迁移必查）
@@ -62,9 +64,9 @@ YYYYMMDDHHMMSS_descriptive_name.sql
 
 ---
 
-## 关联命令
-- `/hlapi` — API设计规范
-- `/hldeploy` — 部署规范（含回滚）
+## 相关技能
+- [hlapi](../hlapi/SKILL.md) — API设计规范
+- [hldeploy](../hldeploy/SKILL.md) — 部署规范（含回滚）
 
 ---
 

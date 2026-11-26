@@ -75,7 +75,7 @@ description: Claude Code hooks 配置模板，提供推荐的安全/质量/自�
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.command' | grep -qE 'rm -rf /|rm -rf ~|git push --force origin (main|master)|DROP TABLE|DROP DATABASE|shutdown|reboot|chmod 777 /|> /dev/sda|mkfs|dd if=/dev/zero' && { echo '🚨 危险命令已拦截' >&2; exit 2; } || exit 0"
+            "command": "jq -r '.tool_input.command' | grep -qE 'rm -rf /( |$)|rm -rf /\\*|rm -rf ~( |$)|git push --force origin (main|master)|DROP TABLE|DROP DATABASE|shutdown|reboot|chmod 777 /( |$)|> /dev/sda|mkfs|dd if=/dev/zero' && { echo '🚨 危险命令已拦截' >&2; exit 2; } || exit 0"
           }
         ]
       },
@@ -145,7 +145,7 @@ cat ~/.claude/settings.json | python3 -c "import json,sys; d=json.load(sys.stdin
 
 # 3. 实测阻断:尝试一次危险命令,确认 hook 真的拦截(Claude 应收到反馈且不执行)
 # 例:让 Claude 跑 'echo test' → 应该正常执行
-# 让 Claude 跑 'rm -rf /tmp/test-dir' → 应该被 hook 拦截,Claude 收到反馈
+# 让 Claude 跑 'rm -rf /' → 应被拦截；跑 'rm -rf /tmp/test-dir' → 应正常执行,Claude 收到反馈
 ```
 
 ⚠️ **如果实测时 hook 未拦截**:说明 hooks 未生效。常见原因:

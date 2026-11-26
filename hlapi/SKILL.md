@@ -8,6 +8,8 @@ description: API设计规范，覆盖URL命名（复数名词/kebab-case/无动�
 > **🚨 同步项目知识库**: 任何 API 新增/修改/废弃后, 必须同步更新 `knowledge/api/{module}.md`, 与代码 **同 commit 提交**。
 > 详见 `hlkb` 技能 SKILL.md §同步触发表。
 
+项目已有 API 约定时优先沿用；与本技能默认值冲突时，沿用项目约定并在评审记录中注明差异。
+
 ---
 
 ## URL 与命名
@@ -93,9 +95,9 @@ GET    /api/users/:id/orders  # 获取用户的订单
 
 ---
 
-## 关联命令
-- `/hlerror` — 错误处理规范
-- `/hldb` — 数据库设计规范
+## 相关技能
+- [hlerror](../hlerror/SKILL.md) — 错误处理规范
+- [hldb](../hldb/SKILL.md) — 数据库设计规范
 
 ---
 

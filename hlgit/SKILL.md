@@ -5,6 +5,8 @@ description: Git规范，覆盖Conventional Commits格式（feat/fix/docs/refact
 
 # Git 规范
 
+项目已有的分支模型、提交规范和 hooks 优先；与本技能默认值冲突时，沿用项目约定并在交接中注明。
+
 ---
 
 ## 提交信息格式（Conventional Commits）
@@ -84,9 +86,20 @@ Not-tested: Token refresh with expired provider tokens
 
 ---
 
-## 关联命令
-- `/hlrelease` — 发布流程
-- `/hlreview` — 代码审查
+## 相关技能
+- [hlrelease](../hlrelease/SKILL.md) — 发布流程
+- [hlreview](../hlreview/SKILL.md) — 代码审查
+
+## 核对待推历史
+
+用户指定排除范围时，先核实目标远端分支的提交和候选 SHA，再在仓库根目录检查候选差异以及远端基线之后的全部可达提交。下例假设本次排除 tests/ 和所有 ZIP，实际路径按本次授权替换。
+
+```sh
+git diff --name-status --no-renames "$remote_sha" "$candidate_sha" -- tests/ ':(glob)**/*.zip'
+git log --full-history -m --root --no-renames --format='commit %H' --name-status "$remote_sha..$candidate_sha" -- tests/ ':(glob)**/*.zip'
+```
+
+命令成功后读取其输出。新增、修改或改名移入被排除路径的内容，都应定位到首次出现的提交；仅删除远端已存在文件的记录，按本次范围核对。新分支没有远端基线时，以候选 SHA 检查其全部可达历史。发现不该发布的内容时，保留本地工作，基于已确认的基线重新准备候选，再核查和验证。已进入共享历史的内容沿用项目的处理决定。
 
 ---
 

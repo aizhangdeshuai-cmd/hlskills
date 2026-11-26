@@ -71,9 +71,9 @@ description: 在设计、开发或测试阶段核对 WCAG 2.2 AA。用于检查�
 
 ---
 
-## 关联命令
-- `/hldesign` — UI/UX设计规范
-- `/hltest` — 测试规范
+## 相关技能
+- [hldesign](../hldesign/SKILL.md) — UI/UX设计规范
+- [hltest](../hltest/SKILL.md) — 测试规范
 
 ---
 
