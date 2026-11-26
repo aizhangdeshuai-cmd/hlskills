@@ -1,7 +1,7 @@
 ---
 name: hlpm-path-conventions
 description: >-
-  交付文档目录规范中央文档（版本管理）。定义 14 项交付物的完整路径、版本目录结构、命名约定、深度限制、特殊情况处理。**v12 关键变更**: 每次产品段流程产出交付物到独立版本目录 `docs/vN/`,启动时自动扫描历史未开发版本。**v18 变更**: 产品段交付物由 8 项扩为 9 项(新增"设计稿截图"),6 必出 + 3 条件出。**v19 变更**: 验收标准合并入一致性矩阵 §1"验收方法"列,产品段交付物由 9 项减为 8 项(5 必出 + 3 条件出),交付物总数 15 → 14。**v29 变更**: 生成文档根 `docs/` → `knowledge/`,版本快照 `docs/vN/` → `knowledge/doc/vN/`,扫描双读兼容老 `docs/v*/`。被 SKILL.md / hlpm / hldev 三个文件共同引用。Use when 用户询问"输出到哪"、"目录怎么组织"、"文件命名规则"。
+  按阶段说明交付文档的位置、版本目录、命名与归档规则。新版产品分册随同版 PRD 存入 knowledge/doc/vN/，兼容原 docs/vN/。用户询问输出路径、目录组织或文件命名时使用。
 ---
 
 # 交付文档完整目录规范
@@ -70,9 +70,12 @@ python3 "$HLPM_DIR/version.py" mark "$VERSION_DIR" accept
 │   ├── doc/                                # 版本快照区(hlpm 管,不属 hlkb 13 类总库)
 │   │   ├── v1/                                 # 版本 1
 │   │   │   ├── prd.md
+│   │   │   ├── acceptance-criteria.md          # 测试阶段生成的验收分册
+│   │   │   ├── data-requirements.md            # 产品阶段选交数据需求时
+│   │   │   ├── interface-requirements.md       # 产品阶段选交接口需求时
 │   │   │   ├── test-cases.md
 │   │   │   ├── non-functional-requirements.md
-│   │   │   ├── consistency-matrix.md          # 含验收标准(§1 业务规则覆盖矩阵"验收方法"列)
+│   │   │   ├── consistency-matrix.md          # §1 按 AC 引用验证方法
 │   │   │   ├── acceptance-plan.json            # 已确认来源、AC 和必测 TC，供交接与候选测试读取
 │   │   │   ├── acceptance-sources.sha256       # 需求澄清时冻结的来源清单摘要
 │   │   │   ├── handoff-self-check.md
@@ -190,20 +193,20 @@ python3 "$HLPM_DIR/version.py" mark "$VERSION_DIR" accept
 
 ## 三、14 项交付物完整路径映射
 
-### 3.1 产品段交付物（5 必出 + 3 条件出，验收标准并入一致性矩阵，适用项进实际 `{version_dir}`）
+### 3.1 产品段交付物（5 类必交及 3 类按需交，归入所选版本目录）
 
 | # | 交付物 | 路径 | Agent | 步骤 |
 |---|--------|------|-------|------|
 | 1 | 竞品分析报告 | `{version_dir}/analysis/competitive-analysis.md` | `analyst` 核证，主代理形成建议并写入 | 2b/2c |
-| 2 | PRD 文档 | `{version_dir}/prd.md` | `analyst` 生成 → 写入文件 | 4 |
+| 2 | PRD 及已选产品分册 | `{version_dir}/prd.md` 和 08、09 已选文件 | `analyst` 生成 → 写入文件 | 4 |
 | 3 | 设计稿 | `{version_dir}/design/<相对页面路径>.html` | `designer` | 6b |
 | 4 | 设计稿截图 | 与 HTML 同目录的 `screenshot-<文件主名>.png` | `designer` 调 `hlbrowse` | 6b.5 |
-| 5 | 测试用例快照 | `{version_dir}/test-cases.md` | `test-engineer`（产品验收用例） | 8 |
-| 6 | 非功能需求 | `{version_dir}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 10 |
-| 7 | 一致性矩阵(含验收标准) | `{version_dir}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
+| 5 | 验收标准与用例快照 | `{version_dir}/acceptance-criteria.md`（分册版）、`{version_dir}/test-cases.md` | `test-engineer`（产品验收用例） | 8 |
+| 6 | 非功能需求 | `{version_dir}/non-functional-requirements.md` | `analyst` 生成 → 写入文件 | 4 起草、10 交接复核 |
+| 7 | 一致性矩阵（关联验收编号与验证方法） | `{version_dir}/consistency-matrix.md` | `analyst` 生成 + `verifier` 验证 | 9.5 |
 | 8 | 自检报告 | `{version_dir}/handoff-self-check.md` | `analyst` 生成 → 写入文件 | 11 |
 
-一致性矩阵的机器可读附件是同目录的 `acceptance-plan.json` 和来源摘要 `acceptance-sources.sha256`。自检报告保存本次交接输出的 `plan_sha256`（验收计划）与 `spec_sha256`（PRD、用例和非功能需求正文）。涉及 UI 时，交接同包的 `design/interaction-check.md` 及其引用的实际运行证据。[交接格式](handoff-package.md)
+一致性矩阵的机器可读附件是同目录的 `acceptance-plan.json` 和来源摘要 `acceptance-sources.sha256`。自检报告保存本次交接输出的 `plan_sha256`（验收计划）与 `spec_sha256`（PRD 及其已选分册、用例和非功能需求）。涉及 UI 时，交接同包的 `design/interaction-check.md` 及其引用的实际运行证据。[交接格式](handoff-package.md)
 
 每个适用页面保留一张默认态截图。例：`design/components/cart.html` 对应 `design/components/screenshot-cart.png`，`design/orders.diff.html` 对应 `design/screenshot-orders.diff.png`。旧包将截图集中在 design/ 时，仅在文件主名全包唯一时可以匹配。附加状态图按验收条款补充。
 

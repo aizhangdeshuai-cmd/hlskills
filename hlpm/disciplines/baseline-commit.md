@@ -1,24 +1,19 @@
 # 交付物基线登记
 
-仅交 PRD 或 PRD 与原型时，在已交文档记录版本、确认范围和实际评审状态。完整交接复用这些记录，在步骤 0.6 选定的版本目录创建或更新 `{version_dir}/consistency-rules.md`，从[一致性规则](../consistency-rules.md)取“版本基线表”表头。PRD、设计和用例首次定稿分别登记基线 v1，修订记录关联交付物、基线版本、步骤与证据。
+在已交文档登记版本、确认范围、参与者和实际结论。正式交接使用所选目录的 `consistency-rules.md` [版本基线表](../consistency-rules.md)，分别登记 PRD、设计和测试材料的首次定稿及修订。
 
-## 项目使用 Git 时
+| 基线 | 本次提交应包含的变更 |
+|---|---|
+| PRD | 正文、基线表及本次定稿的全部产品文档。按附录逐项选取真实文件，例如已选的数据或接口分册。 |
+| 原型 | 本轮页面、实际依赖的本地资源、实测记录、更新过的 PRD 引用和基线表。 |
+| 测试 | 实际生成的验收标准和用例，以及补上 TC、附录链接的正文和基线表。客户固定目录在约定位置更新验收索引。 |
 
-完整交接中，主代理或指定执行者按项目授权为每个交付物基线单独提交一次。提交本次定稿的文档及项目基线表，设计基线包含页面及实际依赖的本地资源。步骤 11 的自检已生成且属于同次变更时也可附上。提交仅包含本基线的文件。
-
-以下为 PRD 首次定稿的示例，`PROJECT` 为业务项目根目录，`VERSION_DIR` 为本次所选版本的绝对路径。示例同样适用于旧目录 `docs/v7`。
+项目授权 Git 提交时逐一列出本轮定稿文件。例如，仅选了数据分册的 PRD 基线可用以下命令。若同时选了接口分册，在同一份文件清单加入该文件。项目另有已选产品文档也按实际清单追加。
 
 ```bash
-git -C "$PROJECT" add -- "$VERSION_DIR/prd.md" "$VERSION_DIR/consistency-rules.md"
-git -C "$PROJECT" commit --only -m "docs(${VERSION_DIR##*/}): baseline PRD v1" -- "$VERSION_DIR/prd.md" "$VERSION_DIR/consistency-rules.md"
+files=("$VERSION_DIR/prd.md" "$VERSION_DIR/data-requirements.md" "$VERSION_DIR/consistency-rules.md")
+git -C "$PROJECT" add -- "${files[@]}"
+git -C "$PROJECT" commit --only -m "docs(${VERSION_DIR##*/}): baseline PRD v1" -- "${files[@]}"
 ```
 
-设计和用例基线使用同样的方式，明确列出本次提交的文件，标题项分别为 `design` 和 `test-cases`。重复执行前先核对表中同一交付物、基线和提交，已有记录直接复用。
-
-## 未能登记或提交
-
-- 基线表缺失或与交付物不一致时，修复记录再通过步骤 9.5。
-- 项目明确在 Git 之外管理时只登记项目表，备注管理方式。
-- 项目使用 Git 但提交失败时，记录错误及待补动作，保留文档基线和实际提交状态。
-
-[产品流程](../SKILL.md) · [角色边界](role-boundary.md) · [完成前验证](completion-validation.md)
+提交前核对实际差异，重交前核对已有基线。使用其他版本管理方式时登记实际位置。记录或提交失败时保留错误和待补动作，补齐后再确认交接。

@@ -109,7 +109,7 @@ def validate_prototype_views(plan, root):
                 raise ValueError(f"{source['id']} 确认画面须指定 role、page 和两个正整数的 viewport")
         for ac in source["acs"]:
             related = [case for case in plan["scenarios"] if ac in case["acs"]]
-            cross_role = [case for case in related if case.get("roles")]
+            cross_role = [case for case in related if case.get("roles") and case["pages"]]
             visual = [case for case in related if "prototype_match" in case]
             owners = page_roles(cross_role)
             for case in visual:

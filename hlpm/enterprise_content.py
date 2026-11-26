@@ -68,15 +68,21 @@ def check_status(text, where):
     return bool(markers)
 
 
-def check_risks(path, chapter, table_rows, lines):
+def check_risks(path, chapter, table_rows, lines, *, customer_sections=False):
     _, _, start, stop = chapter
     rows = [(header, values, location) for header, values, _, location in table_rows
             if start < int(location.rsplit(":", 1)[1]) - 1 < stop]
-    if any(re.match(r"^ {0,3}#{2,6}\s", line) for line in lines[start + 1:stop]):
-        raise ValueError(f"{path.name}:{start + 1} 第 16 章请将全部事项归入指定三栏")
-    if not rows or any(header != RISK_COLUMNS or len(values) != 3 for header, values, _ in rows):
-        raise ValueError(f"{path.name}:{start + 1} 第 16 章须使用且仅使用有数据的三栏表：{'、'.join(RISK_COLUMNS)}")
+    if customer_sections:
+        # The customer's explicit subsections own their format. Validate the standard table wherever used.
+        rows = [row for row in rows if row[0] == RISK_COLUMNS]
+    else:
+        if any(re.match(r"^ {0,3}#{2,6}\s", line) for line in lines[start + 1:stop]):
+            raise ValueError(f"{path.name}:{start + 1} 第 16 章请将全部事项归入指定三栏")
+        if not rows or any(header != RISK_COLUMNS for header, _, _ in rows):
+            raise ValueError(f"{path.name}:{start + 1} 第 16 章须使用且仅使用有数据的三栏表：{'、'.join(RISK_COLUMNS)}")
     for _, values, location in rows:
+        if len(values) != len(RISK_COLUMNS):
+            raise ValueError(f"{location} 第 16 章风险表的列数与表头不符")
         for col, value in enumerate(values):
             if value.strip() == "无":
                 continue
@@ -116,7 +122,8 @@ def require_body(path, lines, section, data_rows, *, required=True):
                     # An explicitly labelled data column can qualify a status in the same row.
                     if col < len(header) and not re.fullmatch(OWNER + "|" + MILESTONE + "|" + REASON, header[col]):
                         check_status(value + ("。" + metadata if metadata else ""), f"{path.name}:{pos + 1} {name}")
-                if any(meaningful(value) for value in row):
+                if (any(meaningful(value) for value in row)
+                        or (number[:1] == (16,) and header == RISK_COLUMNS and row == ["无"] * len(RISK_COLUMNS))):
                     has_body = True
             continue
         bullet = re.match(r"(?:[-*+] |\d+[.)] )", line)

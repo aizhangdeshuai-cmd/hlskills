@@ -14,7 +14,7 @@
         - 并发竞态(同一资源并发提交)
         - 实现选型边界(软删除开关、部分索引、事务原子性)
         - 本次重构涉及的函数/模块回归点
-    - **交叉验证**：按 [hltest 的验收命令](../hltest/SKILL.md) 提供 `acceptance-plan.json`、产品交接记录中的 `plan_sha256` 与 `spec_sha256`、独立取得的候选完整 SHA 及运行报告，保留逐 TC 结果。计划发生变化时先核对产品修订。涉及服务端权限、取消或重试时，验证业务记录和写入次数。涉及多页面时，按访问顺序记录同一对象与每页结果。同角色的运行记录填 `page_visits`，跨角色填 `role_visits`。见[候选记录格式](../hltest/acceptance-reports.md)。
+    - **交叉验证**：按 [hltest 的验收命令](../hltest/SKILL.md) 提供 `acceptance-plan.json`、产品交接记录中的 `plan_sha256` 与 `spec_sha256`、独立取得的候选完整 SHA 及运行报告，保留逐 TC 结果。计划发生变化时先核对产品修订。涉及服务端权限、取消或重试时，验证业务记录和写入次数。涉及多页面时，按访问顺序记录同一对象与每页结果。同角色跨页的运行记录填 `page_visits`。跨角色填 `role_visits`，逐次记录页面或实际接口、命令及该次身份、对象与结果。见[候选记录格式](../hltest/acceptance-reports.md)。
     - 执行全部用例(验收 + 代码层),验证一致性矩阵 §1 验收方法列(验收标准)全部通过
     - **沉淀到总测试库**:把验收用例(本期 hlpm 产出)+ 代码层用例(本步编写)+ 交叉追溯,合并写入 `knowledge/tests/{module}.md`(按 `hlkb` 第 9 类"总测试库"规范,模板 `hlkb/templates/code-tests.md`)。总库跨版本累计维护,标注引入版本(同 `knowledge/api/`、`knowledge/db/`)
     - **候选运行记录。** 保留产品已签核的 `$VERSION_DIR/test-cases.md` 作为验收依据。启动测试时把用例实际采用的计划与规格摘要写入 JUnit 或人工执行报告。用稳定 TC 在 `knowledge/tests/{module}.md` 关联代码测试及本期 QA 报告，结果和截图随实测提交存档。业务预期需调整时回产品段确认新修订。

@@ -5,7 +5,7 @@ import hashlib
 from pathlib import Path
 import sys
 
-from acceptance_plan import SPEC_FILES, load_plan, role_entry_paths, scenario_viewport, source_format, spec_digest
+from acceptance_plan import SPEC_FILES, load_plan, role_entry_paths, scenario_viewport, source_format, spec_digest, spec_supplements
 from handoff_trace import check_trace, tables
 
 
@@ -70,6 +70,8 @@ def main():
         parser.error("页面或截图要求本次涉及 UI")
     root = args.version_dir
     required = [root / filename for filename in BASE_FILES]
+    if args.files_only and (root / "prd.md").is_file():
+        required.extend(root / name for name in spec_supplements(root, (root / "prd.md").read_bytes()))
     plan_pages = set()
     if not args.files_only:
         plan_path = root / "acceptance-plan.json"

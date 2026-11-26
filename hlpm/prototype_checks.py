@@ -79,7 +79,7 @@ class HtmlObservations(HTMLParser):
             self.finish_element()
 
 
-def html_evidence(prd):
+def report_evidence(prd):
     @lru_cache(maxsize=1)
     def input_hashes():
         # These are delivered prototype pages, even if their UI itself displays AC or TC metadata.
@@ -99,7 +99,9 @@ def html_evidence(prd):
                 if path.is_relative_to(prd.parent) and path.is_file()}
 
     @lru_cache(maxsize=None)
-    def records(path):
+    def records(path, fragment=""):
+        if path.suffix.lower() == ".md":
+            return markdown_observations(path, fragment)
         content = path.read_bytes()
         if hashlib.sha256(content).digest() in input_hashes():
             return []
@@ -112,7 +114,7 @@ def html_evidence(prd):
 
 
 def outline(prd_path):
-    prd, owners, _ = check_prd(prd_path)
+    prd, owners, _ = check_prd(prd_path, stage="prd")
     rows = [COLUMNS, ["---"] * len(COLUMNS)]
     for ac, (row, _, _) in prd.items():
         scenario = "；".join(row[k] for k in ("前置条件", "操作步骤") if row.get(k))
@@ -129,30 +131,71 @@ def observation_table(header):
             or {"BL", "AC"}.issubset(header) and bool(set(DIMENSIONS).intersection(header)))
 
 
-def markdown_anchor(path, fragment, *, same_report):
+def markdown_observations(path, fragment):
+    """Keep a Markdown observation with its own row or case-labelled heading."""
     lines, _ = read_markdown(path)
-    for i, line in enumerate(lines):
-        heading = HEADING.match(line)
-        explicit = re.search(r"""\bid\s*=\s*["']""" + re.escape(fragment) + r"""["']""", line)
-        if not explicit and not (heading and re.sub(r"[^\w\s-]", "", heading[2]).strip().lower().replace(" ", "-") == fragment):
-            continue
-        if not same_report:
-            return True
-        # A self-link must lead to a separate observation, not back to the checklist.
-        has_body = False
-        for following in lines[i + 1:]:
-            if not following.strip():
-                continue
-            if HEADING.match(following):
-                if explicit and not has_body:
-                    explicit = False
-                    continue
+    start, stop = 0, len(lines)
+    if fragment:
+        for i, line in enumerate(lines):
+            heading = HEADING.match(line)
+            explicit = re.search(r"""<[^>]+\bid\s*=\s*["']""" + re.escape(fragment) + r"""["']""", line)
+            if explicit or (heading and re.sub(r"[^\w\s-]", "", heading[2]).strip().lower().replace(" ", "-") == fragment):
+                start = i
+                # A separate HTML anchor immediately before a heading belongs to that heading.
+                if explicit and not heading:
+                    following = next((n for n in range(i + 1, stop) if lines[n].strip()), stop)
+                    if following < stop and HEADING.match(lines[following]):
+                        start = following
+                        heading = HEADING.match(lines[following])
+                depth = len(heading[1]) if heading else 6
+                stop = next((n for n in range(start + 1, stop)
+                             if (h := HEADING.match(lines[n])) and len(h[1]) <= depth), stop)
                 break
-            if following.lstrip().startswith("|") and observation_table(cells(following)):
-                return False
-            has_body = True
-        return has_body
-    return False
+        else:
+            return None
+    table_rows = {int(loc.rsplit(":", 1)[1]) - 1: (cols, row)
+                  for cols, row, _, loc in tables(path, lines=lines)}
+    def visible(value):
+        labels = LINK.sub(lambda match: match[0].partition("](")[0][1:], value)
+        return re.sub(r"<[^>]+>", "", labels).replace("`", "")
+
+    headings, records = [], []
+    for i, line in enumerate(lines[:stop]):
+        heading = HEADING.match(line)
+        if heading:
+            while headings and headings[-1][0] >= len(heading[1]):
+                headings.pop()
+            headings.append((len(heading[1]), CASE_ID.findall(visible(heading[2]))))
+            continue
+        if i < start or not line.strip():
+            continue
+        if line.lstrip().startswith("|"):
+            if fragment and "PRD 验收点" in cells(line):
+                return []
+            cols, row = table_rows.get(i, ([], []))
+            if "PRD 验收点" in cols or "原型结论" in cols:
+                continue
+            # A planned or expected result in another column does not establish an observation.
+            content = " ".join(v for k, v in zip(cols, row)
+                               if k == "结果" or re.search(r"实测|实际|观察|读数|回显|实录", k))
+        else:
+            parts = re.split(r"(预期(?:结果)?|期望结果|验收点|实际(?:结果)?|实测(?:结果)?|观察|读数)\s*[：:]", line)
+            content = line if len(parts) == 1 else " ".join(
+                v for k, v in zip(parts[1::2], parts[2::2]) if not k.startswith(("预期", "期望", "验收点")))
+        ids = set(CASE_ID.findall(visible(line)))
+        ids.update(next((keys for _, keys in reversed(headings) if keys), []))
+        ids.update(CASE_ID.findall(fragment.upper()))
+        if ids and content:
+            records.append((fragment, ids, " ".join(visible(content).split())))
+    return records
+
+
+def contains_readout(content, value):
+    if not value:
+        return False
+    start = r"(?<![\d.+−-])" if value[0].isdigit() else ""
+    end = r"(?!\d|[.．,，]\d)" if value[-1].isdigit() else ""
+    return bool(re.search(start + re.escape(value) + end, content))
 
 
 def native_evidence(package):
@@ -185,7 +228,7 @@ def native_evidence(package):
     return verified
 
 
-def check_evidence(row, report, prd, executed, expected_cases, verify_native, html_records):
+def check_evidence(row, report, prd, executed, expected_cases, verify_native, report_records):
     value, ac = row["证据"], row["AC"]
     links = [one or two for one, two in LINK.findall(value)]
     if not links:
@@ -201,21 +244,28 @@ def check_evidence(row, report, prd, executed, expected_cases, verify_native, ht
         path = (report.parent / name).resolve() if target.path else report
         if not path.is_relative_to(prd.parent) or not path.is_file() or not path.stat().st_size:
             raise ValueError(f"找不到本版本内的非空证据文件：{link}")
-        if target.fragment and path.suffix.lower() == ".md" and not markdown_anchor(
-                path, unquote(target.fragment), same_report=path == report):
-            raise ValueError(f"证据小节不存在或指回核对表：{link}")
-        if path.suffix.lower() in {".html", ".htm"}:
-            # HTML alone is an observation only when the cited case actually contains the quoted readout.
+        if path.suffix.lower() in {".md", ".html", ".htm"}:
+            fragment = unquote(target.fragment)
+            if path.suffix.lower() == ".md":
+                records = report_records(path, fragment)
+                if records is None:
+                    raise ValueError(f"证据小节不存在：{link}")
+                if path == prd or (path == report and not fragment) or path.name in {
+                    "test-cases.md", "acceptance-criteria.md", "consistency-matrix.md", "handoff-self-check.md",
+                    "data-requirements.md", "interface-requirements.md", "non-functional-requirements.md",
+                }:
+                    continue
+            else:
+                records = report_records(path)
             matches = set()
             for key in DIMENSIONS:
                 value = row[key]
                 if concrete(value) and not N_A.match(value):
                     matches.add(" ".join(value.strip("。.!！").split()))
                     matches.update(quote for quote in re.findall(r"`([^`]+)`", value) if concrete(quote))
-            fragment = unquote(target.fragment)
-            for anchor, ids, content in html_records(path):
+            for anchor, ids, content in records:
                 if ((not fragment or anchor == fragment) and ids <= expected_cases
-                        and any(value in content for value in matches)):
+                        and any(contains_readout(content, value) for value in matches)):
                     has_record = True
                     break
             continue
@@ -236,13 +286,13 @@ def check_evidence(row, report, prd, executed, expected_cases, verify_native, ht
 
 def check(prd_path, report_path):
     prd_path, report_path = prd_path.resolve(), report_path.resolve()
-    prd, owners, _ = check_prd(prd_path)
+    prd, owners, _ = check_prd(prd_path, stage="prd")
     seen = set()
     counts = Counter()
     errors = []
     covered = set()
     verify_native = native_evidence(prd_path.parent)
-    html_records = html_evidence(prd_path)
+    report_records = report_evidence(prd_path)
     for header, fields, _, location in tables(report_path):
         if not observation_table(header):
             continue
@@ -286,7 +336,7 @@ def check(prd_path, report_path):
             errors.append(f"{label} 原型{status}，{row['后续验证'] or '须补验'}")
         try:
             expected_cases = {ac, *CASE_ID.findall(prd[ac][0].get("可追溯测试", ""))}
-            check_evidence(row, report_path, prd_path, executed, expected_cases, verify_native, html_records)
+            check_evidence(row, report_path, prd_path, executed, expected_cases, verify_native, report_records)
         except ValueError as error:
             errors.append(f"{label} {error}")
     for ac in sorted(prd.keys() - covered):

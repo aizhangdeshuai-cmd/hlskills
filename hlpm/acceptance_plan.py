@@ -7,21 +7,40 @@ import re
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlsplit
 
+from case_assertions import validate_assertions
+from handoff_trace import read_markdown, tables
 from reference_evidence import artifact, validate_reference_scope
 
 
 SPEC_FILES = ("prd.md", "test-cases.md", "non-functional-requirements.md")
 
 
-def spec_digest(directory, expected=None):
+def spec_supplements(directory, prd):
+    path = directory / "prd.md"
+    lines, profile = read_markdown(path, source=prd.decode("utf-8-sig"))
+    if profile == "single":
+        raise ValueError("单文件 PRD 追加正式交接时须改用 split-mini 或 split 并补齐测试交付")
+    if profile not in {"split", "split-mini"}:
+        return ()
+    from prd_attachments import selected_supplements
+    files = selected_supplements(path, tables(path, lines=lines), mini=profile == "split-mini", stage="test")
+    return tuple(files[chapter].relative_to(directory.resolve()).as_posix() for chapter in sorted(files))
+
+
+def spec_digest(directory, expected=None, *, test_cases=None):
     """Bind each approved filename to the SHA-256 of its exact bytes."""
+    prd = (directory / "prd.md").read_bytes()
+    signed = {"prd.md": prd}
+    if test_cases is not None:
+        signed["test-cases.md"] = test_cases
     digest = hashlib.sha256()
-    for name in SPEC_FILES:
-        content_digest = hashlib.sha256((directory / name).read_bytes()).digest()
-        digest.update(name.encode("ascii") + b"\0" + content_digest)
+    for name in (*SPEC_FILES, *spec_supplements(directory, prd)):
+        content = signed[name] if name in signed else (directory / name).read_bytes()
+        content_digest = hashlib.sha256(content).digest()
+        digest.update(name.encode("utf-8") + b"\0" + content_digest)
     value = digest.hexdigest()
     if expected is not None and value != expected:
-        raise ValueError("spec_sha256 与产品交接基线不符，请核对 PRD、测试用例和非功能要求")
+        raise ValueError("spec_sha256 与产品交接基线不符，请核对 PRD、已交分册、测试用例和非功能要求")
     return value
 
 
@@ -103,11 +122,14 @@ def html_path(value):
 
 
 def role_entry_paths(case):
+    if not case["pages"]:
+        return set()
     return {urlsplit(config["entry"]).path for config in case.get("roles", {}).values()}
 
 
-def result_map(value):
-    return isinstance(value, dict) and bool(value) and all(text(k) and text(v) for k, v in value.items())
+def result_map(value, *, service=False):
+    return isinstance(value, dict) and bool(value) and all(
+        text(k) and (text(v) or service and type(v) in (int, bool)) for k, v in value.items())
 
 
 def validate_roles(case):
@@ -121,34 +143,48 @@ def validate_roles(case):
     key, roles, visits = case["id"], case.get("roles"), case.get("visits")
     if not isinstance(roles, dict) or len(roles) < 2 or not text(case.get("object")):
         raise ValueError(f"{key} 跨角色场景须声明至少两个 roles 和同一业务 object")
+    service = not case["pages"]
     identities = set()
     for role, config in roles.items():
-        if not text(role) or not isinstance(config, dict) or not text(config.get("entry")):
-            raise ValueError(f"{key} 角色 {role} 缺少 entry")
-        url = urlsplit(config["entry"])
-        if url.scheme or url.netloc or not html_path(url.path):
-            raise ValueError(f"{key} 角色 {role} 入口须为 design/ 内的 HTML，可附查询串")
+        if not text(role) or not isinstance(config, dict):
+            raise ValueError(f"{key} 角色 {role} 配置无效")
         identity = config.get("identity")
         if not isinstance(identity, list) or len(identity) != 2 or not all(map(text, identity)):
-            raise ValueError(f"{key} 角色 {role} 的 identity 须为 [身份控件, 可见文字]")
-        marker = (url.path, *identity)
+            raise ValueError(f"{key} 角色 {role} 的 identity 须为 [身份字段或控件, 实测身份的预期值]")
+        if service:
+            if "entry" in config:
+                raise ValueError(f"{key} 无 UI 场景在每次 visit 的 operation 填接口或命令，角色无需 HTML entry")
+            marker = identity[1]
+        else:
+            if not text(config.get("entry")):
+                raise ValueError(f"{key} 角色 {role} 缺少 entry")
+            url = urlsplit(config["entry"])
+            if url.scheme or url.netloc or not html_path(url.path):
+                raise ValueError(f"{key} 角色 {role} 入口须为 design/ 内的 HTML，可附查询串")
+            marker = (url.path, *identity)
         if marker in identities:
-            raise ValueError(f"{key} 同页角色 {role} 需要可区分的界面身份标识")
+            raise ValueError(f"{key} 角色 {role} 需要可区分的身份标识")
         identities.add(marker)
-    if not isinstance(visits, list) or len(visits) != len(case["pages"]):
+    if not isinstance(visits, list) or not visits:
+        raise ValueError(f"{key} 须登记各角色按办理顺序核对的 visits")
+    if not service and len(visits) != len(case["pages"]):
         raise ValueError(f"{key} 的 visits 需与 pages 逐项对应")
     used = set()
     for index, visit in enumerate(visits, 1):
         role = visit.get("role") if isinstance(visit, dict) else None
         if not text(role) or role not in roles or not text(visit.get("object_at")):
-            raise ValueError(f"{key} 第 {index} 次访问须指定已登记的角色与同单标识控件 object_at")
+            raise ValueError(f"{key} 第 {index} 次访问须指定已登记的角色与同单标识位置 object_at")
+        if service and not text(visit.get("operation")):
+            raise ValueError(f"{key} 第 {index} 次访问须在 operation 指定实际接口或命令")
         expected = visit.get("expect")
-        if (not result_map(expected)
+        if (not result_map(expected, service=service)
                 or not (expected.keys() - {visit["object_at"], roles[role]["identity"][0]})):
-            raise ValueError(f"{key} 第 {index} 次访问须登记业务结果 expect（控件与预期可见文字）")
+            raise ValueError(f"{key} 第 {index} 次访问须登记业务结果 expect")
         used.add(role)
     if len(used) < 2:
         raise ValueError(f"{key} 的 visits 须在至少两个不同角色处核对同一业务")
+    if service and used != roles.keys():
+        raise ValueError(f"{key} 的 visits 缺已登记角色：" + "、".join(sorted(roles.keys() - used)))
 
 
 class RoleOutcomeMismatch(ValueError):
@@ -157,16 +193,17 @@ class RoleOutcomeMismatch(ValueError):
 
 def check_visit_observations(case, observations):
     """Compare all visits in one run, including returns to an earlier page."""
-    pages = case["pages"]
-    if not isinstance(observations, list) or len(observations) != len(pages):
-        raise ValueError(f"{case['id']} 须提供全部 {len(pages)} 次访问的实测结果：{' → '.join(pages)}")
-    for index, (page, actual) in enumerate(zip(pages, observations), 1):
+    service = not case["pages"] and "roles" in case
+    locations = [v["operation"] for v in case["visits"]] if service else case["pages"]
+    if not isinstance(observations, list) or len(observations) != len(locations):
+        raise ValueError(f"{case['id']} 须提供全部 {len(locations)} 次访问的实测结果：{' → '.join(locations)}")
+    for index, (location, actual) in enumerate(zip(locations, observations), 1):
         visit = case["visits"][index - 1] if "visits" in case else {}
         role = visit.get("role")
-        label = f"{case['id']} 第 {index} 次访问 " + (f"{role}/{page}" if role else page)
+        label = f"{case['id']} 第 {index} 次访问 " + (f"{role}/{location}" if role else location)
         if not isinstance(actual, dict):
             raise ValueError(f"{label} 缺观测")
-        required = {"page": page}
+        required = {"operation" if service else "page": location}
         if role:
             required.update(role=role, identity=case["roles"][role]["identity"][1])
         for field, value in required.items():
@@ -174,16 +211,16 @@ def check_visit_observations(case, observations):
                 raise ValueError(f"{label} 的 {field} 应为 {value!r}，实测 {actual.get(field)!r}")
         expected = visit.get("expect", actual.get("expect"))
         results = actual.get("results")
-        if not result_map(expected) or not isinstance(results, dict) or results.keys() != expected.keys():
-            raise ValueError(f"{label} 缺少逐页业务预期或对应的实测结果控件")
-        if not all(isinstance(value, str) for value in results.values()):
+        if not result_map(expected, service=service) or not isinstance(results, dict) or results.keys() != expected.keys():
+            raise ValueError(f"{label} 缺少逐次业务预期或对应的实测结果字段")
+        if not service and not all(isinstance(value, str) for value in results.values()):
             raise ValueError(f"{label} 的业务观测须为实际可见文字")
         if "object" in case and not text(actual.get("object")):
             raise ValueError(f"{label} 缺少同单标识")
         if "object" in case and actual["object"] != case["object"]:
             raise RoleOutcomeMismatch(f"{label} 对象应为 {case['object']!r}，实测 {actual['object']!r}")
         for selector, value in expected.items():
-            if results[selector] != value:
+            if type(results[selector]) is not type(value) or results[selector] != value:
                 raise RoleOutcomeMismatch(f"{label} 的 {selector} 应为 {value!r}，实测 {results[selector]!r}")
 
 
@@ -267,9 +304,11 @@ def load_plan(path):
             raise ValueError(f"{row['id']} 的跨角色约束缺少多角色 TC：" + "、".join(sorted(missing)))
     validate_reference_scope(plan, Path(path).parent)
     assertions = plan.get("case_assertions", {})
-    if not isinstance(assertions, dict):
-        raise ValueError("case_assertions 须按 TC 登记")
+    if not isinstance(assertions, dict) or assertions.keys() - {s["id"] for s in plan["scenarios"]}:
+        raise ValueError("case_assertions 须按计划内的 TC 登记")
     for row in plan["scenarios"]:
+        if row["id"] in assertions:
+            validate_assertions(assertions[row["id"]], bool(row["pages"]), row["id"])
         validate_comparison_scope(Path(path).parent, row, row["id"] in assertions)
         if "viewport" in row or "prototype_match" in row:
             scenario_viewport(Path(path).parent, row)

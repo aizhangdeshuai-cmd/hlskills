@@ -24,7 +24,13 @@ def is_skipped(case):
 
 
 def load_object(path):
-    data = json.loads(path.read_text(encoding="utf-8-sig"))
+    def unique_fields(pairs):
+        fields = dict(pairs)
+        if len(fields) != len(pairs):
+            raise ValueError("JSON 对象含重复字段，无法确定本次执行记录")
+        return fields
+
+    data = json.loads(path.read_text(encoding="utf-8-sig"), object_pairs_hook=unique_fields)
     if not isinstance(data, dict):
         raise ValueError(f"{path} 应包含 JSON 对象")
     return data
@@ -51,16 +57,21 @@ def viewport_metadata(data):
 def viewport_gaps(rows, expected, required_variants):
     # A service-level helper may share the TC. Only browser checks declare a viewport.
     by_check = {}
+    measured = [row for row in rows if row.get("assertion_status") == "passed"]
     for row in rows:
-        if "viewport" in row:
+        if "viewport" in row and "assertion_status" not in row:
             identity = (row.get("classname"), row["case"], row.get("variant"))
             by_check.setdefault(identity, set()).add(row["viewport"])
     gaps = [f"{'.'.join(filter(None, identity))} 缺约定视口 {expected} 的通过记录"
             for identity, observed in by_check.items() if expected not in observed]
+    if measured:
+        business_rows = measured + [row for row in rows if "classname" in row]
+        if not any(row.get("viewport") == expected for row in business_rows):
+            gaps.append(f"缺约定视口 {expected} 的同次业务实测")
     for variant in required_variants:
         if any(row.get("variant") == variant for row in rows) and not any(k[2] == variant for k in by_check):
             gaps.append(f"{variant} 缺约定视口 {expected} 的候选实测记录")
-    return gaps if by_check or gaps else [f"缺约定视口 {expected} 的候选实测记录"]
+    return gaps if by_check or measured or gaps else [f"缺约定视口 {expected} 的候选实测记录"]
 
 
 def identity_errors(metadata, expected, *, complete=False):
@@ -147,7 +158,7 @@ def junit_rows(path, identity, with_diagnostics=False, *, cases=None):
     return rows, problems
 
 
-def json_rows(path, identity, package, cases, with_diagnostics=False):
+def json_rows(path, identity, package, cases, manual_assertions, with_diagnostics=False):
     report = load_object(path)
     scope, candidate = identity["scope"], identity["revision"]
     if report.get("kind") == "ui-reference-comparison":
@@ -227,6 +238,11 @@ def json_rows(path, identity, package, cases, with_diagnostics=False):
         observation = {"case": key, **viewport_metadata(record)}
         if "baseline_sha256" in record:
             observation["comparison"] = "reference"
+        checks_business = "comparison" not in observation or "observed_values" in record or "observed_steps" in record
+        if status == "passed" and checks_business and key in manual_assertions.bindings:
+            observation["assertion_status"], diagnostic = manual_assertions.check(cases[key], record)
+            if diagnostic:
+                observation["diagnostic"] = diagnostic
         for field in ("page_visits", "role_visits"):
             if field in record:
                 observation[field] = record[field]
@@ -239,6 +255,7 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "hlpm"))
     from acceptance_plan import (RoleOutcomeMismatch, check_visit_observations, load_plan,
                                  scenario_viewport, spec_digest)
+    from manual_evidence import ManualAssertions
 
     if not SHA.fullmatch(candidate):
         raise ValueError("--candidate 需要完整 Git 提交 SHA")
@@ -247,8 +264,10 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
         raise ValueError("验收计划 sha256 与产品交接基线不符")
     if expected_spec is None and plan_path.with_name("acceptance-sources.sha256").exists():
         raise ValueError("验收产品交付包需要交接记录中的 --spec-sha256")
+    signed_cases = None
     if expected_spec is not None:
-        spec_digest(plan_path.parent, expected_spec)
+        signed_cases = (plan_path.parent / "test-cases.md").read_bytes()
+        spec_digest(plan_path.parent, expected_spec, test_cases=signed_cases)
     plan = load_plan(plan_path)
     if hashlib.sha256(plan_path.read_bytes()).hexdigest() != digest:
         raise ValueError("验收计划在读取期间已变化")
@@ -262,6 +281,7 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
         raise ValueError("执行清单需 reports 路径数组；没有运行记录时使用 []")
 
     cases = {s["id"]: s for s in plan["scenarios"]}
+    manual_assertions = ManualAssertions(plan_path.parent, plan, signed_cases)
     visit_cases = {key: ("role_visits" if "roles" in case else "page_visits")
                    for key, case in cases.items() if "roles" in case or len(case["pages"]) > 1}
     visit_viewports = {key: scenario_viewport(plan_path.parent, cases[key]) for key in visit_cases}
@@ -280,7 +300,8 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
             if path.suffix.lower() == ".xml":
                 rows, errors = junit_rows(path, identity, with_diagnostics, cases=cases)
             elif path.suffix.lower() == ".json":
-                rows, errors, comparisons = json_rows(path, identity, plan_path.parent, cases, with_diagnostics)
+                rows, errors, comparisons = json_rows(path, identity, plan_path.parent, cases,
+                                                      manual_assertions, with_diagnostics)
                 for (key, kind), details in comparisons.items():
                     status = combined_status({s for tc, s, row in rows if tc == key and row.get("comparison") == kind})
                     comparison_runs[key, kind].append({"artifact": filename, "status": status, "details": details})
@@ -315,6 +336,8 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
                         problems.append(f"{filename}: {key} {field} 证据无效：{exc}")
                     else:
                         observation["verified_visits"] = len(visits)
+            if "assertion_status" in observation:
+                status = combined_status({status, observation["assertion_status"]})
             if key in evidence:
                 evidence[key].append({"status": status, "artifact": filename, **observation})
             elif status in {"failed", "invalid_evidence"}:
@@ -324,7 +347,8 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
     viewports = {}
     for key, case in cases.items():
         browser_contract = "prototype_match" in case or case.get("reference", {}).get("mode") == "browser"
-        if (browser_contract and case.get("required_variants")) or (not browser_contract and "viewport" in case):
+        manual_ui = any("assertion_status" in row for row in evidence[key])
+        if (browser_contract and (case.get("required_variants") or manual_ui)) or (not browser_contract and "viewport" in case):
             viewports[key] = "x".join(map(str, scenario_viewport(plan_path.parent, case)))
     for key, observations in evidence.items():
         statuses = {row["status"] for row in observations}
@@ -338,7 +362,8 @@ def evaluate(manifest_path, plan_path, candidate, expected_digest, expected_spec
                     label = f"{key} {variant}" if variant else key
                     problems.append(f"{label}: 缺候选同一次办理的完整 {visit_cases[key]} 实测记录")
         if (statuses == {"passed"} and not cases[key].get("visual_only")
-                and all(row.get("comparison") and not row.get("business_checkpoints") and not row.get("verified_visits")
+                and all(row.get("comparison") and not row.get("business_checkpoints") and row.get("assertion_status") != "passed"
+                        and (key in manual_assertions.bindings or not row.get("verified_visits"))
                         for row in observations)):
             statuses.add("not_run")
             problems.append(f"{key}: 对照通过，缺候选业务结果的执行记录或已约定的业务检查点")

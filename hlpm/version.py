@@ -10,14 +10,14 @@ from pathlib import Path
 
 ROOTS = (Path("knowledge/doc"), Path("docs"))
 VERSION = re.compile(r"v[1-9][0-9]*")
-DELIVERY_ENDPOINTS = {"prd": "4.5", "prototype": "6b.6", "handoff": "12.5"}
-ALL_CHAPTERS = tuple(range(1, 18))
+DELIVERY_ENDPOINTS = {"prd": "4.5", "prototype": "6b.6", "workflow": "8.5", "handoff": "12.5"}
+STANDARD_CHAPTERS = (1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 16, 17)
 PRD_SCALES = {
-    "micro": ("iteration", (1, 2, 4, 7, 14)),
-    "iteration": ("iteration", (1, 2, 3, 4, 7, 14, 16)),
-    "module": ("standard", tuple(n for n in ALL_CHAPTERS if n != 15)),
-    "product": ("standard", ALL_CHAPTERS),
-    "rebuild": ("standard", ALL_CHAPTERS),
+    "micro": ("iteration", (1, 2, 4, 7)),
+    "iteration": ("iteration", (1, 2, 3, 4, 7, 16)),
+    "module": ("standard", STANDARD_CHAPTERS),
+    "product": ("standard", STANDARD_CHAPTERS),
+    "rebuild": ("standard", STANDARD_CHAPTERS),
 }
 MARKERS = {
     "rejected": ".dev-rejected",
@@ -163,6 +163,7 @@ def main():
                       help="已明确的需求规模，结合 --delivery 输出应覆盖的章节")
     form.add_argument("--delivery", choices=DELIVERY_ENDPOINTS,
                       help="指定本次交付范围，以 JSON 返回 PRD 指引和结束步骤")
+    form.add_argument("--single", action="store_true", help="用户明确只交一份自包含 PRD")
     form.add_argument("--outline", type=Path, help="客户已确认的 16 章编号 Markdown 目录文件")
     for command in ("list", "resolve", "new", "retro"):
         cmd = sub.add_parser(command)
@@ -176,15 +177,19 @@ def main():
     cmd.add_argument("action", choices=ACTIONS)
     args = parser.parse_args()
     if args.command == "prd-form":
+        if args.single and (args.outline or args.form == "standard" or args.delivery not in (None, "prd")):
+            parser.error("单文件简稿只适用于仅交 PRD；固定目录、标准分册或后续阶段请选对应格式")
         default_form = {"existing": "iteration", "new": "standard", "unknown": None}[args.project_state]
-        selected = args.form or ("standard" if args.outline else None) or (
+        selected = ("mini" if args.single else args.form) or ("standard" if args.outline else None) or (
             PRD_SCALES[args.scale][0] if args.scale else default_form)
         guides = {"iteration": "prd-mini.md", "mini": "prd-mini.md", "standard": "prd-cards.md"}
         guide = guides[selected] if selected else "ask"
-        if args.delivery or args.outline:
+        if args.delivery or args.outline or args.single:
             result = {"guide": guide}
-            if args.delivery:
-                result["stop_after"] = DELIVERY_ENDPOINTS[args.delivery]
+            delivery = args.delivery or ("prd" if args.single else "workflow")
+            result["stop_after"] = DELIVERY_ENDPOINTS[delivery]
+            if delivery in {"workflow", "handoff"}:
+                result["test_stage_files"] = ["test-cases.md"] if args.outline else ["acceptance-criteria.md", "test-cases.md"]
             if args.outline:
                 if selected != "standard":
                     parser.error("客户固定目录适用于标准稿，请核对与 --form 的选择")
@@ -192,15 +197,18 @@ def main():
                 chapters = customer_sections(args.outline)[()]
                 result.update(chapters=[item[0][0] for item in chapters],
                               declaration=f"<!-- hlpm:outline={args.outline.name} -->")
-            elif args.scale:
-                chapters = PRD_SCALES[args.scale][1]
-                if args.form == "standard":
-                    chapters = ALL_CHAPTERS
-                elif args.form in ("iteration", "mini") and args.scale != "micro":
-                    chapters = PRD_SCALES["iteration"][1]
+            elif selected:
+                if selected == "standard":
+                    chapters = STANDARD_CHAPTERS
+                    profile = "split"
+                else:
+                    chapters = PRD_SCALES["micro" if args.scale == "micro" else "iteration"][1]
+                    profile = "single" if args.single else "split-mini"
+                    result["chapter_basis"] = "standard_topic_mapping"
                 result["chapters"] = list(chapters)
-                if args.scale == "module" and not args.form:
-                    result["declaration"] = "<!-- hlpm:module -->"
+                result["declaration"] = f"<!-- hlpm:{profile} -->"
+            if selected and not args.single and not args.outline:
+                result["ask_separately"] = ["data-requirements.md", "interface-requirements.md"]
             print(json.dumps(result))
         else:
             print(guide)

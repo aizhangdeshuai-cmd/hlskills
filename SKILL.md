@@ -86,7 +86,7 @@ description: hlskills 技能导航。用于了解本库有哪些技能、选择�
 
 ## 交付文档清单
 
-按当前任务核对[单人流程的 12 类交付物](hl-flow/SKILL.md#交付文档清单)、[产品交接的 5 项必交与 3 项条件交付](hlpm/handoff-package.md)或[开发交付规范](hldev/verification.md)。验收标准随一致性矩阵交接。
+按当前任务核对[单人流程的 12 类交付物](hl-flow/SKILL.md#交付文档清单)、[产品交接的 5 项必交与 3 项条件交付](hlpm/handoff-package.md)或[开发交付规范](hldev/verification.md)。产品分册版在测试阶段生成验收标准和详细用例，正式交接按同版矩阵追溯。
 
 ## 专项工具
 

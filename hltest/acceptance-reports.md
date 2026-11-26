@@ -10,7 +10,7 @@
 
 同一 UI 场景约定了视口和 `required_variants` 时，每个必测变体各自提交该尺寸的通过记录，即使原生用例同名也逐项核对。服务测试可共用 TC 作为补充；需独立验收的无窗口业务条件另列 TC。
 
-接收 hlpm 产品包时，从产品交接记录读取 `plan_sha256` 和 `spec_sha256`，分别传给 `qa-score.py` 的 `--plan-sha256` 和 `--spec-sha256`。保留计划旁的 `acceptance-sources.sha256`、`prd.md`、`test-cases.md` 和 `non-functional-requirements.md`。在启动测试时核对本次运行采用的基线，把两项摘要写入原生 JUnit 或人工报告。评分器同时核对产品包、交接值与当次执行记录。历史产品报告缺摘要时，保留其原件，按本版确认用例补跑；复核阶段不能给旧报告补写当前摘要。文档变更导致摘要失配时，回到产品段复核修订。
+接收 hlpm 产品包时，从产品交接记录读取 `plan_sha256` 和 `spec_sha256`，分别传给 `qa-score.py` 的 `--plan-sha256` 和 `--spec-sha256`。保留计划旁的 `acceptance-sources.sha256`、`prd.md`、`test-cases.md` 和 `non-functional-requirements.md`。分册版还要保留附录所列的 `acceptance-criteria.md` 以及用户选交的数据、接口分册，启动测试前按验收分册核对范围与通过条件。在启动测试时核对本次运行采用的基线，把两项摘要写入原生 JUnit 或人工报告。评分器同时核对产品包、交接值与当次执行记录。历史产品报告缺摘要时，保留其原件，按本版确认用例补跑；复核阶段不能给旧报告补写当前摘要。文档变更导致摘要失配时，回到产品段复核修订。
 
 独立 QA 也可使用单独确认的计划。在确认范围时运行下列命令，把输出保存在交接记录或 CI 的已批准输入。使用该独立计划验收时只传 `--plan-sha256` 和候选 SHA。新运行记录登记 `plan_sha256`。历史独立报告沿用 `revision` 和 `scope`，已登记的计划摘要必须匹配；报告声明了规格摘要时，同时提供相应的确认文档与 `--spec-sha256`。
 
@@ -50,9 +50,13 @@ python3 -c 'import hashlib, pathlib, sys; print(hashlib.sha256(pathlib.Path(sys.
 
 ## 跨角色候选记录
 
-计划中含 `roles` 的 TC，用各角色的候选测试账号办理同一张单。在一次连贯执行中按 `visits` 顺序记录实际的角色、页面、可见身份、单号和各项结果。在原始 JUnit 的该条 testcase property `role_visits` 写入 JSON 数组，人工执行则写入同一条 record 的 `role_visits` 数组。约定了视口时，在这次执行一并记录实测 `viewport`。产品计划的页面和控件名作为逻辑定位，候选的路由或组件不同可在测试内映射；读数来自正在操作的页面。
+计划中含 `roles` 的 TC，用各角色的候选测试账号办理同一张单。在一次连贯执行中按 `visits` 顺序记录实际的角色、入口、身份、单号和各项结果。在原始 JUnit 的该条 testcase property `role_visits` 写入 JSON 数组，人工执行则写入同一条 record 的 `role_visits` 数组。
+
+UI 场景用 `page` 记录页面，约定了视口时一并记录实测 `viewport`。产品计划的页面和控件名作为逻辑定位，候选的路由或组件不同可在测试内映射。身份与业务读数来自正在操作的页面。
 
 例如员工回访的最后一项可为 `{"role":"employee","page":"employee.html","identity":"林沐","object":"L-004","results":{"#status":"已通过","#frozen":"0"}}`。漏传回访、角色身份不符或读数仍为待审批时，评分器指出对应 TC 及原因。其他服务测试可以共用该 TC，一个完整执行记录承载跨端结果。[产品计划字段及原型步骤](../hlpm/handoff-package.md#跨角色验收)
+
+纯服务场景用 `operation` 记录当次调用的方法及路径或命令。例如退款审批的实测项为 `{"role":"finance","operation":"refund approve R-2","identity":"F-1","object":"R-2","results":{"writes":1}}`。从本次认证会话取得实际账号，从响应或命令输出读取单号与业务字段，保留约定的数据类型。按计划顺序保留申请、审批及回查各次读数。
 
 ## 竞品 UI 对照
 
@@ -98,3 +102,10 @@ def identify_run(record_testsuite_property):
               "expected":"读屏按顺序播报原因和确认按钮","actual":"签核设备上两项按预期顺序播报","status":"pass"}]
 }
 ```
+
+**业务读数。** 若该 TC 登记了 [case_assertions](../hlpm/handoff-package.md#把关键业务预期连到断言)，申请通过时在同一条 record 记录实际读到的全部关键结果。计划指定 `object` 时，填写本次实际办理的对象标识。有约定视口的 UI 业务须在该视口实测并记录宽高；另一次运行的外观核对只证明当时见到的界面。按 TC 约定的前置条件、办理顺序和时点取数，使用原类型区分整数 0、布尔 false 和文本 "0"。
+
+- `values` 的读数放入 `observed_values`，沿用登记的字段名。例如清空草稿后查询实际条数，填写 `"observed_values":{"remaining":0}`。同一字段在不同时点需独立验收时，可在计划中命名为 `before_remaining`、`after_remaining`。
+- `steps` 的读数放入 `observed_steps`。键取该 TC 登记的锚点；值按相同步骤顺序记录页面上实际读到的文字或控件状态，多行用 ` / ` 连接。例如 `"object":"ZN-2026-002","observed_steps":{"L8-L10":"0 / 5 / 3","L17-L19":"0 / 0 / 8"}`。评分依据为确认规格中该 TC「预期结果」格的可见链接文字。使用独立计划且只登记了外部步骤位置时，可交验证这些步骤的原生测试报告，或补充确认规格后执行人工核对。
+
+两种断言同时登记时，分别提交两组读数。可归属的实测值与预期不符即失败。缺字段、对象不符或缺确认依据会阻断人工通过。原报告缺登记读数时保留原件，复测后交新报告。仅做人工竞品外观比对时沿用原对照格式；同一记录要证明已登记的业务结果时须同时提供相应读数。无已登记业务断言的体验或旧场景继续按文字实测验收。执行者与复核者须核对文字、读数及对象是否来自实际运行。

@@ -2,9 +2,6 @@
 import re
 import shlex
 
-from prototype_evidence import local
-
-
 STEP_RANGE = re.compile(r"L([1-9][0-9]*)(?:-L([1-9][0-9]*))?")
 RESULT_LINK = re.compile(
     r"(?<![!\\])\[((?:\\.|[^\[\]\\\n])+)\]\(((?:design/checks/[^()\s]+\.steps#|acceptance-plan\.json#/case_assertions/)[^()\s]+)\)"
@@ -33,21 +30,15 @@ def step_result(lines, anchor, label):
     return " / ".join(values), "、".join(fields)
 
 
-def expected_links(root, tc, config, is_ui, label):
+def validate_assertions(config, is_ui, label):
     if not isinstance(config, dict) or not config or config.keys() - {"steps", "values"}:
         raise ValueError(f"{label} case_assertions 须登记 steps 或 values")
-    checked = {}
     if "steps" in config:
         anchors = config["steps"]
-        if not is_ui or not isinstance(anchors, list) or not anchors:
+        if (not is_ui or not isinstance(anchors, list) or not anchors
+                or any(not isinstance(a, str) or not STEP_RANGE.fullmatch(a) for a in anchors)
+                or len(anchors) != len(set(anchors))):
             raise ValueError(f"{label} steps 须为本 UI 场景已运行的断言位置列表")
-        file = f"checks/{tc}.steps"
-        lines = local((root / "design").resolve(), file).read_text(encoding="utf-8").splitlines()
-        for anchor in anchors:
-            target = f"design/{file}#{anchor}"
-            if target in checked:
-                raise ValueError(f"{label} 断言位置重复：{target}")
-            checked[target] = step_result(lines, anchor, label)
     if "values" in config:
         values = config["values"]
         if not isinstance(values, dict) or not values:
@@ -56,9 +47,20 @@ def expected_links(root, tc, config, is_ui, label):
             if (not re.fullmatch(r"[A-Za-z0-9_-]+", key) or type(value) not in (str, int, bool)
                     or isinstance(value, str) and (not value.strip() or len(value.splitlines()) != 1)):
                 raise ValueError(f"{label} values 须用稳定字段名和单行非空文本、整数或布尔值")
-            rendered = str(value).lower() if isinstance(value, bool) else str(value)
-            target = f"acceptance-plan.json#/case_assertions/{tc}/values/{key}"
-            checked[target] = rendered, key
+
+
+def expected_links(root, tc, config, is_ui, label):
+    validate_assertions(config, is_ui, label)
+    checked = {}
+    if "steps" in config:
+        from prototype_evidence import local
+        file = f"checks/{tc}.steps"
+        lines = local((root / "design").resolve(), file).read_text(encoding="utf-8").splitlines()
+        for anchor in config["steps"]:
+            checked[f"design/{file}#{anchor}"] = step_result(lines, anchor, label)
+    for key, value in config.get("values", {}).items():
+        rendered = str(value).lower() if isinstance(value, bool) else str(value)
+        checked[f"acceptance-plan.json#/case_assertions/{tc}/values/{key}"] = rendered, key
     return checked
 
 
